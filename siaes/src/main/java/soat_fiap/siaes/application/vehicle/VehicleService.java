@@ -39,6 +39,9 @@ public class VehicleService {
     }
 
     public Vehicle save(Vehicle vehicle) {
+        if (vehicleRepository.existsByPlate((vehicle.getPlate())))
+            throw new IllegalArgumentException("plate already exists");
+
         return vehicleRepository.save(vehicle);
     }
 

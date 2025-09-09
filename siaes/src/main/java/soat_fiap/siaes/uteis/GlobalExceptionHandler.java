@@ -79,6 +79,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Trata argumentos inválidos (HTTP 400).
+     *
+     * @param ex IllegalArgumentException lançada quando um argumento inválido é fornecido
+     * @return ResponseEntity com mensagem de erro
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<MessageDTO> handleIllegalArgument(IllegalArgumentException ex) {
+        logger.info("Argumento inválido: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageDTO(ex.getMessage()));
+    }
+
+    /**
      * Trata erros de integridade de dados (HTTP 409).
      *
      * @param ex DataIntegrityViolationException lançada pelo Spring Data

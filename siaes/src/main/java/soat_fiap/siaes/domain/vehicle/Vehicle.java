@@ -13,11 +13,12 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "vehicle_id", nullable = false, unique = true)
+    @Getter
     private UUID id;
 
     @Getter
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String plate;
 
     @Getter
