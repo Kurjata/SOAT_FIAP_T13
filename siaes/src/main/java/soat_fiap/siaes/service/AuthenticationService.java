@@ -36,7 +36,7 @@ public class AuthenticationService {
 
     public AuthenticationService(UserRepository userRepository,
                                  PasswordEncoder passwordEncoder,
-                                 @Value("${JWT_SECRET}") String secret) {
+                                 @Value("${api.security.token.secret}") String secret) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.algorithm = Algorithm.HMAC256(secret);
