@@ -1,4 +1,4 @@
-package soat_fiap.siaes.rest.dto;
+package soat_fiap.siaes.interfaces.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

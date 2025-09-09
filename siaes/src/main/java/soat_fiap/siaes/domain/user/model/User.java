@@ -1,14 +1,10 @@
-package soat_fiap.siaes.domain.entity;
+package soat_fiap.siaes.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import soat_fiap.siaes.domain.enums.RoleEnum;
 
 import java.util.Collection;
 import java.util.List;

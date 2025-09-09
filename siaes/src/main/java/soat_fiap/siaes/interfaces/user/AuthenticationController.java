@@ -1,4 +1,4 @@
-package soat_fiap.siaes.rest.controller;
+package soat_fiap.siaes.interfaces.user;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,9 +8,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import soat_fiap.siaes.rest.dto.LoginRequest;
-import soat_fiap.siaes.rest.dto.RefreshTokenDTO;
-import soat_fiap.siaes.service.AuthenticationService;
+import soat_fiap.siaes.interfaces.user.dto.LoginRequest;
+import soat_fiap.siaes.shared.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")

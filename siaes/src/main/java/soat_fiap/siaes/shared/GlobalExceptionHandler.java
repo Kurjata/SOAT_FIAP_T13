@@ -1,4 +1,4 @@
-package soat_fiap.siaes.uteis;
+package soat_fiap.siaes.shared;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import soat_fiap.siaes.rest.dto.MessageDTO;
+import soat_fiap.siaes.interfaces.user.dto.MessageDTO;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -75,6 +75,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageDTO> handleEntityNotFound(EntityNotFoundException ex) {
         logger.info("Recurso não encontrado: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new MessageDTO(ex.getMessage()));
+    }
+
+    /**
+     * Trata argumentos inválidos (HTTP 400).
+     *
+     * @param ex IllegalArgumentException lançada quando um argumento inválido é fornecido
+     * @return ResponseEntity com mensagem de erro
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<MessageDTO> handleIllegalArgument(IllegalArgumentException ex) {
+        logger.info("Argumento inválido: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new MessageDTO(ex.getMessage()));
     }
 

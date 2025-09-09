@@ -1,4 +1,4 @@
-package soat_fiap.siaes.service;
+package soat_fiap.siaes.shared;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,11 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import soat_fiap.siaes.domain.entity.User;
-import soat_fiap.siaes.domain.repository.UserRepository;
-import soat_fiap.siaes.rest.dto.LoginRequest;
-import soat_fiap.siaes.rest.dto.LoginResponse;
-import soat_fiap.siaes.rest.dto.MessageDTO;
+import soat_fiap.siaes.domain.user.model.User;
+import soat_fiap.siaes.domain.user.repository.UserRepository;
+import soat_fiap.siaes.interfaces.user.dto.LoginRequest;
+import soat_fiap.siaes.interfaces.user.dto.LoginResponse;
+import soat_fiap.siaes.interfaces.user.dto.MessageDTO;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ public class AuthenticationService {
 
     public AuthenticationService(UserRepository userRepository,
                                  PasswordEncoder passwordEncoder,
-                                 @Value("${JWT_SECRET}") String secret) {
+                                 @Value("${api.security.token.secret}") String secret) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.algorithm = Algorithm.HMAC256(secret);

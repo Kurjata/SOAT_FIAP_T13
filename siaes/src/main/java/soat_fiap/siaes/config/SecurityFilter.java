@@ -10,9 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import soat_fiap.siaes.domain.entity.User;
-import soat_fiap.siaes.domain.repository.UserRepository;
-import soat_fiap.siaes.service.AuthenticationService;
+import soat_fiap.siaes.domain.user.model.User;
+import soat_fiap.siaes.domain.user.repository.UserRepository;
+import soat_fiap.siaes.shared.AuthenticationService;
 
 import java.io.IOException;
 

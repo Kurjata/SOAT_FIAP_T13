@@ -1,4 +1,4 @@
-package soat_fiap.siaes.domain.enums;
+package soat_fiap.siaes.domain.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

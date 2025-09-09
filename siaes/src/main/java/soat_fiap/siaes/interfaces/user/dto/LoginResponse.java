@@ -1,8 +1,6 @@
-package soat_fiap.siaes.rest.dto;
+package soat_fiap.siaes.interfaces.user.dto;
 
-import soat_fiap.siaes.domain.enums.RoleEnum;
-
-import java.util.UUID;
+import soat_fiap.siaes.domain.user.model.RoleEnum;
 
 public record LoginResponse(
         String accessToken,

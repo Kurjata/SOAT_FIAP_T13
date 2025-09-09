@@ -1,4 +1,4 @@
-package soat_fiap.siaes.domain.enums;
+package soat_fiap.siaes.domain.serviceOrder.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
