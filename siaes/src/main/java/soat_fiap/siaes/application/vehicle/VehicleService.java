@@ -1,5 +1,6 @@
 package soat_fiap.siaes.application.vehicle;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import soat_fiap.siaes.api.vehicle.dto.UpdateVehicleRequest;
 import soat_fiap.siaes.domain.vehicle.Vehicle;
@@ -22,12 +23,12 @@ public class VehicleService {
 
     public Vehicle findById(UUID id) {
         return vehicleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
     }
 
     public Vehicle update(UUID id, UpdateVehicleRequest request) {
         Vehicle existing = vehicleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
 
         existing.setPlate(request.plate());
         existing.setBrand(request.brand());
@@ -43,7 +44,7 @@ public class VehicleService {
 
     public void deleteById(UUID id) {
         if (!vehicleRepository.existsById(id)) {
-            throw new IllegalArgumentException("Vehicle not found with id: " + id);
+            throw new EntityNotFoundException("Vehicle not found with id: " + id);
         }
 
         vehicleRepository.deleteById(id);
