@@ -4,9 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.domain.entity.User;
-import soat_fiap.siaes.domain.enums.RoleEnum;
-import soat_fiap.siaes.domain.repository.UserRepository;
+import soat_fiap.siaes.domain.user.model.User;
+import soat_fiap.siaes.domain.user.model.RoleEnum;
+import soat_fiap.siaes.domain.user.repository.UserRepository;
 
 @Configuration
 public class InitialSystemConfig implements CommandLineRunner {

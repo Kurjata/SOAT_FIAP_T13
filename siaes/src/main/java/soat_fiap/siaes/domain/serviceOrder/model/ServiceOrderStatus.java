@@ -1,0 +1,17 @@
+package soat_fiap.siaes.domain.serviceOrder.model;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum ServiceOrderStatus {
+    RECEBIDA("OS criada e recebida pelo sistema"),
+    EM_DIAGNOSTICO("Veículo em fase de diagnóstico"),
+    AGUARDANDO_APROVACAO("Aguardando aprovação do cliente"),
+    EM_EXECUCAO("Serviço em execução"),
+    FINALIZADA("Serviço finalizado, pronto para retirada"),
+    ENTREGUE("Veículo entregue ao cliente");
+
+    private final String descricao;
+}
