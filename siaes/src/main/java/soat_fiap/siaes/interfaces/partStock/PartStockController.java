@@ -2,6 +2,8 @@ package soat_fiap.siaes.interfaces.partStock;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.partStock.model.PartStock;
@@ -10,7 +12,7 @@ import soat_fiap.siaes.interfaces.partStock.dto.CreatePartStockRequest;
 import soat_fiap.siaes.interfaces.partStock.dto.PartStockResponse;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdatePartStockRequest;
 
-import java.util.List;
+
 import java.util.UUID;
 
 @RestController
@@ -21,12 +23,9 @@ public class PartStockController {
     private final PartStockService service;
 
     @GetMapping
-    public ResponseEntity<List<PartStockResponse>> findAll() {
-        List<PartStockResponse> parts = service.findAll()
-                .stream()
-                .map(PartStockResponse::new)
-                .toList();
-
+    public ResponseEntity<Page<PartStockResponse>> findAll(Pageable pageable) {
+        Page<PartStockResponse> parts = service.findAll(pageable)
+                .map(PartStockResponse::new);
         return ResponseEntity.ok(parts);
     }
 

@@ -1,5 +1,7 @@
 package soat_fiap.siaes.domain.partStock.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,15 +15,20 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class PartStockService {
 
     private final PartStockRepository repository;
 
-    @Transactional(readOnly = true)
-    public List<PartStock> findAll() {
-        return repository.findAll();
+    public PartStockService(PartStockRepository repository) {
+        this.repository = repository;
     }
+
+    @Transactional(readOnly = true)
+    public Page<PartStock> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+
 
     @Transactional(readOnly = true)
     public PartStock findById(UUID id) {
