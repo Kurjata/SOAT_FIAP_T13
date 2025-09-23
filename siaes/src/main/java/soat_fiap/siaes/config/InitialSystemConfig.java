@@ -22,19 +22,14 @@ public class InitialSystemConfig implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        // Cria usuário admin se não existir
-        createUserIfNotExist("admin", "Administrator", "admin", RoleEnum.ADMIN);
-        createUserIfNotExist("collaborator", "Collaborator da silva", "collaborator", RoleEnum.COLLABORATOR);
+        createUserIfNotExist("admin", "Administrator", "admin", RoleEnum.ADMIN, "239.413.650-29");
+        createUserIfNotExist("collaborator", "Collaborator da silva", "collaborator", RoleEnum.COLLABORATOR, "27.295.338/0001-74");
     }
 
-    private void createUserIfNotExist(String login, String name, String password, RoleEnum role) {
+    private void createUserIfNotExist(String login, String name, String password, RoleEnum role, String document) {
         userRepository.findByLogin(login)
                 .orElseGet(() -> {
-                    User user = new User();
-                    user.setName(name);
-                    user.setLogin(login);
-                    user.setPassword(passwordEncoder.encode(password));
-                    user.setRole(role);
+                    User user = new User(name, login, passwordEncoder.encode(password), role, document);
                     return userRepository.save(user);
                 });
     }
