@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.service.UserService;
 import soat_fiap.siaes.interfaces.user.dto.CreateUserRequest;
+import soat_fiap.siaes.interfaces.user.dto.UpdateUserRequest;
 import soat_fiap.siaes.interfaces.user.dto.UserResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -32,6 +34,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/{document}")
+    public ResponseEntity<UserResponse> findByDocument(@PathVariable String document) {
+        User user = userService.findByDocument(document);
+        return ResponseEntity.ok(new UserResponse(user));
+    }
+
     @PostMapping
     @Transactional
     public ResponseEntity<UserResponse> save(@RequestBody @Valid CreateUserRequest request) {
@@ -40,4 +48,18 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(new UserResponse(user));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserResponse> deleteById(@PathVariable UUID id) {
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable UUID id, @RequestBody @Valid UpdateUserRequest request) {
+        User user = userService.update(id, request);
+        return ResponseEntity.ok(new UserResponse(user));
+    }
+
 }
