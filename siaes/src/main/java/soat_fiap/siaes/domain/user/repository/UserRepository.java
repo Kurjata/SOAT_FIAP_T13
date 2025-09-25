@@ -1,13 +1,19 @@
 package soat_fiap.siaes.domain.user.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import soat_fiap.siaes.domain.user.model.User;
+import soat_fiap.siaes.interfaces.user.document.Document;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository  {
+    List<User> findAll();
+    User save(User user);
     Optional<User> findByLogin(String login);
+    boolean existsUserByLoginOrDocument(String login, String document);
+    Optional<User> findByDocument(Document document);
+    boolean existsById(UUID id);
+    void deleteById(UUID id);
+    Optional<User> findById(UUID id);
 }

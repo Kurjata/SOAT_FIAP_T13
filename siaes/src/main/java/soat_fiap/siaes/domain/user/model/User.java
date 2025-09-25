@@ -5,6 +5,9 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import soat_fiap.siaes.interfaces.user.document.Document;
+import soat_fiap.siaes.interfaces.user.document.DocumentConverter;
+import soat_fiap.siaes.interfaces.user.document.DocumentFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +35,21 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleEnum role;
+
+    @Column(nullable = false, unique = true)
+    @Convert(converter = DocumentConverter.class)
+    private Document document;
+
+    @Deprecated
+    public User() {}
+
+    public User(String name, String login, String password, RoleEnum role, String document) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.document = DocumentFactory.fromString(document);
+    }
 
     // --- UserDetails ---
     @Override
@@ -68,4 +86,7 @@ public class User implements UserDetails {
         return this.role == role;
     }
 
+    public String getDocumentAsString() {
+        return document.getDocumentFormatted();
+    }
 }

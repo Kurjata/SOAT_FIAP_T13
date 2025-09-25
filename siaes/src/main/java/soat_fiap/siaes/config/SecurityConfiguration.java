@@ -36,10 +36,11 @@ public class SecurityConfiguration {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                         // Permissões granulares
-                        .requestMatchers("/clientes/**").hasAnyRole("ADMIN", "COLLABORATOR")
-                        .requestMatchers("/veiculos/**").hasAnyRole("ADMIN", "COLLABORATOR")
+                        .requestMatchers("/users/**").hasAnyRole("ADMIN", "COLLABORATOR")
+                        .requestMatchers("/vehicles/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/servicos/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/pecas/**").hasRole("ADMIN") // só admin pode gerenciar estoque ou criar uma role para estoquista
                         .requestMatchers("/ordens/**").hasAnyRole("ADMIN", "COLLABORATOR")
