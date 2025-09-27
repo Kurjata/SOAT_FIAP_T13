@@ -4,7 +4,7 @@ import org.springframework.util.Assert;
 
 public class DocumentFactory {
     public static Document fromString(String value) {
-        Assert.hasText(value, "value must not be empty");
+        Assert.hasText(value, "Valor não deve ser vazio");
         String numeric = value.replaceAll("\\D", "");
 
         if (numeric.length() == 11) return new CPF(numeric);

@@ -28,18 +28,16 @@ public class PartStockService {
         return repository.findAll(pageable);
     }
 
-
-
     @Transactional(readOnly = true)
     public PartStock findById(UUID id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Part not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
     }
 
     @Transactional
     public PartStock save(PartStock partStock) {
         if (repository.existsByEan(partStock.getEan())) {
-            throw new IllegalArgumentException("EAN already exists: " + partStock.getEan());
+            throw new IllegalArgumentException("EAN já existe: " + partStock.getEan());
         }
         return repository.save(partStock);
     }
@@ -47,7 +45,7 @@ public class PartStockService {
     @Transactional
     public PartStock update(UUID id, UpdatePartStockRequest request) {
         PartStock existing = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Part not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
 
         existing.setEan(request.ean());
         existing.setName(request.name());
@@ -63,7 +61,7 @@ public class PartStockService {
     @Transactional
     public void deleteById(UUID id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Part not found with id: " + id);
+            throw new EntityNotFoundException("Peça não encontrada com ID: " + id);
         }
         repository.deleteById(id);
     }

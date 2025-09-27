@@ -50,11 +50,11 @@ public class AuthenticationService {
      * @throws UsernameNotFoundException se o usuário não for encontrado
      */
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        log.info("Loading user by username: {}", login);
+        log.info("Carregando usuário pelo login: {}", login);
         User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with login: " + login));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + login));
 
-        log.info("User {} found successfully", login);
+        log.info("Usuário {} encontrado com sucesso", login);
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getLogin())
                 .password(user.getPassword())
@@ -71,22 +71,22 @@ public class AuthenticationService {
     public ResponseEntity<?> authenticate(LoginRequest loginRequest) {
         String login = loginRequest.login();
         try {
-            log.info("Authenticating user: {}", login);
+            log.info("Autenticando usuário: {}", login);
 
             User user = userRepository.findByLogin(login)
                     .orElseThrow(() -> {
-                        log.warn("Authentication failed: user {} not found", login);
+                        log.warn("Autenticação falhou: usuário {} não encontrado", login);
                         return new BadCredentialsException("Usuário ou senha inválidos");
                     });
 
             if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-                log.warn("Authentication failed: invalid password for user {}", login);
+                log.warn("Autenticação falhou: senha inválida para user: {}", login);
                 throw new BadCredentialsException("Usuário ou senha inválidos");
             }
 
             String token = generateToken(user);
             String refreshToken = generateRefreshToken(user);
-            log.info("User {} authenticated successfully", login);
+            log.info("Usuário {} autenticado com sucesso", login);
 
             LoginResponse response = new LoginResponse(token, refreshToken, user.getName(), user.getRole());
             return ResponseEntity.ok(response);
@@ -95,7 +95,7 @@ public class AuthenticationService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageDTO("Usuário ou senha inválidos"));
         } catch (Exception ex) {
-            log.error("Unexpected error during authentication for user {}: {}", login, ex.getMessage(), ex);
+            log.error("Erro inesperado ocorreu durante autenticação do usuário {}: {}", login, ex.getMessage(), ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageDTO("Erro interno ao autenticar usuário"));
         }
@@ -118,7 +118,7 @@ public class AuthenticationService {
                     .withExpiresAt(generateExpiryDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
-            log.error("Error generating JWT token for user {}: {}", user.getLogin(), e.getMessage());
+            log.error("Erro ao gerar o JWT token para o usuário: {}: {}", user.getLogin(), e.getMessage());
             throw new IllegalStateException("Erro ao gerar token JWT");
         }
     }
@@ -131,7 +131,7 @@ public class AuthenticationService {
      */
     public String generateRefreshToken(User user) {
         try {
-            log.debug("Generating refresh token for user: {}", user.getLogin());
+            log.debug("Gerando token de atualização para o usuário: {}", user.getLogin());
             return JWT.create()
                     .withIssuer("siaes-api")
                     .withSubject(user.getLogin())
@@ -140,8 +140,8 @@ public class AuthenticationService {
                     .withExpiresAt(LocalDateTime.now().plusDays(30).toInstant(ZoneOffset.of("-03:00")))
                     .sign(algorithm);
         } catch (JWTCreationException e) {
-            log.error("Error generating refresh token for user {}: {}", user.getLogin(), e.getMessage());
-            throw new IllegalStateException("Erro ao gerar refresh token");
+            log.error("Erro ao gerar token de atualização para o usuário: {}: {}", user.getLogin(), e.getMessage());
+            throw new IllegalStateException("Erro ao gerar token de atualização");
         }
     }
 
@@ -154,14 +154,14 @@ public class AuthenticationService {
      */
     public String validateToken(String token) {
         try {
-            log.debug("Validating JWT token");
+            log.debug("Validando JWT token");
             return JWT.require(algorithm)
                     .withIssuer("siaes-api")
                     .build()
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException e) {
-            log.warn("Invalid JWT token: {}", e.getMessage());
+            log.warn("Inválido JWT token: {}", e.getMessage());
             throw new IllegalArgumentException("Token inválido ou expirado");
         }
     }

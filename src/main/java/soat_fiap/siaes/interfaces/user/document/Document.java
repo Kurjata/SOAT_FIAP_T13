@@ -8,11 +8,11 @@ public abstract class Document {
     protected final String value;
 
     public Document(String value) {
-        Assert.notNull(value, "value must not be null");
-        Assert.hasText(value, "value must not be empty");
+        Assert.notNull(value, "Valor não deve ser nulo");
+        Assert.hasText(value, "Valor não deve ser vazio");
         this.value = sanitizeDocument(value);
 
-        Assert.isTrue(this.isValid(), "Document is invalid");
+        Assert.isTrue(this.isValid(), "Documento inválido");
     }
 
     protected String sanitizeDocument(String document) {

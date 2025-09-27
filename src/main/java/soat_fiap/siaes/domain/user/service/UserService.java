@@ -51,7 +51,7 @@ public class UserService {
 
     public User update(UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
 
         user.setName(request.name());
         user.setDocument(DocumentFactory.fromString(request.document()));

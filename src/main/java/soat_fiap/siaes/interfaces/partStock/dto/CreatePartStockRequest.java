@@ -12,7 +12,6 @@ public record CreatePartStockRequest(
     @NotNull Integer stockQuantity,
     @NotNull Integer minimumStock,
     @NotNull Double unitPrice
-
 )
  {
     public PartStock toPartStock() {

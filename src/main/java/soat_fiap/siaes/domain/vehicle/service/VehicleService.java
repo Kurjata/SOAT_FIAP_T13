@@ -24,12 +24,12 @@ public class VehicleService {
 
     public Vehicle findById(UUID id) {
         return vehicleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com id: " + id));
     }
 
     public Vehicle update(UUID id, UpdateVehicleRequest request) {
         Vehicle existing = vehicleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com id: " + id));
 
         existing.setPlate(request.plate());
         existing.setBrand(request.brand());
@@ -41,14 +41,14 @@ public class VehicleService {
 
     public Vehicle save(Vehicle vehicle) {
         if (vehicleRepository.existsByPlate((vehicle.getPlate())))
-            throw new IllegalArgumentException("plate already exists");
+            throw new IllegalArgumentException("Placa já existe");
 
         return vehicleRepository.save(vehicle);
     }
 
     public void deleteById(UUID id) {
         if (!vehicleRepository.existsById(id)) {
-            throw new EntityNotFoundException("Vehicle not found with id: " + id);
+            throw new EntityNotFoundException("Veículo não encontrado com id: " + id);
         }
 
         vehicleRepository.deleteById(id);
