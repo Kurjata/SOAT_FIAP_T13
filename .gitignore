@@ -1,29 +1,56 @@
-### IntelliJ IDEA ###
+# =========================
+# IDE: IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+*.iws
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
+# =========================
+# Build / Maven / Gradle
+# =========================
+/target/
+/build/
+/.gradle/
+/gradle-wrapper.jar
+.gradle/
+!gradle-wrapper.jar
+
+# =========================
+# Eclipse (caso alguém use)
+# =========================
 .project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+.classpath
+.settings/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# =========================
+# Logs
+# =========================
+*.log
 
-### VS Code ###
-.vscode/
-
-### Mac OS ###
+# =========================
+# Sistema Operacional
+# =========================
 .DS_Store
+Thumbs.db
+
+# =========================
+# Spring Boot
+# =========================
+/spring.log
+spring-boot-devtools.properties
+
+# =========================
+# Arquivos temporários
+# =========================
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# =========================
+# Arquivos de teste e cobertura
+# =========================
+/coverage/
+/*.ec
+/*.em
