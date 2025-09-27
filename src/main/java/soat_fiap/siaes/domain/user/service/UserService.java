@@ -1,6 +1,7 @@
 package soat_fiap.siaes.domain.user.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import soat_fiap.siaes.domain.user.model.User;
@@ -9,7 +10,7 @@ import soat_fiap.siaes.interfaces.user.document.DocumentFactory;
 import soat_fiap.siaes.interfaces.user.dto.CreateUserRequest;
 import soat_fiap.siaes.interfaces.user.dto.UpdateUserRequest;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 @Service
@@ -22,8 +23,8 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     public User save(CreateUserRequest userRequest) {

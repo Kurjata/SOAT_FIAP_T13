@@ -2,6 +2,8 @@ package soat_fiap.siaes.interfaces.vehicle;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.interfaces.vehicle.dto.CreateVehicleRequest;
@@ -24,11 +26,10 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VehicleResponse>> findAll() {
-        List<VehicleResponse> vehicles = vehicleService.findAll()
-                .stream()
-                .map(VehicleResponse::new)
-                .toList();
+    public ResponseEntity<Page<VehicleResponse>> findAll(Pageable pageable) {
+        Page<VehicleResponse> vehicles = vehicleService.findAll(pageable)
+                .map(VehicleResponse::new);
+
         return ResponseEntity.ok(vehicles);
     }
 

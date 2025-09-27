@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.user;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,7 @@ import soat_fiap.siaes.interfaces.user.dto.CreateUserRequest;
 import soat_fiap.siaes.interfaces.user.dto.UpdateUserRequest;
 import soat_fiap.siaes.interfaces.user.dto.UserResponse;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 @RestController
@@ -25,11 +26,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findAll() {
-        List<UserResponse> users = userService.findAll()
-                .stream()
-                .map(UserResponse::new)
-                .toList();
+    public ResponseEntity<Page<UserResponse>> findAll(Pageable pageable) {
+        Page<UserResponse> users = userService.findAll(pageable)
+                .map(UserResponse::new);
 
         return ResponseEntity.ok(users);
     }

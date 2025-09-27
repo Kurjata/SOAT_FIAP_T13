@@ -1,12 +1,13 @@
 package soat_fiap.siaes.domain.vehicle.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import soat_fiap.siaes.domain.vehicle.repository.VehicleRepository;
 import soat_fiap.siaes.interfaces.vehicle.dto.UpdateVehicleRequest;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,8 +18,8 @@ public class VehicleService {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public List<Vehicle> findAll() {
-        return vehicleRepository.findAll();
+    public Page<Vehicle> findAll(Pageable pageable) {
+        return vehicleRepository.findAll(pageable);
     }
 
     public Vehicle findById(UUID id) {
