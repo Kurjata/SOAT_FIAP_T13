@@ -1,7 +1,9 @@
 package soat_fiap.siaes.interfaces.vehicle;
 
-import jakarta.transaction.Transactional;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -12,24 +14,20 @@ import soat_fiap.siaes.interfaces.vehicle.dto.VehicleResponse;
 import soat_fiap.siaes.domain.vehicle.service.VehicleService;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/vehicles")
+@SecurityRequirement(name = "bearer-key")
+@AllArgsConstructor
 public class VehicleController {
 
     private final VehicleService vehicleService;
 
-    public VehicleController(VehicleService vehicleService) {
-        this.vehicleService = vehicleService;
-    }
-
     @GetMapping
-    public ResponseEntity<Page<VehicleResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<VehicleResponse>> findAll(@ParameterObject Pageable pageable) {
         Page<VehicleResponse> vehicles = vehicleService.findAll(pageable)
                 .map(VehicleResponse::new);
-
         return ResponseEntity.ok(vehicles);
     }
 
@@ -40,7 +38,6 @@ public class VehicleController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<VehicleResponse> save(@RequestBody @Valid CreateVehicleRequest vehicleRequest) {
         Vehicle vehicle = this.vehicleService.save(vehicleRequest.toModel());
         return ResponseEntity.ok(new VehicleResponse(vehicle));
@@ -53,7 +50,6 @@ public class VehicleController {
     }
 
     @PutMapping("/{id}")
-    @Transactional
     public ResponseEntity<VehicleResponse> update(@PathVariable UUID id,
                                                   @RequestBody @Valid UpdateVehicleRequest request) {
         Vehicle updatedVehicle = vehicleService.update(id, request);

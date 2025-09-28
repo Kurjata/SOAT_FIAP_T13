@@ -14,4 +14,5 @@ public interface VehicleRepository {
     void deleteById(UUID id);
     boolean existsByPlate(String plate);
     boolean existsById(UUID id);
+    boolean existsByPlateAndIdNot(String plate, UUID id);
 }

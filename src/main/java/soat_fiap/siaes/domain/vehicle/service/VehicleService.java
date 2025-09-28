@@ -1,6 +1,8 @@
 package soat_fiap.siaes.domain.vehicle.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,12 +13,10 @@ import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class VehicleService {
-    private final VehicleRepository vehicleRepository;
 
-    public VehicleService(VehicleRepository vehicleRepository) {
-        this.vehicleRepository = vehicleRepository;
-    }
+    private final VehicleRepository vehicleRepository;
 
     public Page<Vehicle> findAll(Pageable pageable) {
         return vehicleRepository.findAll(pageable);
@@ -27,10 +27,26 @@ public class VehicleService {
                 .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com id: " + id));
     }
 
-    public Vehicle update(UUID id, UpdateVehicleRequest request) {
-        Vehicle existing = vehicleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com id: " + id));
+    @Transactional
+    public Vehicle save(Vehicle vehicle) {
+        // Verifica duplicidade de placa antes de salvar
+        if (vehicleRepository.existsByPlate(vehicle.getPlate())) {
+            throw new IllegalArgumentException("A placa '" + vehicle.getPlate() + "' já está em uso.");
+        }
+        return vehicleRepository.save(vehicle);
+    }
 
+    @Transactional
+    public Vehicle update(UUID id, UpdateVehicleRequest request) {
+        Vehicle existing = findById(id);
+
+        // Verifica se a placa já existe em outro veículo
+        if (vehicleRepository.existsByPlateAndIdNot(request.plate(), id)) {
+            throw new IllegalArgumentException(
+                    "A placa '" + request.plate() + "' já está em uso por outro veículo.");
+        }
+
+        // Atualiza os dados
         existing.setPlate(request.plate());
         existing.setBrand(request.brand());
         existing.setModel(request.model());
@@ -39,18 +55,10 @@ public class VehicleService {
         return vehicleRepository.save(existing);
     }
 
-    public Vehicle save(Vehicle vehicle) {
-        if (vehicleRepository.existsByPlate((vehicle.getPlate())))
-            throw new IllegalArgumentException("Placa já existe");
-
-        return vehicleRepository.save(vehicle);
-    }
-
     public void deleteById(UUID id) {
         if (!vehicleRepository.existsById(id)) {
             throw new EntityNotFoundException("Veículo não encontrado com id: " + id);
         }
-
         vehicleRepository.deleteById(id);
     }
 }
