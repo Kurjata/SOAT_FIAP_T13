@@ -3,6 +3,7 @@ package soat_fiap.siaes.interfaces.partStock;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class PartStockController {
     private final PartStockService service;
 
     @GetMapping
-    public ResponseEntity<Page<PartStockResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<PartStockResponse>> findAll(@ParameterObject Pageable pageable) {
         Page<PartStockResponse> parts = service.findAll(pageable)
                 .map(PartStockResponse::new);
         return ResponseEntity.ok(parts);
