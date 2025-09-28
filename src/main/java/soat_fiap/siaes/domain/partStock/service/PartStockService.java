@@ -10,18 +10,12 @@ import soat_fiap.siaes.domain.partStock.model.PartStock;
 import soat_fiap.siaes.domain.partStock.repository.PartStockRepository;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdatePartStockRequest;
 
-
-import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PartStockService {
-
     private final PartStockRepository repository;
-
-    public PartStockService(PartStockRepository repository) {
-        this.repository = repository;
-    }
 
     @Transactional(readOnly = true)
     public Page<PartStock> findAll(Pageable pageable) {
@@ -44,8 +38,12 @@ public class PartStockService {
 
     @Transactional
     public PartStock update(UUID id, UpdatePartStockRequest request) {
-        PartStock existing = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
+        PartStock existing = this.findById(id);
+
+        // Validação EAN único
+        if (repository.existsByEanAndIdNot(request.ean(), id)) {
+            throw new IllegalArgumentException("Já existe outra peça com o EAN: " + request.ean());
+        }
 
         existing.setEan(request.ean());
         existing.setName(request.name());
@@ -60,10 +58,8 @@ public class PartStockService {
 
     @Transactional
     public void deleteById(UUID id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Peça não encontrada com ID: " + id);
-        }
-        repository.deleteById(id);
+        PartStock existing = this.findById(id);
+        repository.delete(existing);
     }
 
 }
