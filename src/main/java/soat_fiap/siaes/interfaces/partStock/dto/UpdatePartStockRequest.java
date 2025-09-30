@@ -9,7 +9,7 @@ public record UpdatePartStockRequest(
         @NotNull Integer stockQuantity,
         @NotNull Integer minimumStock,
         @NotNull Double unitPrice,
-        boolean supply,
-        boolean stockControl
+        @NotNull boolean supply,
+        @NotNull boolean stockControl
 ) {
 }

@@ -8,6 +8,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "part_stock")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,14 +35,11 @@ public class PartStock {
     @Column(nullable = false)
     private Double unitPrice;
 
-    // Insumos sim ou nao
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean supply;
 
-    //Controla estoque sim ou nao
     @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean stockControl; // true = stock control enabled
-
+    private boolean stockControl;
 
     public PartStock(String ean, String name, Integer stockQuantity, Integer minimumStock, Double unitPrice) {
         this.ean = ean;
@@ -48,8 +47,8 @@ public class PartStock {
         this.stockQuantity = stockQuantity;
         this.minimumStock = minimumStock;
         this.unitPrice = unitPrice;
-        this.supply = false;       // default
-        this.stockControl = false; // default
+        this.supply = false;
+        this.stockControl = false;
     }
 
 
@@ -60,7 +59,7 @@ public class PartStock {
         this.minimumStock = minimumStock;
         this.unitPrice = unitPrice;
         this.supply = supply;
-        this.stockControl = supply;
+        this.stockControl = stockControl;
     }
 
     public String getIdAsString() {

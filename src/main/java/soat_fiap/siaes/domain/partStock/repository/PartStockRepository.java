@@ -9,8 +9,10 @@ import java.util.UUID;
 
 
 public interface PartStockRepository extends JpaRepository<PartStock, UUID> {
+
     Optional<PartStock> findByEan(String ean);
     boolean existsByEan(String ean);
 
     boolean existsByEanAndIdNot(String ean, UUID id);
+
 }

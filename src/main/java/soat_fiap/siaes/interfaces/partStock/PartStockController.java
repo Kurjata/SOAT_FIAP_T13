@@ -56,4 +56,21 @@ public class PartStockController {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/consume")
+    public ResponseEntity<PartStockResponse> consume(@PathVariable UUID id,
+                                                     @RequestParam int quantity,
+                                                     @RequestParam(required = false) UUID orderId) {
+        PartStock updated = service.consumeStock(id, quantity, orderId);
+        return ResponseEntity.ok(new PartStockResponse(updated));
+    }
+
+    @PostMapping("/{id}/add-stock")
+    public ResponseEntity<PartStockResponse> addStock(@PathVariable UUID id,
+                                                      @RequestParam int quantity) {
+        PartStock updated = service.addStock(id, quantity);
+        return ResponseEntity.ok(new PartStockResponse(updated));
+    }
+
+
 }
