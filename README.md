@@ -2,16 +2,25 @@
 
 ![SIAES](https://img.shields.io/badge/SIAES-Sistema%20de%20Gest%C3%A3o-blue)
 
-Sistema Integrado de Atendimento e Execução de Serviços desenvolvido em **Spring Boot**, com autenticação JWT e API documentada via **Swagger**.
+Bem-vindo(a) ao projeto **SOAT**! Este repositório faz parte da **Pós-Graduação em Arquitetura de Software da FIAP** e tem como objetivo demonstrar uma aplicação desenvolvida em **Java** com **Spring Boot** e persistência de dados em **Postgree**, além de estar preparada para execução em **Docker**.
 
----
+## Sobre o Projeto
 
-## 🚀 Requisitos
-
-- Docker ≥ 20.x
-- Docker Compose ≥ 2.x
-- Java 21
+- **Instituição**: FIAP
+- **Programa**: Pós-Graduação em Arquitetura de Software
+- **Stack Tecnológica**:
+  - **Java** (versão 21)
+  - **Spring Boot**
+  - **Postgree** (banco de dados)
+  - **Docker**
 - Maven 3.8+
+
+## Como Este Projeto se Destaca
+
+1. **Arquitetura Hexagonal**: Essa arquitetura foca em separar claramente as regras de negócio (core da aplicação) das tecnologias externas (como banco de dados, APIs, etc.), facilitando testes, manutenção e evolução do sistema.
+2. **Uso de Postgree**: Utiliza banco de dados relacional com esquema rígido, garantindo integridade referencial, suporte avançado a transações e consultas SQL otimizadas..
+3. **Facilidade de Deploy**: Com Docker, é possível containerizar e executar a aplicação de forma simples, garantindo portabilidade e padronização do ambiente.
+4. **Documentação com Swagger**: A aplicação inclui uma interface Swagger para facilitar a exploração das APIs, tornando o desenvolvimento e testes mais ágeis.
 
 ---
 
