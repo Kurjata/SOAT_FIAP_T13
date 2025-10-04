@@ -1,4 +1,4 @@
-package soat_fiap.siaes.config;
+package soat_fiap.siaes.infrastructure.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -1,4 +1,4 @@
-package soat_fiap.siaes.config;
+package soat_fiap.siaes.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import soat_fiap.siaes.shared.AuthenticationService;
+import soat_fiap.siaes.interfaces.shared.AuthenticationService;
 import soat_fiap.siaes.domain.user.repository.UserRepository;
 
 @Configuration
@@ -41,10 +41,10 @@ public class SecurityConfiguration {
                         // Permissões granulares
                         .requestMatchers("/users/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/vehicles/**").hasAnyRole("ADMIN", "COLLABORATOR")
-                        .requestMatchers("/servicos/**").hasAnyRole("ADMIN", "COLLABORATOR")
-                        .requestMatchers("/pecas/**").hasRole("ADMIN") // só admin pode gerenciar estoque ou criar uma role para estoquista
-                        .requestMatchers("/ordens/**").hasAnyRole("ADMIN", "COLLABORATOR")
-                        .requestMatchers("/monitoramento/**").hasRole("ADMIN") // apenas admin vê métricas
+                        .requestMatchers("/service-labor/**").hasAnyRole("ADMIN", "COLLABORATOR")
+//                        .requestMatchers("/pecas/**").hasRole("ADMIN") // só admin pode gerenciar estoque ou criar uma role para estoquista
+//                        .requestMatchers("/ordens/**").hasAnyRole("ADMIN", "COLLABORATOR")
+//                        .requestMatchers("/monitoramento/**").hasRole("ADMIN") // apenas admin vê métricas
 
                         // Qualquer outra requisição requer autenticação
                         .anyRequest().authenticated()

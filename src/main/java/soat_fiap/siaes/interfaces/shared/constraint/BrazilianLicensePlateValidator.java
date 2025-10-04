@@ -1,8 +1,8 @@
-package soat_fiap.siaes.shared.constraint;
+package soat_fiap.siaes.interfaces.shared.constraint;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import soat_fiap.siaes.shared.validation.BrazilianLicensePlate;
+import soat_fiap.siaes.interfaces.shared.validation.BrazilianLicensePlate;
 
 /**
  * Validator for Brazilian vehicle license plates.

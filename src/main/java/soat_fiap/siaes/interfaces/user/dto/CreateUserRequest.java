@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import soat_fiap.siaes.domain.user.model.RoleEnum;
 import soat_fiap.siaes.domain.user.model.User;
-import soat_fiap.siaes.shared.Document;
+import soat_fiap.siaes.interfaces.shared.Document;
 
 public record CreateUserRequest(
         @NotBlank String name,

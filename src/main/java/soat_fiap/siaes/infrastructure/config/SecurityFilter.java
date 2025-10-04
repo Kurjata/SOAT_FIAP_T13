@@ -1,4 +1,4 @@
-package soat_fiap.siaes.config;
+package soat_fiap.siaes.infrastructure.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.repository.UserRepository;
-import soat_fiap.siaes.shared.AuthenticationService;
+import soat_fiap.siaes.interfaces.shared.AuthenticationService;
 
 import java.io.IOException;
 

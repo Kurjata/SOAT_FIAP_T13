@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import soat_fiap.siaes.interfaces.user.dto.LoginRequest;
-import soat_fiap.siaes.shared.AuthenticationService;
+import soat_fiap.siaes.interfaces.shared.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")

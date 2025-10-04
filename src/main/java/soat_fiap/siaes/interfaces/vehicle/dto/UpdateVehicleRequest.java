@@ -2,7 +2,7 @@ package soat_fiap.siaes.interfaces.vehicle.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import soat_fiap.siaes.shared.validation.BrazilianLicensePlate;
+import soat_fiap.siaes.interfaces.shared.validation.BrazilianLicensePlate;
 
 public record UpdateVehicleRequest(
         @NotBlank(message = "A placa é obrigatória")

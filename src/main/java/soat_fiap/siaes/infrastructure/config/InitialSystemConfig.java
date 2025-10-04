@@ -1,4 +1,4 @@
-package soat_fiap.siaes.config;
+package soat_fiap.siaes.infrastructure.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
