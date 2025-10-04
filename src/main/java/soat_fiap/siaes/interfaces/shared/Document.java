@@ -1,4 +1,4 @@
-package soat_fiap.siaes.shared;
+package soat_fiap.siaes.interfaces.shared;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

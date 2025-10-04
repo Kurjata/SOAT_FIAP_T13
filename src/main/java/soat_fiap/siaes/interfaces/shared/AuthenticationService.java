@@ -1,4 +1,4 @@
-package soat_fiap.siaes.shared;
+package soat_fiap.siaes.interfaces.shared;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
