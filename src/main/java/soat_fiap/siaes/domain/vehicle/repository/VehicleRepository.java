@@ -15,4 +15,5 @@ public interface VehicleRepository {
     boolean existsByPlate(String plate);
     boolean existsById(UUID id);
     boolean existsByPlateAndIdNot(String plate, UUID id);
+    Optional<Vehicle>findByPlateIgnoreCase(String plate);
 }

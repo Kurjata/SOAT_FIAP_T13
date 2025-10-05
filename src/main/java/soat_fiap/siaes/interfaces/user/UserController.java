@@ -1,6 +1,9 @@
 package soat_fiap.siaes.interfaces.user;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "user/customer")
+@SecurityRequirement(name = "bearer-key")
 public class UserController {
 
     private final UserService userService;
@@ -26,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<UserResponse>> findAll(@ParameterObject Pageable pageable) {
         Page<UserResponse> users = userService.findAll(pageable)
                 .map(UserResponse::new);
 

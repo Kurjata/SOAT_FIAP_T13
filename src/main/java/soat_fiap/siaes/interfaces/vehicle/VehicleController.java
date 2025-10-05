@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.vehicle;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/vehicles")
+@Tag(name = "Vehicles")
 @SecurityRequirement(name = "bearer-key")
 @AllArgsConstructor
 public class VehicleController {

@@ -32,6 +32,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "user_email", nullable = false)
+    private String email;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleEnum role;
@@ -43,12 +46,13 @@ public class User implements UserDetails {
     @Deprecated
     public User() {}
 
-    public User(String name, String login, String password, RoleEnum role, String document) {
+    public User(String name, String login, String password, RoleEnum role, String document, String email) {
         this.name = name;
         this.login = login;
         this.password = password;
         this.role = role;
         this.document = DocumentFactory.fromString(document);
+        this.email = email;
     }
 
     // --- UserDetails ---

@@ -34,6 +34,14 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // Ignora autenticação para páginas públicas
+        if (path.startsWith("/client/service-orders/approval")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = extractToken(request);
         if (token != null) {
             try {
@@ -45,6 +53,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 
     /**
      * Extrai o token Bearer do header Authorization.

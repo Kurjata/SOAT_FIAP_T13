@@ -11,7 +11,9 @@ public enum ServiceOrderStatusEnum {
     AGUARDANDO_APROVACAO("Aguardando aprovação do cliente"),
     EM_EXECUCAO("Serviço em execução"),
     FINALIZADA("Serviço finalizado, pronto para retirada"),
-    ENTREGUE("Veículo entregue ao cliente");
+    ENTREGUE("Veículo entregue ao cliente"),
+    APROVADO_CLIENTE("Aprovado pelo cliente"),
+    REPROVADO_CLIENTE("Reprovado pelo cliente");
 
     private final String descricao;
 }

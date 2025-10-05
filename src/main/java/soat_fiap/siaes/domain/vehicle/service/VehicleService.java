@@ -29,6 +29,9 @@ public class VehicleService {
 
     @Transactional
     public Vehicle save(Vehicle vehicle) {
+        // Remove traços da placa
+        vehicle.setPlate(vehicle.getPlate().replace("-", ""));
+
         // Verifica duplicidade de placa antes de salvar
         if (vehicleRepository.existsByPlate(vehicle.getPlate())) {
             throw new IllegalArgumentException("A placa '" + vehicle.getPlate() + "' já está em uso.");
@@ -40,14 +43,17 @@ public class VehicleService {
     public Vehicle update(UUID id, UpdateVehicleRequest request) {
         Vehicle existing = findById(id);
 
+        // Remove traços da placa do request
+        String normalizedPlate = request.plate().replace("-", "");
+
         // Verifica se a placa já existe em outro veículo
-        if (vehicleRepository.existsByPlateAndIdNot(request.plate(), id)) {
+        if (vehicleRepository.existsByPlateAndIdNot(normalizedPlate, id)) {
             throw new IllegalArgumentException(
-                    "A placa '" + request.plate() + "' já está em uso por outro veículo.");
+                    "A placa '" + normalizedPlate + "' já está em uso por outro veículo.");
         }
 
         // Atualiza os dados
-        existing.setPlate(request.plate());
+        existing.setPlate(normalizedPlate);
         existing.setBrand(request.brand());
         existing.setModel(request.model());
         existing.setYear(request.year());
