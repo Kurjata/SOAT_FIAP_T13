@@ -38,7 +38,7 @@ public class UserService {
 
     public User findByDocument(String document) {
         return userRepository.findByDocument(DocumentFactory.fromString(document))
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com documento " + document + " não encontrado"));
     }
 
     public void deleteById(UUID id) {

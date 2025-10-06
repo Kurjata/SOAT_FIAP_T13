@@ -1,8 +1,10 @@
 package soat_fiap.siaes.domain.serviceOrder.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -10,20 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.application.event.ServiceOrder.ServiceOrderAwaitingApprovalEvent;
 import soat_fiap.siaes.domain.partStock.model.PartStock;
 import soat_fiap.siaes.domain.partStock.repository.PartStockRepository;
+import soat_fiap.siaes.domain.partStock.service.PartStockService;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
+import soat_fiap.siaes.domain.serviceLabor.service.ServiceLaborService;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
 import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ServiceOrderItemSupply;
 import soat_fiap.siaes.domain.user.model.User;
-import soat_fiap.siaes.domain.user.repository.UserRepository;
+import soat_fiap.siaes.domain.user.service.UserService;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
-import soat_fiap.siaes.domain.vehicle.repository.VehicleRepository;
+import soat_fiap.siaes.domain.vehicle.service.VehicleService;
 import soat_fiap.siaes.infrastructure.persistence.ServiceLabor.ServiceLaborRepository;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrder.ServiceOrderRepository;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderRequest;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderResponse;
-import soat_fiap.siaes.interfaces.user.document.DocumentFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,10 +38,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ServiceOrderService {
     private final ServiceOrderRepository repository;
-    private final UserRepository userRepository;
-    private final VehicleRepository vehicleRepository;
-    private final ServiceLaborRepository serviceLaborRepository;
-    private final PartStockRepository partStockRepository;
+    private final UserService userService;
+    private final VehicleService vehicleService;
+    private final ServiceLaborService serviceLaborService;
+    private final PartStockService partStockService;
     private final ApplicationEventPublisher eventPublisher;
 
     public ServiceOrderResponse findById(UUID id) {
@@ -79,44 +82,25 @@ public class ServiceOrderService {
     @Transactional
     public ServiceOrderResponse createServiceOrder(ServiceOrderRequest request) {
         //Buscar usuário
-        User user = userRepository.findByDocument(DocumentFactory.fromString(request.userDocument()))
-                .orElseThrow(() -> new EntityNotFoundException("Usuário com documento " + request.userDocument() + " não encontrado"));
-
+        User user = this.userService.findByDocument(request.userDocument());
         //Buscar veículo
-        Vehicle vehicle = vehicleRepository.findByPlateIgnoreCase(request.vehiclePlate())
-                .orElseThrow(() -> new EntityNotFoundException("Veículo com placa " + request.vehiclePlate() + " não encontrado"));
-
+        Vehicle vehicle = vehicleService.findByPlateIgnoreCase(request.vehiclePlate());
         //Criar ordem de serviço
-        ServiceOrder order = new ServiceOrder();
-        order.setUser(user);
-        order.setVehicle(vehicle);
-        order.setOrderStatusEnum(ServiceOrderStatusEnum.RECEBIDA);
-        order.setStartTime(LocalDateTime.now()); // startTime definido automaticamente
-
+        ServiceOrder order = new ServiceOrder(user, vehicle, ServiceOrderStatusEnum.RECEBIDA, LocalDateTime.now());
         List<ServiceOrderItem> items = new ArrayList<>();
 
         //Criar itens de serviço
         for (var itemReq : request.items()) {
-            ServiceLabor serviceLabor = serviceLaborRepository.findById(itemReq.serviceLaborId())
-                    .orElseThrow(() -> new EntityNotFoundException("Serviço de mão de obra com ID " + itemReq.serviceLaborId() + " não encontrado"));
+            ServiceLabor serviceLabor = serviceLaborService.findByUUID(itemReq.serviceLaborId());
 
-            ServiceOrderItem item = new ServiceOrderItem();
-            item.setServiceOrder(order);
-            item.setServiceLabor(serviceLabor);
+            ServiceOrderItem item = new ServiceOrderItem(order, serviceLabor);
 
             List<ServiceOrderItemSupply> supplies = new ArrayList<>();
 
             //Criar insumos para o item
             for (var supplyReq : itemReq.supplies()) {
-                PartStock part = partStockRepository.findById(supplyReq.partStockId())
-                        .orElseThrow(() -> new EntityNotFoundException("Insumo com ID " + supplyReq.partStockId() + " não encontrado"));
-
-                ServiceOrderItemSupply supply = new ServiceOrderItemSupply();
-                supply.setServiceOrderItem(item);
-                supply.setPartStock(part);
-                supply.setQuantity(supplyReq.quantity());
-                supply.setUnitPrice(new BigDecimal(part.getUnitPrice())); // pega preço atual do estoque
-                supplies.add(supply);
+                PartStock part = partStockService.findById(supplyReq.partStockId());
+                supplies.add(new ServiceOrderItemSupply(item, part, supplyReq.quantity(), new BigDecimal(part.getUnitPrice())));
             }
 
             item.setSupplies(supplies);
@@ -125,16 +109,14 @@ public class ServiceOrderService {
         order.setItems(items);
 
         // Salvar ordem (cascade salva itens e insumos)
-        ServiceOrder savedOrder = repository.save(order);
+        ServiceOrder savedOrder = this.save(order);
 
         return new ServiceOrderResponse(savedOrder);
     }
 
     @Transactional
     public ServiceOrderResponse updateStatus(UUID orderId, ServiceOrderStatusEnum status) {
-        ServiceOrder order = repository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Ordem de serviço com ID " + orderId + " não encontrada"));
-
+        ServiceOrder order = this.findByUUID(orderId);
         order.setOrderStatusEnum(status);
 
         // Se a ordem for finalizada, registra o endTime
@@ -142,7 +124,7 @@ public class ServiceOrderService {
             order.setEndTime(LocalDateTime.now());
         }
 
-        ServiceOrder updatedOrder = repository.save(order);
+        ServiceOrder updatedOrder = this.save(order);
 
         // Se status for AGUARDANDO_APROVACAO, envia link
         if (updatedOrder.getOrderStatusEnum() == ServiceOrderStatusEnum.AGUARDANDO_APROVACAO) {
@@ -150,8 +132,37 @@ public class ServiceOrderService {
                     new ServiceOrderAwaitingApprovalEvent(updatedOrder)
             );
         }
-
         return new ServiceOrderResponse(updatedOrder);
+    }
+
+    @Transactional
+    public ServiceOrder save(ServiceOrder serviceOrder) {
+        try {
+            return repository.save(serviceOrder);
+        } catch (DataIntegrityViolationException e) {
+            // Lançada quando há violação de chave única, FK, NOT NULL etc.
+            throw new DataIntegrityViolationException(
+                    "Erro de integridade dos dados ao salvar a ordem de serviço. Verifique se todos os campos obrigatórios foram preenchidos e se não há duplicações.",
+                    e
+            );
+        } catch (ConstraintViolationException e) {
+            // Lançada quando validações do Bean Validation falham
+            throw new ConstraintViolationException(
+                    "Violação de restrição ao salvar a ordem de serviço. Alguns campos podem estar inválidos.",
+                    e.getConstraintViolations()
+            );
+        } catch (EntityNotFoundException e) {
+            // Caso alguma entidade referenciada não exista
+            throw new EntityNotFoundException(
+                    "Uma entidade relacionada à ordem de serviço não foi encontrada. Verifique usuário, veículo ou itens."
+            );
+        } catch (Exception e) {
+            // Qualquer outro erro inesperado
+            throw new RuntimeException(
+                    "Erro inesperado ao salvar a ordem de serviço. Detalhes: " + e.getMessage(),
+                    e
+            );
+        }
     }
 
     @Transactional

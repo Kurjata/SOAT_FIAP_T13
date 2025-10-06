@@ -34,6 +34,13 @@ public class ServiceOrderItemSupply {
     @Column(nullable = false)
     private BigDecimal unitPrice; // preço unitário do produto
 
+    public ServiceOrderItemSupply(ServiceOrderItem item, PartStock part, Integer quantity, BigDecimal unitPrice) {
+        this.serviceOrderItem =  item;
+        this.partStock = part;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
+
     public BigDecimal getTotalPrice() {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }

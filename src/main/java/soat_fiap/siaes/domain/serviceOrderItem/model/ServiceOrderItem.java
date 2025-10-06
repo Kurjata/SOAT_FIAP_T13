@@ -31,4 +31,9 @@ public class ServiceOrderItem {
 
     @OneToMany(mappedBy = "serviceOrderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceOrderItemSupply> supplies;
+
+    public ServiceOrderItem(ServiceOrder serviceOrder, ServiceLabor serviceLabor) {
+        this.serviceOrder = serviceOrder;
+        this.serviceLabor = serviceLabor;
+    }
 }

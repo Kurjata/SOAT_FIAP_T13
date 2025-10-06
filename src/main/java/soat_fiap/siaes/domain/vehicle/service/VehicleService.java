@@ -30,7 +30,7 @@ public class VehicleService {
     @Transactional
     public Vehicle save(Vehicle vehicle) {
         // Remove traços da placa
-        vehicle.setPlate(vehicle.getPlate().replace("-", ""));
+        vehicle.setPlate(vehicle.getPlate().replace("-", "").toUpperCase());
 
         // Verifica duplicidade de placa antes de salvar
         if (vehicleRepository.existsByPlate(vehicle.getPlate())) {
@@ -66,5 +66,10 @@ public class VehicleService {
             throw new EntityNotFoundException("Veículo não encontrado com id: " + id);
         }
         vehicleRepository.deleteById(id);
+    }
+
+    public Vehicle findByPlateIgnoreCase(String vehiclePlate){
+        return vehicleRepository.findByPlateIgnoreCase(vehiclePlate)
+                .orElseThrow(() -> new EntityNotFoundException("Veículo com placa " + vehiclePlate + " não encontrado"));
     }
 }

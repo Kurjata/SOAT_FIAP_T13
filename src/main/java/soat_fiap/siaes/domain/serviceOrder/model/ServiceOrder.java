@@ -43,6 +43,13 @@ public class ServiceOrder {
     @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ServiceOrderItem> items;
 
+    public ServiceOrder(User user, Vehicle vehicle, ServiceOrderStatusEnum serviceOrderStatusEnum, LocalDateTime now) {
+        this.user = user;
+        this.vehicle = vehicle;
+        this.orderStatusEnum = serviceOrderStatusEnum;
+        this.startTime = LocalDateTime.now();
+    }
+
     public Long getDurationMinutes() {
         if (startTime != null) {
             LocalDateTime effectiveEndTime = (endTime != null) ? endTime : LocalDateTime.now();
