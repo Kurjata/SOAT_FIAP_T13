@@ -63,9 +63,9 @@ public class ServiceLaborService {
         repository.delete(this.findByUUID(id));
     }
 
-    private ServiceLabor findByUUID(UUID id) {
+    public ServiceLabor findByUUID(UUID id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Serviço com ID " + id + " não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Serviço de mão de obra com ID " + id + " não encontrado"));
     }
 
     public ServiceLaborResponse update(UUID id, ServiceLaborRequest request) {

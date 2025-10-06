@@ -36,23 +36,21 @@ public class SecurityConfiguration {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
+                        .requestMatchers("/client/service-orders/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                         // Permissões granulares
                         .requestMatchers("/users/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/vehicles/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/service-labor/**").hasAnyRole("ADMIN", "COLLABORATOR")
-//                        .requestMatchers("/pecas/**").hasRole("ADMIN") // só admin pode gerenciar estoque ou criar uma role para estoquista
-//                        .requestMatchers("/ordens/**").hasAnyRole("ADMIN", "COLLABORATOR")
-//                        .requestMatchers("/monitoramento/**").hasRole("ADMIN") // apenas admin vê métricas
+                        .requestMatchers("/service-orders/**").hasAnyRole("ADMIN", "COLLABORATOR")
 
-                        // Qualquer outra requisição requer autenticação
+                        // Qualquer outro endpoint exige autenticação
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -69,6 +67,12 @@ public class SecurityConfiguration {
             "/v3/api-docs/**",
             "v3/api-docs.yaml",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "/favicon.ico",
+            "/css/**",
+            "/js/**",
+            "/images/**",
+            "/error"
     };
+
 }

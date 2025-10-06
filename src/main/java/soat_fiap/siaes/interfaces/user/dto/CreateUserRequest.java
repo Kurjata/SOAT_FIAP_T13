@@ -10,9 +10,10 @@ public record CreateUserRequest(
         @NotBlank String name,
         @NotBlank String login,
         @NotBlank String password,
-        @Document String document
+        @Document String document,
+        @NotBlank String email
 ) {
     public User toModel(PasswordEncoder encoder) {
-        return new User(name, login, encoder.encode(password), RoleEnum.CLIENT, document);
+        return new User(name, login, encoder.encode(password), RoleEnum.CLIENT, document, email);
     }
 }
