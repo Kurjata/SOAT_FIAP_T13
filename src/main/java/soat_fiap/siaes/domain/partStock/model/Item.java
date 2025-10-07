@@ -1,6 +1,7 @@
 package soat_fiap.siaes.domain.partStock.model;
 
 import jakarta.persistence.*;
+import soat_fiap.siaes.domain.partStock.enums.ItemType;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -40,4 +41,10 @@ public abstract class Item {
     public UUID getId() {
         return id;
     }
+
+    public String getIdAsString() {
+        return id.toString();
+    }
+
+    public abstract ItemType getType();
 }

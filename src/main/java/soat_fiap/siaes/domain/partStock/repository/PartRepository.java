@@ -8,18 +8,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PartRepository {
-
     Part save(Part part);
-
     Page<Part> findAll(Pageable pageable);
-
     Optional<Part> findById(UUID id);
-
+    Optional<Part> findByEan(String ean);
     boolean existsById(UUID id);
-
     void deleteById(UUID id);
-
     boolean existsByEan(String ean);
-
     boolean existsByEanAndIdNot(String ean, UUID id);
 }

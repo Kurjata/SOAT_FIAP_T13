@@ -2,6 +2,7 @@ package soat_fiap.siaes.domain.partStock.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import soat_fiap.siaes.domain.partStock.enums.ItemType;
 
 import java.math.BigDecimal;
 
@@ -51,5 +52,8 @@ public class Part extends Item {
         return minimumStockQuantity;
     }
 
-
+    @Override
+    public ItemType getType() {
+        return ItemType.PART;
+    }
 }
