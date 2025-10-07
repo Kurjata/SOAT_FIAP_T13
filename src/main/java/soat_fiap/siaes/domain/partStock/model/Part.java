@@ -11,16 +11,18 @@ import java.math.BigDecimal;
 public class Part extends Item {
 
     private Integer quantity;
+    private Integer reservedQuantity;
+    private Integer minimumStockQuantity;
     private String ean;
     private String manufacturer;
-    private Integer minimumStockQuantity;
 
     @Deprecated
     public Part(){}
 
-    public Part(String name, BigDecimal unitPrice, Integer quantity, String ean , String manufacturer, Integer minimumStockQuantity){
-        super(name, unitPrice);
+    public Part(String name, BigDecimal unitPrice, UnitMeasure unitMeasure, Integer quantity, Integer reservedQuantity, String ean , String manufacturer, Integer minimumStockQuantity){
+        super(name, unitPrice, unitMeasure);
         this.quantity = quantity;
+        this.reservedQuantity = reservedQuantity;
         this.ean = ean;
         this.manufacturer = manufacturer;
         this.minimumStockQuantity = minimumStockQuantity;
@@ -50,6 +52,10 @@ public class Part extends Item {
 
     public Integer getMinimumStockQuantity() {
         return minimumStockQuantity;
+    }
+
+    public Integer getReservedQuantity() {
+        return reservedQuantity;
     }
 
     @Override

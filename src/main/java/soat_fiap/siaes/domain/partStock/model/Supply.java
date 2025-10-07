@@ -11,13 +11,15 @@ import java.math.BigDecimal;
 public class Supply extends Item{
 
     private String supplier;
+    private Boolean available;
 
     @Deprecated
     public Supply(){}
 
-    public Supply(String name, BigDecimal unitPrice, String supplier) {
-        super(name, unitPrice);
+    public Supply(String name, BigDecimal unitPrice, UnitMeasure unitMeasure, String supplier, Boolean available) {
+        super(name, unitPrice, unitMeasure);
         this.supplier = supplier;
+        this.available = available;
     }
 
     public String getSupplier() {
