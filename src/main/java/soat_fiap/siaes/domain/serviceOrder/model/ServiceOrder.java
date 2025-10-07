@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
-import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
+import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 
@@ -41,9 +41,9 @@ public class ServiceOrder {
     private ServiceOrderStatusEnum orderStatusEnum;
 
     @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ServiceOrderItem> items;
+    private List<OrderActivity> orderActivities;
 
-    public ServiceOrder(User user, Vehicle vehicle, ServiceOrderStatusEnum serviceOrderStatusEnum, LocalDateTime now) {
+    public ServiceOrder(User user, Vehicle vehicle, ServiceOrderStatusEnum serviceOrderStatusEnum) {
         this.user = user;
         this.vehicle = vehicle;
         this.orderStatusEnum = serviceOrderStatusEnum;

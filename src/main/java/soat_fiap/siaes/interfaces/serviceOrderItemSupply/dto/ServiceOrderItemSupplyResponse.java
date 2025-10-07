@@ -1,6 +1,8 @@
 package soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto;
 
-import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ServiceOrderItemSupply;
+import soat_fiap.siaes.domain.partStock.enums.ItemType;
+import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ActivityItem;
 
 import java.math.BigDecimal;
 
@@ -12,10 +14,12 @@ public record ServiceOrderItemSupplyResponse(
         BigDecimal unitPrice,
         BigDecimal totalPrice
 ) {
-    public ServiceOrderItemSupplyResponse(ServiceOrderItemSupply supply) {
+    public ServiceOrderItemSupplyResponse(ActivityItem supply) {
         this(
                 supply.getPartStock().getIdAsString(),
-                supply.getPartStock().getEan(),
+                ItemType.PART.equals(supply.getPartStock().getType())
+                        ? ((Part) supply.getPartStock()).getEan()
+                        : "NaN",
                 supply.getPartStock().getName(),
                 supply.getQuantity(),
                 supply.getUnitPrice(),

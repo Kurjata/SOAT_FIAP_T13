@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
-import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ServiceOrderItemSupply;
+import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ActivityItem;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,8 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "tb_service_order_item")
-public class ServiceOrderItem {
+@Table(name = "tb_order_activity")
+public class OrderActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -29,10 +29,10 @@ public class ServiceOrderItem {
     @JoinColumn(name = "service_labor_id", nullable = false)
     private ServiceLabor serviceLabor;
 
-    @OneToMany(mappedBy = "serviceOrderItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ServiceOrderItemSupply> supplies;
+    @OneToMany(mappedBy = "orderActivity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityItem> activityItems;
 
-    public ServiceOrderItem(ServiceOrder serviceOrder, ServiceLabor serviceLabor) {
+    public OrderActivity(ServiceOrder serviceOrder, ServiceLabor serviceLabor) {
         this.serviceOrder = serviceOrder;
         this.serviceLabor = serviceLabor;
     }

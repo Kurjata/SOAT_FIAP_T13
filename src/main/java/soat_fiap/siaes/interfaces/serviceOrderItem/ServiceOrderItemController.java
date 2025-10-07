@@ -3,7 +3,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.serviceOrderItem.service.ServiceOrderItemService;
-import soat_fiap.siaes.interfaces.serviceOrderItem.dto.ServiceOrderItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrderItem.dto.OrderActivityRequest;
 import soat_fiap.siaes.interfaces.serviceOrderItem.dto.ServiceOrderItemResponse;
 
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class ServiceOrderItemController {
 
     //Criar item (com insumos opcionais)
     @PostMapping
-    public ResponseEntity<ServiceOrderItemResponse> create(@RequestBody @Valid ServiceOrderItemRequest request) {
+    public ResponseEntity<ServiceOrderItemResponse> create(@RequestBody @Valid OrderActivityRequest request) {
         return ResponseEntity.ok(service.create(request));
     }
 
@@ -38,7 +38,7 @@ public class ServiceOrderItemController {
     @PutMapping("/{id}")
     public ResponseEntity<ServiceOrderItemResponse> update(
             @PathVariable UUID id,
-            @RequestBody @Valid ServiceOrderItemRequest request
+            @RequestBody @Valid OrderActivityRequest request
     ) {
         return ResponseEntity.ok(service.update(id, request));
     }

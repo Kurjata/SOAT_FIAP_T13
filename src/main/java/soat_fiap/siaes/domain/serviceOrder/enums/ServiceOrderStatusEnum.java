@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ServiceOrderStatusEnum {
     RECEBIDA("OS criada e recebida pelo sistema"),
     EM_DIAGNOSTICO("Veículo em fase de diagnóstico"),
+    AGUARDANDO_ESTOQUE("Aguardando estoque"),
     AGUARDANDO_APROVACAO("Aguardando aprovação do cliente"),
     EM_EXECUCAO("Serviço em execução"),
     FINALIZADA("Serviço finalizado, pronto para retirada"),

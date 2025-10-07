@@ -1,6 +1,7 @@
 package soat_fiap.siaes.domain.partStock.model;
 
 import jakarta.persistence.*;
+import soat_fiap.siaes.domain.partStock.enums.ItemType;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -21,12 +22,17 @@ public abstract class Item {
     @Column(nullable = false, precision = 15, scale = 2)
     protected BigDecimal unitPrice;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    protected UnitMeasure unitMeasure;
+
     @Deprecated
     public Item(){}
 
-    public Item(String name, BigDecimal unitPrice) {
+    public Item(String name, BigDecimal unitPrice, UnitMeasure unitMeasure) {
         this.name = name;
         this.unitPrice = unitPrice;
+        this.unitMeasure = unitMeasure;
     }
 
     public String getName() {
@@ -40,4 +46,14 @@ public abstract class Item {
     public UUID getId() {
         return id;
     }
+
+    public UnitMeasure getUnitMeasure() {
+        return unitMeasure;
+    }
+
+    public String getIdAsString() {
+        return id.toString();
+    }
+
+    public abstract ItemType getType();
 }

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
-import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
-import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ServiceOrderItemSupply;
+import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
+import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ActivityItem;
 import soat_fiap.siaes.domain.serviceOrderToken.model.ServiceOrderToken;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrder.ServiceOrderRepository;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrderToken.ServiceOrderTokenRepository;
@@ -119,15 +119,15 @@ public class ServiceOrderClientService {
     public BigDecimal calculateGrandTotal(ServiceOrder order) {
         BigDecimal grandTotal = BigDecimal.ZERO;
 
-        for (ServiceOrderItem item : order.getItems()) {
+        for (OrderActivity item : order.getOrderActivities()) {
             // Adiciona o custo da mão de obra
             if (item.getServiceLabor() != null && item.getServiceLabor().getLaborCost() != null) {
                 grandTotal = grandTotal.add(item.getServiceLabor().getLaborCost());
             }
 
             // Adiciona o custo dos suprimentos
-            List<ServiceOrderItemSupply> supplies = item.getSupplies() != null ? item.getSupplies() : Collections.emptyList();
-            for (ServiceOrderItemSupply supply : supplies) {
+            List<ActivityItem> supplies = item.getActivityItems() != null ? item.getActivityItems() : Collections.emptyList();
+            for (ActivityItem supply : supplies) {
                 if (supply.getUnitPrice() != null && supply.getQuantity() != null) {
                     BigDecimal supplyTotal = supply.getUnitPrice().multiply(BigDecimal.valueOf(supply.getQuantity()));
                     grandTotal = grandTotal.add(supplyTotal);

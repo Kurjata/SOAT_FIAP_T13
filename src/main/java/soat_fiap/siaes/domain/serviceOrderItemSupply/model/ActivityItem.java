@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import soat_fiap.siaes.domain.partStock.model.PartStock;
-import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
+import soat_fiap.siaes.domain.partStock.model.Item;
+import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -14,19 +14,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "tb_service_order_item_supply")
-public class ServiceOrderItemSupply {
+@Table(name = "tb_activity_item")
+public class ActivityItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "service_order_item_id", nullable = false)
-    private ServiceOrderItem serviceOrderItem;
+    private OrderActivity orderActivity;
 
     @ManyToOne
     @JoinColumn(name = "part_stock_id", nullable = false)
-    private PartStock partStock; //Insumo
+    private Item partStock; //Insumo
 
     @Column(nullable = false)
     private Integer quantity; // quantidade utilizada
@@ -34,8 +34,8 @@ public class ServiceOrderItemSupply {
     @Column(nullable = false)
     private BigDecimal unitPrice; // preço unitário do produto
 
-    public ServiceOrderItemSupply(ServiceOrderItem item, PartStock part, Integer quantity, BigDecimal unitPrice) {
-        this.serviceOrderItem =  item;
+    public ActivityItem(OrderActivity item, Item part, Integer quantity, BigDecimal unitPrice) {
+        this.orderActivity =  item;
         this.partStock = part;
         this.quantity = quantity;
         this.unitPrice = unitPrice;

@@ -1,6 +1,6 @@
 package soat_fiap.siaes.interfaces.serviceOrderItem.dto;
 
-import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
+import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
 import soat_fiap.siaes.interfaces.serviceLabor.dto.ServiceLaborResponse;
 import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ServiceOrderItemSupplyResponse;
 
@@ -11,10 +11,10 @@ public record ServiceOrderItemResponse(
         ServiceLaborResponse serviceLabor,
         List<ServiceOrderItemSupplyResponse> supplies
 ) {
-    public ServiceOrderItemResponse(ServiceOrderItem item) {
+    public ServiceOrderItemResponse(OrderActivity item) {
         this(
                 new ServiceLaborResponse(item.getServiceLabor()),
-                item.getSupplies() != null ? item.getSupplies().stream()
+                item.getActivityItems() != null ? item.getActivityItems().stream()
                         .map(ServiceOrderItemSupplyResponse::new)
                         .collect(Collectors.toList())
                         : List.of()

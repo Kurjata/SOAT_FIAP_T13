@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
-import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
+import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrderItemSupply.service.ServiceOrderItemSupplyService;
 import soat_fiap.siaes.infrastructure.persistence.ServiceLabor.ServiceLaborRepository;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrder.ServiceOrderRepository;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrderItem.ServiceOrderItemRepository;
-import soat_fiap.siaes.interfaces.serviceOrderItem.dto.ServiceOrderItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrderItem.dto.OrderActivityRequest;
 import soat_fiap.siaes.interfaces.serviceOrderItem.dto.ServiceOrderItemResponse;
-import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ServiceOrderItemSupplyRequest;
+import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ActivityItemRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,21 +31,21 @@ public class ServiceOrderItemService {
     public List<ServiceOrderItemResponse> findByServiceOrder(UUID orderId) {
         ServiceOrder order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Ordem de serviço não encontrada"));
-        return order.getItems().stream()
+        return order.getOrderActivities().stream()
                 .map(ServiceOrderItemResponse::new)
                 .collect(Collectors.toList());
     }
 
     // Consultar item específico
     public ServiceOrderItemResponse findById(UUID id) {
-        ServiceOrderItem item = repository.findById(id)
+        OrderActivity item = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
         return new ServiceOrderItemResponse(item);
     }
 
     // Criar item
     @Transactional
-    public ServiceOrderItemResponse create(ServiceOrderItemRequest request) {
+    public ServiceOrderItemResponse create(OrderActivityRequest request) {
         validateRequest(request);
 
         ServiceOrder order = orderRepository.findById(request.serviceOrderId())
@@ -54,20 +54,20 @@ public class ServiceOrderItemService {
         ServiceLabor labor = laborRepository.findById(request.serviceLaborId())
                 .orElseThrow(() -> new EntityNotFoundException("Serviço de mão de obra não encontrado"));
 
-        ServiceOrderItem item = new ServiceOrderItem();
+        OrderActivity item = new OrderActivity();
         item.setServiceOrder(order);
         item.setServiceLabor(labor);
 
         // Persistir item primeiro para poder associar insumos
-        ServiceOrderItem savedItem = repository.save(item);
+        OrderActivity savedItem = repository.save(item);
 
         // Criar insumos, se houver
-        if (request.supplies() != null) {
-            for (ServiceOrderItemSupplyRequest supplyRequest : request.supplies()) {
+        if (request.items() != null) {
+            for (ActivityItemRequest supplyRequest : request.items()) {
                 // Associar o ID do item criado ao request
-                ServiceOrderItemSupplyRequest supplyWithItemId = new ServiceOrderItemSupplyRequest(
+                ActivityItemRequest supplyWithItemId = new ActivityItemRequest(
                         savedItem.getId(),
-                        supplyRequest.partStockId(),
+                        supplyRequest.itemId(),
                         supplyRequest.quantity()
                 );
                 supplyService.create(supplyWithItemId);
@@ -79,10 +79,10 @@ public class ServiceOrderItemService {
 
     // Alterar item (apenas serviço ou insumos)
     @Transactional
-    public ServiceOrderItemResponse update(UUID id, ServiceOrderItemRequest request) {
+    public ServiceOrderItemResponse update(UUID id, OrderActivityRequest request) {
         validateRequest(request);
 
-        ServiceOrderItem item = repository.findById(id)
+        OrderActivity item = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
 
         ServiceLabor labor = laborRepository.findById(request.serviceLaborId())
@@ -90,17 +90,17 @@ public class ServiceOrderItemService {
 
         item.setServiceLabor(labor);
 
-        ServiceOrderItem updatedItem = repository.save(item);
+        OrderActivity updatedItem = repository.save(item);
 
         // Atualizar insumos (simplificado: deletar todos e recriar)
-        if (request.supplies() != null) {
-            if (updatedItem.getSupplies() != null) {
-                updatedItem.getSupplies().forEach(s -> supplyService.delete(s.getId()));
+        if (request.items() != null) {
+            if (updatedItem.getActivityItems() != null) {
+                updatedItem.getActivityItems().forEach(s -> supplyService.delete(s.getId()));
             }
-            for (ServiceOrderItemSupplyRequest supplyRequest : request.supplies()) {
-                ServiceOrderItemSupplyRequest supplyWithItemId = new ServiceOrderItemSupplyRequest(
+            for (ActivityItemRequest supplyRequest : request.items()) {
+                ActivityItemRequest supplyWithItemId = new ActivityItemRequest(
                         updatedItem.getId(),
-                        supplyRequest.partStockId(),
+                        supplyRequest.itemId(),
                         supplyRequest.quantity()
                 );
                 supplyService.create(supplyWithItemId);
@@ -113,12 +113,12 @@ public class ServiceOrderItemService {
     // Excluir item
     @Transactional
     public void delete(UUID id) {
-        ServiceOrderItem item = repository.findById(id)
+        OrderActivity item = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
 
         // Excluir todos os insumos do item
-        if (item.getSupplies() != null) {
-            item.getSupplies().forEach(s -> supplyService.delete(s.getId()));
+        if (item.getActivityItems() != null) {
+            item.getActivityItems().forEach(s -> supplyService.delete(s.getId()));
         }
         //se excluir todos os itens, faz sentido cancelar a ordem de serviço? Ou exclui-la?
 
@@ -126,7 +126,7 @@ public class ServiceOrderItemService {
     }
 
     // Validação do request
-    private void validateRequest(ServiceOrderItemRequest request) {
+    private void validateRequest(OrderActivityRequest request) {
         if (request.serviceOrderId() == null) {
             throw new IllegalArgumentException("O ID da ordem de serviço é obrigatório");
         }

@@ -10,14 +10,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.application.event.ServiceOrder.ServiceOrderAwaitingApprovalEvent;
-import soat_fiap.siaes.domain.partStock.model.PartStock;
-import soat_fiap.siaes.domain.partStock.service.PartStockService;
+import soat_fiap.siaes.domain.partStock.model.Item;
+import soat_fiap.siaes.domain.partStock.service.ItemService;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.serviceLabor.service.ServiceLaborService;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
-import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
-import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ServiceOrderItemSupply;
+import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
+import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ActivityItem;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.service.UserService;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
@@ -25,8 +25,8 @@ import soat_fiap.siaes.domain.vehicle.service.VehicleService;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrder.ServiceOrderRepository;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderRequest;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderResponse;
+import soat_fiap.siaes.interfaces.serviceOrderItem.dto.OrderActivityRequest;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class ServiceOrderService {
     private final UserService userService;
     private final VehicleService vehicleService;
     private final ServiceLaborService serviceLaborService;
-    private final PartStockService partStockService;
+    private final ItemService itemService;
     private final ApplicationEventPublisher eventPublisher;
 
     public ServiceOrderResponse findById(UUID id) {
@@ -76,40 +76,45 @@ public class ServiceOrderService {
                 .map(ServiceOrderResponse::new);
     }
 
-
+    // ServiceOrder - Ordem de serviço
+    // OrderActivity - Cada serviço executado dentro da OS
+    // ActivityItem - Insumos ou peças usados no serviço
     @Transactional
     public ServiceOrderResponse createServiceOrder(ServiceOrderRequest request) {
-        //Buscar usuário
         User user = this.userService.findByDocument(request.userDocument());
-        //Buscar veículo
         Vehicle vehicle = vehicleService.findByPlateIgnoreCase(request.vehiclePlate());
-        //Criar ordem de serviço
-        ServiceOrder order = new ServiceOrder(user, vehicle, ServiceOrderStatusEnum.RECEBIDA, LocalDateTime.now());
-        List<ServiceOrderItem> items = new ArrayList<>();
 
-        //Criar itens de serviço
-        for (var itemReq : request.items()) {
-            ServiceLabor serviceLabor = serviceLaborService.findByUUID(itemReq.serviceLaborId());
-
-            ServiceOrderItem item = new ServiceOrderItem(order, serviceLabor);
-
-            List<ServiceOrderItemSupply> supplies = new ArrayList<>();
-
-            //Criar insumos para o item
-            for (var supplyReq : itemReq.supplies()) {
-                PartStock part = partStockService.findById(supplyReq.partStockId());
-                supplies.add(new ServiceOrderItemSupply(item, part, supplyReq.quantity(), new BigDecimal(part.getUnitPrice())));
-            }
-
-            item.setSupplies(supplies);
-            items.add(item);
-        }
-        order.setItems(items);
+        ServiceOrder order = new ServiceOrder(user, vehicle, ServiceOrderStatusEnum.RECEBIDA);
+        List<OrderActivity> orderActivities = buildOrderActivities(request, order);
+        order.setOrderActivities(orderActivities);
 
         // Salvar ordem (cascade salva itens e insumos)
         ServiceOrder savedOrder = this.save(order);
 
         return new ServiceOrderResponse(savedOrder);
+    }
+
+    private List<OrderActivity> buildOrderActivities(ServiceOrderRequest serviceOrderRequest, ServiceOrder order) {
+        List<OrderActivity> orderActivities = new ArrayList<>();
+        serviceOrderRequest.orderActivities().forEach(activityReq -> {
+            ServiceLabor labor = serviceLaborService.findByUUID(activityReq.serviceLaborId());
+            OrderActivity orderActivity = new OrderActivity(order, labor);
+
+            List<ActivityItem> activityItems = buildActivityItems(activityReq, orderActivity);
+            orderActivity.setActivityItems(activityItems);
+
+            orderActivities.add(orderActivity);
+        });
+
+        return orderActivities;
+    }
+    private List<ActivityItem> buildActivityItems(OrderActivityRequest activityReq, OrderActivity activity) {
+        List<ActivityItem> items = new ArrayList<>();
+        activityReq.items().forEach(itemReq -> {
+            Item part = itemService.findById(itemReq.itemId());
+            items.add(new ActivityItem(activity, part, itemReq.quantity(), part.getUnitPrice()));
+        });
+        return items;
     }
 
     @Transactional
@@ -169,13 +174,13 @@ public class ServiceOrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Ordem de serviço com ID " + orderId + " não encontrada"));
 
         // Excluir todos os itens e insumos da ordem
-        if (order.getItems() != null) {
-            order.getItems().forEach(item -> {
-                if (item.getSupplies() != null) {
-                    item.getSupplies().clear();
+        if (order.getOrderActivities() != null) {
+            order.getOrderActivities().forEach(item -> {
+                if (item.getActivityItems() != null) {
+                    item.getActivityItems().clear();
                 }
             });
-            order.getItems().clear();
+            order.getOrderActivities().clear();
         }
 
         repository.delete(order);

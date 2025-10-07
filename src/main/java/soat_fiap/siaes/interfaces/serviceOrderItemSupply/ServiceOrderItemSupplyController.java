@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.serviceOrderItemSupply.service.ServiceOrderItemSupplyService;
-import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ServiceOrderItemSupplyRequest;
+import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ActivityItemRequest;
 import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ServiceOrderItemSupplyResponse;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class ServiceOrderItemSupplyController {
 
     // Criar insumo
     @PostMapping
-    public ResponseEntity<ServiceOrderItemSupplyResponse> create(@RequestBody ServiceOrderItemSupplyRequest request) {
+    public ResponseEntity<ServiceOrderItemSupplyResponse> create(@RequestBody ActivityItemRequest request) {
         return ResponseEntity.ok(service.create(request));
     }
 
@@ -38,7 +38,7 @@ public class ServiceOrderItemSupplyController {
     @PutMapping("/{id}")
     public ResponseEntity<ServiceOrderItemSupplyResponse> update(
             @PathVariable UUID id,
-            @RequestBody ServiceOrderItemSupplyRequest request
+            @RequestBody ActivityItemRequest request
     ) {
         return ResponseEntity.ok(service.update(id, request));
     }
