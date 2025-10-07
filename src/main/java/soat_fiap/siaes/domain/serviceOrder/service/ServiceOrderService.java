@@ -10,8 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.application.event.ServiceOrder.ServiceOrderAwaitingApprovalEvent;
-import soat_fiap.siaes.domain.partStock.model.PartStock;
-import soat_fiap.siaes.domain.partStock.service.PartStockService;
+import soat_fiap.siaes.application.event.Part.PartSuppliesUpdateStockEvent;
+import soat_fiap.siaes.application.event.ServiceOrder.ServiceOrderFinishedEvent;
+import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.partStock.service.PartService;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.serviceLabor.service.ServiceLaborService;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
@@ -26,11 +28,8 @@ import soat_fiap.siaes.infrastructure.persistence.serviceOrder.ServiceOrderRepos
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderRequest;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderResponse;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class ServiceOrderService {
     private final UserService userService;
     private final VehicleService vehicleService;
     private final ServiceLaborService serviceLaborService;
-    private final PartStockService partStockService;
+    private final PartService partStockService;
     private final ApplicationEventPublisher eventPublisher;
 
     public ServiceOrderResponse findById(UUID id) {
@@ -97,8 +96,8 @@ public class ServiceOrderService {
 
             //Criar insumos para o item
             for (var supplyReq : itemReq.supplies()) {
-                PartStock part = partStockService.findById(supplyReq.partStockId());
-                supplies.add(new ServiceOrderItemSupply(item, part, supplyReq.quantity(), new BigDecimal(part.getUnitPrice())));
+                Part part = partStockService.findById(supplyReq.partStockId());
+                supplies.add(new ServiceOrderItemSupply(item, part, supplyReq.quantity(), part.getUnitPrice()));
             }
 
             item.setSupplies(supplies);
@@ -110,27 +109,6 @@ public class ServiceOrderService {
         ServiceOrder savedOrder = this.save(order);
 
         return new ServiceOrderResponse(savedOrder);
-    }
-
-    @Transactional
-    public ServiceOrderResponse updateStatus(UUID orderId, ServiceOrderStatusEnum status) {
-        ServiceOrder order = this.findByUUID(orderId);
-        order.setOrderStatusEnum(status);
-
-        // Se a ordem for finalizada, registra o endTime
-        if (status == ServiceOrderStatusEnum.FINALIZADA) {
-            order.setEndTime(LocalDateTime.now());
-        }
-
-        ServiceOrder updatedOrder = this.save(order);
-
-        // Se status for AGUARDANDO_APROVACAO, envia link
-        if (updatedOrder.getOrderStatusEnum() == ServiceOrderStatusEnum.AGUARDANDO_APROVACAO) {
-            eventPublisher.publishEvent(
-                    new ServiceOrderAwaitingApprovalEvent(updatedOrder)
-            );
-        }
-        return new ServiceOrderResponse(updatedOrder);
     }
 
     @Transactional
@@ -179,5 +157,43 @@ public class ServiceOrderService {
         }
 
         repository.delete(order);
+    }
+
+    @Transactional
+    public ServiceOrderResponse updateStatus(UUID orderId, ServiceOrderStatusEnum newStatus) {
+        // Busca a ordem pelo ID
+        ServiceOrder order = findByUUID(orderId);
+        // Atualiza o status
+        order.setOrderStatusEnum(newStatus);
+        // Se a ordem for finalizada, registra o horário de término
+        if (newStatus == ServiceOrderStatusEnum.FINALIZADA) {
+            order.setEndTime(LocalDateTime.now());
+        }
+        // Persiste a atualização no banco
+        ServiceOrder updatedOrder = save(order);
+        // Dispara o evento correspondente ao status em método separado
+        publishEventByStatus(updatedOrder);
+        // Retorna a resposta atualizada
+        return new ServiceOrderResponse(updatedOrder);
+    }
+
+    private void publishEventByStatus(ServiceOrder order) {
+        switch (order.getOrderStatusEnum()) {
+            case AGUARDANDO_APROVACAO:
+                //Notificar cliente para aprovação/reprovação
+                eventPublisher.publishEvent(new ServiceOrderAwaitingApprovalEvent(order));
+                break;
+            case EM_EXECUCAO:
+                // Notificar estoque para atualização das peças
+                eventPublisher.publishEvent(new PartSuppliesUpdateStockEvent(order));
+                break;
+            case FINALIZADA:
+                //Notificar cliente de que o veículo está pronto para retirada
+                eventPublisher.publishEvent(new ServiceOrderFinishedEvent(order));
+                break;
+            default:
+                // Por enquanto, não faz nada, descansa um pouquinho ;D!
+                break;
+        }
     }
 }

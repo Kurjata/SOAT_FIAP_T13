@@ -5,8 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.domain.partStock.model.PartStock;
-import soat_fiap.siaes.domain.partStock.repository.PartStockRepository;
+import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.model.RoleEnum;
@@ -25,7 +25,7 @@ public class InitialSystemConfig implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final ServiceLaborRepository serviceLaborRepository;
     private final VehicleRepository vehicleRepository;
-    private final PartStockRepository partStockRepository;
+    private final PartRepository partStockRepository;
 
     @Override
     @Transactional
@@ -41,16 +41,15 @@ public class InitialSystemConfig implements CommandLineRunner {
         createServiceLaborIfNotExist("Alinhamento e Balanceamento", new BigDecimal("180.00"));
         createServiceLaborIfNotExist("Substituição de Pastilhas de Freio", new BigDecimal("250.00"));
 
-
         //Criar veículos
         createVehicleIfNotExist("ABC1234", "Toyota", "Corolla", 2020);
         createVehicleIfNotExist("DEF5678", "Volkswagen", "Golf", 2019);
         createVehicleIfNotExist("GHI9012", "Honda", "CR-V", 2021);
 
         //Criar insumos
-        createPartStockIfNotExist("7891234567890", "Filtro de Óleo Motor", 120, 20, 35.0);
-        createPartStockIfNotExist("7899876543210", "Velas de Ignição", 80, 15, 12.5);
-        createPartStockIfNotExist("7894561237890", "Pastilhas de Freio Dianteira", 50, 10, 95.0);
+        createPartStockIfNotExist("7891234567890", "Filtro de Óleo Motor", 120, 20, BigDecimal.valueOf(35.0), "SHELL");
+        createPartStockIfNotExist("7899876543210", "Velas de Ignição", 80, 15, BigDecimal.valueOf(12.5), "SHELL");
+        createPartStockIfNotExist("7894561237890", "Pastilhas de Freio Dianteira", 50, 10, BigDecimal.valueOf(95.0),"SHELL");
 
     }
 
@@ -80,10 +79,11 @@ public class InitialSystemConfig implements CommandLineRunner {
                 });
     }
 
-    private void createPartStockIfNotExist(String ean, String name, Integer stockQuantity, Integer minimumStock, Double unitPrice) {
+    private void createPartStockIfNotExist(String ean, String name, Integer quantity, Integer minimumStockQuantity, BigDecimal unitPrice, String manufacturer) {
         partStockRepository.findByEan(ean)
                 .orElseGet(() -> {
-                    PartStock partStock = new PartStock(ean, name, stockQuantity, minimumStock, unitPrice);
+                    Part partStock = new Part(name, unitPrice, quantity, ean, manufacturer, minimumStockQuantity);
+
                     return partStockRepository.save(partStock);
                 });
     }

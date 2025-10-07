@@ -14,9 +14,9 @@ public record ServiceOrderItemSupplyResponse(
 ) {
     public ServiceOrderItemSupplyResponse(ServiceOrderItemSupply supply) {
         this(
-                supply.getPartStock().getIdAsString(),
-                supply.getPartStock().getEan(),
-                supply.getPartStock().getName(),
+                supply.getPart().getId().toString(),
+                supply.getPart().getEan(),
+                supply.getPart().getName(),
                 supply.getQuantity(),
                 supply.getUnitPrice(),
                 supply.getUnitPrice().multiply(BigDecimal.valueOf(supply.getQuantity()))

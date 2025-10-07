@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.partStock;
 
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/parts-controller")
+@SecurityRequirement(name = "bearer-key")
 public class PartController {
 
     private final PartService partService;

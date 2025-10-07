@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import soat_fiap.siaes.domain.partStock.model.PartStock;
+import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
 
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ public class ServiceOrderItemSupply {
 
     @ManyToOne
     @JoinColumn(name = "part_stock_id", nullable = false)
-    private PartStock partStock; //Insumo
+    private Part part; //Insumo
 
     @Column(nullable = false)
     private Integer quantity; // quantidade utilizada
@@ -34,9 +34,12 @@ public class ServiceOrderItemSupply {
     @Column(nullable = false)
     private BigDecimal unitPrice; // preço unitário do produto
 
-    public ServiceOrderItemSupply(ServiceOrderItem item, PartStock part, Integer quantity, BigDecimal unitPrice) {
+    @Column(nullable = false)
+    private boolean stockUpdated = false; //Foi baixado
+
+    public ServiceOrderItemSupply(ServiceOrderItem item, Part part, Integer quantity, BigDecimal unitPrice) {
         this.serviceOrderItem =  item;
-        this.partStock = part;
+        this.part = part;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
     }

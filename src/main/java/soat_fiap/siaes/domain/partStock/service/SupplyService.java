@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.model.Supply;
 import soat_fiap.siaes.domain.partStock.repository.SupplyRepository;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdateSupplyRequest;

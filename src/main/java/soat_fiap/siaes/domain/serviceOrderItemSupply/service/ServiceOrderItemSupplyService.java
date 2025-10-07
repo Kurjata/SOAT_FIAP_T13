@@ -4,16 +4,16 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.domain.partStock.model.PartStock;
-import soat_fiap.siaes.domain.partStock.repository.PartStockRepository;
+import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.domain.serviceOrderItem.model.ServiceOrderItem;
 import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ServiceOrderItemSupply;
+import soat_fiap.siaes.infrastructure.persistence.partStock.PartJpaRepository;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrderItem.ServiceOrderItemRepository;
 import soat_fiap.siaes.infrastructure.persistence.serviceOrderItemSupply.ServiceOrderItemSupplyRepository;
 import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ServiceOrderItemSupplyRequest;
 import soat_fiap.siaes.interfaces.serviceOrderItemSupply.dto.ServiceOrderItemSupplyResponse;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ServiceOrderItemSupplyService {
     private final ServiceOrderItemSupplyRepository repository;
     private final ServiceOrderItemRepository itemRepository;
-    private final PartStockRepository partStockRepository;
+    private final PartRepository partStockRepository;
 
     // Listar insumos de um item
     public List<ServiceOrderItemSupplyResponse> findByServiceOrderItem(UUID itemId) {
@@ -46,7 +46,7 @@ public class ServiceOrderItemSupplyService {
     public ServiceOrderItemSupplyResponse create(ServiceOrderItemSupplyRequest request) {
         validateRequest(request);
 
-        PartStock partStock = partStockRepository.findById(request.partStockId())
+        Part partStock = partStockRepository.findById(request.partStockId())
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
 
         ServiceOrderItem item = itemRepository.findById(request.serviceOrderItemId())
@@ -54,9 +54,9 @@ public class ServiceOrderItemSupplyService {
 
         ServiceOrderItemSupply supply = new ServiceOrderItemSupply();
         supply.setServiceOrderItem(item);
-        supply.setPartStock(partStock);
+        supply.setPart(partStock);
         supply.setQuantity(request.quantity());
-        supply.setUnitPrice(new BigDecimal(partStock.getUnitPrice()));
+        supply.setUnitPrice(partStock.getUnitPrice());
 
         ServiceOrderItemSupply saved = repository.save(supply);
         return new ServiceOrderItemSupplyResponse(saved);
@@ -70,12 +70,12 @@ public class ServiceOrderItemSupplyService {
         ServiceOrderItemSupply supply = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
 
-        PartStock partStock = partStockRepository.findById(request.partStockId())
+        Part partStock = partStockRepository.findById(request.partStockId())
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
 
-        supply.setPartStock(partStock);
+        supply.setPart(partStock);
         supply.setQuantity(request.quantity());
-        supply.setUnitPrice(new BigDecimal(partStock.getUnitPrice()));
+        supply.setUnitPrice(partStock.getUnitPrice());
 
         ServiceOrderItemSupply updated = repository.save(supply);
         return new ServiceOrderItemSupplyResponse(updated);

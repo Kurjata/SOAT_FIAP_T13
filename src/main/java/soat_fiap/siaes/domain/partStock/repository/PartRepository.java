@@ -22,4 +22,6 @@ public interface PartRepository {
     boolean existsByEan(String ean);
 
     boolean existsByEanAndIdNot(String ean, UUID id);
+
+    Optional<Part> findByEan(String ean);
 }
