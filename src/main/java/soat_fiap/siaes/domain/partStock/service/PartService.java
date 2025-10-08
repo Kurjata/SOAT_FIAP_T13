@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import soat_fiap.siaes.domain.partStock.model.Item;
 import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdatePartRequest;
@@ -52,5 +53,4 @@ public class PartService {
         }
         partRepository.deleteById(id);
     }
-
 }

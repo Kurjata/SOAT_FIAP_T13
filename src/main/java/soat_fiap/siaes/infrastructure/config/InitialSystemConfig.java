@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.partStock.model.UnitMeasure;
 import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.user.model.User;
@@ -83,7 +84,7 @@ public class InitialSystemConfig implements CommandLineRunner {
     private void createPartStockIfNotExist(String ean, String name, Integer stockQuantity, Integer minimumStock, BigDecimal unitPrice) {
         partRepository.findByEan(ean)
                 .orElseGet(() -> {
-                    Part partStock = new Part(name, unitPrice, stockQuantity, ean, "teste", minimumStock);
+                    Part partStock = new Part(name, unitPrice, UnitMeasure.UNIT, stockQuantity, 0, ean, "teste", minimumStock);
                     return partRepository.save(partStock);
                 });
     }

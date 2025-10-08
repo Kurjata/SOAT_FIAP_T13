@@ -12,7 +12,8 @@ public record PartResponse(
         Integer quantity,
         String ean,
         String manufacturer,
-        Integer minimumStockQuantity
+        Integer minimumStockQuantity,
+        Integer reservedQuantity
 ) {
     public static PartResponse fromModel(Part part) {
         return new PartResponse(
@@ -22,7 +23,8 @@ public record PartResponse(
                 part.getQuantity(),
                 part.getEan(),
                 part.getManufacturer(),
-                part.getMinimumStockQuantity()
+                part.getMinimumStockQuantity(),
+                part.getReservedQuantity()
         );
     }
 }
