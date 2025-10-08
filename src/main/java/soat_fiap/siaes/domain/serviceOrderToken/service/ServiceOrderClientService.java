@@ -3,10 +3,13 @@ package soat_fiap.siaes.domain.serviceOrderToken.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
+import soat_fiap.siaes.domain.partStock.enums.MovimentTypeEnum;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
@@ -29,6 +32,7 @@ public class ServiceOrderClientService {
     private final ServiceOrderRepository serviceOrderRepository;
     private final ServiceOrderTokenRepository tokenRepository;
     private final JavaMailSender mailSender;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -95,6 +99,8 @@ public class ServiceOrderClientService {
         order.setOrderStatusEnum(status);
         if (status == ServiceOrderStatusEnum.APROVADO_CLIENTE) {
             order.setStartTime(LocalDateTime.now());
+            //notifica estoque
+            eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentTypeEnum.MINUS));
         }
 
         ServiceOrder savedOrder = serviceOrderRepository.save(order);

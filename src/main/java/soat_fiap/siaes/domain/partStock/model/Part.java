@@ -62,4 +62,20 @@ public class Part extends Item {
     public ItemType getType() {
         return ItemType.PART;
     }
+
+    public void add(Integer quantity){
+        this.quantity += quantity;
+    }
+
+    public void minus(Integer quantity){
+        this.quantity -= quantity;
+    }
+
+    public void addReserved(Integer quantity){
+        this.reservedQuantity += quantity;
+    }
+
+    public void minusReserved(Integer quantity){
+        this.reservedQuantity -= quantity;
+    }
 }

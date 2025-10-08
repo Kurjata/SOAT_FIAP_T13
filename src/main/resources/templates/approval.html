@@ -44,7 +44,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <th:block th:each="item : ${order.items}">
+                <th:block th:each="item : ${order.orderActivities}">
                     <!-- Linha do serviço -->
                     <tr class="table-primary">
                         <td th:text="${item.serviceLabor.description}"></td>
@@ -54,7 +54,7 @@
                     </tr>
 
                     <!-- Linhas dos insumos do serviço -->
-                    <tr th:each="supply : ${item.supplies}">
+                    <tr th:each="supply : ${item.activityItems}">
                         <td style="padding-left: 30px;"><i class='bx bx-cube'></i> <span th:text="${supply.partStock.name}"></span></td>
                         <td th:text="${supply.quantity}"></td>
                         <td class="text-end" th:text="${#numbers.formatDecimal(supply.unitPrice, 2, 'POINT', 2, 'POINT')}"></td>

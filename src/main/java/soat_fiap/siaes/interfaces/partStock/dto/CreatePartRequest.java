@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.NotBlank;
 import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.partStock.model.UnitMeasure;
 
 import java.math.BigDecimal;
 
@@ -14,10 +15,13 @@ public record CreatePartRequest(
         @NotBlank String manufacturer,
         @NotNull Integer minimumStockQuantity,
         @NotBlank String name,
-        @NotNull @Positive BigDecimal unitPrice) {
+        @NotNull @Positive BigDecimal unitPrice,
+        @NotNull UnitMeasure unitMeasure,
+        @NotNull Integer reservedQuantity
+) {
 
     public Part toModel() {
 
-        return new Part(name, unitPrice, quantity, ean, manufacturer, minimumStockQuantity);
+        return new Part(name, unitPrice, unitMeasure, quantity, reservedQuantity, ean, manufacturer, minimumStockQuantity);
     }
 }

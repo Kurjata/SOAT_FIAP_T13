@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface ItemRepository {
     Optional<Item> findById(UUID id);
+    Item save(Item item);
 }
