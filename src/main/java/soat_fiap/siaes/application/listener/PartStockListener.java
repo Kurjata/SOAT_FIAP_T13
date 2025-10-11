@@ -2,12 +2,10 @@ package soat_fiap.siaes.application.listener;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
 import soat_fiap.siaes.domain.partStock.service.ItemService;
-import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ActivityItem;
 
@@ -24,7 +22,8 @@ public class PartStockListener {
                 service.updateInStock(
                         activityItem.getPartStock().getId(),
                         event.movimentTypeEnum(),
-                        activityItem.getQuantity()
+                        activityItem.getQuantity(),
+                        event.isRemoveReserved()
                 );
             }
         }

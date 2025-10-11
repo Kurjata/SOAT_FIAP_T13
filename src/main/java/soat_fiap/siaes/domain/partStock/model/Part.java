@@ -67,15 +67,21 @@ public class Part extends Item {
         this.quantity += quantity;
     }
 
-    public void minus(Integer quantity){
-        this.quantity -= quantity;
+    public void minus(Integer quantity) {
+        this.quantity = safeSubtract(this.quantity, quantity);
     }
 
     public void addReserved(Integer quantity){
         this.reservedQuantity += quantity;
     }
 
-    public void minusReserved(Integer quantity){
-        this.reservedQuantity -= quantity;
+    public void minusReserved(Integer quantity) {
+        this.reservedQuantity = safeSubtract(this.reservedQuantity, quantity);
+    }
+
+    private int safeSubtract(Integer current, Integer amount) {
+        if (current == null) current = 0;
+        if (amount == null) amount = 0;
+        return Math.max(0, current - amount);
     }
 }
