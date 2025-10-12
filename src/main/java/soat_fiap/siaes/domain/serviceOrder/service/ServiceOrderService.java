@@ -159,12 +159,7 @@ public class ServiceOrderService {
     }
 
     private void validatePermissionForStatus(ServiceOrder order, ServiceOrderStatusEnum novoStatus, RoleEnum role) {
-        if (!order.getOrderStatusEnum().canTransitionTo(novoStatus, role)) {
-            throw new BusinessException(
-                    "O usuário com perfil " + role + " não pode alterar o status de " +
-                            order.getOrderStatusEnum() + " para " + novoStatus
-            );
-        }
+        ServiceOrderStatusEnum.validatePermissionForStatus(order, novoStatus, role);
     }
 
     @Transactional
@@ -213,5 +208,10 @@ public class ServiceOrderService {
         }
 
         repository.delete(order);
+    }
+
+    public Page<ServiceOrderResponse> findAllMe(Pageable pageable) {
+        User usuarioLogado = helperUseCase.carregarUsuarioEximioJWT();
+        return this.findByUserId(usuarioLogado.getId(), pageable);
     }
 }
