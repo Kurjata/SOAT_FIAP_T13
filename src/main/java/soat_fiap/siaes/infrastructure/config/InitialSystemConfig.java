@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.partStock.model.Part;
+import soat_fiap.siaes.domain.partStock.model.UnitMeasure;
 import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.user.model.User;
@@ -33,8 +34,7 @@ public class InitialSystemConfig implements CommandLineRunner {
         //Criar usuários
         createUserIfNotExist("admin", "Administrator", "admin", RoleEnum.ADMIN, "239.413.650-29", "admin@email.com");
         createUserIfNotExist("collaborator", "Collaborator da silva", "collaborator", RoleEnum.COLLABORATOR, "27.295.338/0001-74", "collaborator@email.com");
-        createUserIfNotExist("elisa.goncalves", "Elisa Mirella Daniela Gonçalves", "123", RoleEnum.CLIENT, "382.282.180-28", "elisa.goncalves@email.com");
-        createUserIfNotExist("alicia.monteiro", "Alícia Laura Emanuelly Monteiro", "123", RoleEnum.CLIENT, "711.172.882-34", "alicia.monteiro@email.com");
+        createUserIfNotExist("client", "Cliente da silva", "123", RoleEnum.CLIENT, "986.467.410-28", "client@email.com");
 
         //Criar serviços
         createServiceLaborIfNotExist("Troca de Óleo", new BigDecimal("120.00"));
@@ -83,7 +83,7 @@ public class InitialSystemConfig implements CommandLineRunner {
     private void createPartStockIfNotExist(String ean, String name, Integer stockQuantity, Integer minimumStock, BigDecimal unitPrice) {
         partRepository.findByEan(ean)
                 .orElseGet(() -> {
-                    Part partStock = new Part(name, unitPrice, stockQuantity, ean, "teste", minimumStock);
+                    Part partStock = new Part(name, unitPrice, UnitMeasure.UNIT, stockQuantity, 0, ean, "teste", minimumStock);
                     return partRepository.save(partStock);
                 });
     }

@@ -57,4 +57,11 @@ public class ServiceOrder {
         }
         return null;
     }
+
+    public void setUpdateStatus(ServiceOrderStatusEnum status) {
+        if (status == ServiceOrderStatusEnum.FINALIZADA) {
+            this.endTime = LocalDateTime.now();
+        }
+        this.orderStatusEnum = status;
+    }
 }

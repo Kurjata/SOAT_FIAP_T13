@@ -69,7 +69,7 @@ public class ServiceOrderController {
     }
 
     // Atualizar status da ordem
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/client/status/{id}")
     public ResponseEntity<ServiceOrderResponse> updateStatus(
             @PathVariable UUID id,
             @RequestParam ServiceOrderStatusEnum status) {
@@ -81,5 +81,11 @@ public class ServiceOrderController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //Busca by usuário logado
+    @GetMapping("/client/me")
+    public ResponseEntity<Page<ServiceOrderResponse>> findAllMe(@ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(service.findAllMe(pageable));
     }
 }

@@ -35,14 +35,17 @@ public class SecurityConfiguration {
                         // Endpoints públicos
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
-                        .requestMatchers("/client/service-orders/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                         // Permissões granulares
                         .requestMatchers("/users/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/vehicles/**").hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/service-labor/**").hasAnyRole("ADMIN", "COLLABORATOR")
+
+                        // CLIENT só pode acessar endpoints de status e me dentro de service-orders
+                        .requestMatchers("/service-orders/client/**").hasAnyRole("CLIENT", "COLLABORATOR", "ADMIN")
+
+                        // ADMIN e COLLABORATOR podem acessar
                         .requestMatchers("/service-orders/**").hasAnyRole("ADMIN", "COLLABORATOR")
 
                         // Qualquer outro endpoint exige autenticação
