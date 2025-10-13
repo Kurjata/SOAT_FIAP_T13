@@ -4,21 +4,24 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import soat_fiap.siaes.domain.partStock.model.Item;
+import soat_fiap.siaes.domain.partStock.model.MovementType;
 import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdatePartRequest;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class PartService {
 
     private final PartRepository partRepository;
+    private final StockMovementService stockMovementService;
 
-    public PartService(PartRepository partRepository) {
+    public PartService(PartRepository partRepository, StockMovementService stockMovementService) {
         this.partRepository = partRepository;
+        this.stockMovementService = stockMovementService;
     }
 
     public Part save(Part part) {
@@ -53,4 +56,49 @@ public class PartService {
         }
         partRepository.deleteById(id);
     }
+
+    public List<Part> findAllBelowMinimumStock() {
+        return partRepository.findAllBelowMinimumStock();
+    }
+
+     public Part addStock(UUID id, Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new EntityNotFoundException("Quantidade inválida para adicionar ao estoque.");
+        }
+
+        Part part = partRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
+
+        part.add(quantity);
+         Part updated = partRepository.save(part);
+
+         stockMovementService.registerMovement(part, MovementType.ENTRADA, quantity);
+         return updated;
+    }
+
+
+    public Part updateStockQuantity(UUID id, Integer quantity) {
+
+        Part part = findById(id);
+
+        if (quantity == null) {
+            throw new IllegalArgumentException("A quantidade deve ser informada.");
+        }
+
+        int currentStock = part.getQuantity() != null ? part.getQuantity() : 0;
+        int newStock = currentStock + quantity;
+
+        if (newStock < 0) {
+            throw new IllegalArgumentException("O valor do ajuste não pode deixar o estoque negativo. Estoque atual: "
+                            + currentStock + ", tentativa de ajuste: " + quantity
+            );
+        }
+
+        part.add(quantity);
+        Part updated = partRepository.save(part);
+
+        stockMovementService.registerMovement(part, MovementType.AJUSTE, quantity);
+        return updated;
+    }
+
 }

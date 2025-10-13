@@ -44,4 +44,18 @@ public class SupplyService {
         }
         supplyRepository.deleteById(id);
     }
+
+    public Supply updateAvailability(UUID id, Boolean available) {
+        Supply existingSupply = supplyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Suprimento não encontrado com ID: " + id));
+
+        if (Boolean.TRUE.equals(available)) {
+            existingSupply.enable();
+        } else {
+            existingSupply.disable();
+        }
+
+        return supplyRepository.save(existingSupply);
+    }
+
 }

@@ -9,7 +9,8 @@ public record SupplyResponse(
          UUID id,
          String name,
          BigDecimal unitPrice,
-         String supplier
+         String supplier,
+         Boolean available
 ) {
 
     public static SupplyResponse fromModelSupply(Supply supply) {
@@ -17,7 +18,8 @@ public record SupplyResponse(
                 supply.getId(),
                 supply.getName(),
                 supply.getUnitPrice(),
-                supply.getSupplier()
+                supply.getSupplier(),
+                supply.getAvailable()
         );
     }
 }

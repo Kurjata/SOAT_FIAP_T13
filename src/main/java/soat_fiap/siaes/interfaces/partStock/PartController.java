@@ -12,6 +12,7 @@ import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.service.PartService;
 import soat_fiap.siaes.interfaces.partStock.dto.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -55,6 +56,39 @@ public class PartController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         partService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //simular a entrada de peça do fornecedor
+    @PatchMapping("/{id}/addstock")
+    public ResponseEntity<PartResponse> addStock(
+            @PathVariable UUID id,
+            @RequestBody AddStockRequest  request) {
+
+        Part updatedPart = partService.addStock(id, request.quantity());
+        return ResponseEntity.ok(PartResponse.fromModel(updatedPart));
+
+    }
+
+    //Ajuste de estoque fisico para virtual
+    // número positivo = adiciona, número negativo = reduz
+    @PostMapping("/adjust-stock/{id}")
+    public ResponseEntity<PartResponse> adjustStock(
+            @PathVariable UUID id,
+            @RequestParam Integer quantity
+    ) {
+        Part part = partService.findById(id);
+        Part updated = partService.updateStockQuantity(id, quantity);
+        return ResponseEntity.ok(PartResponse.fromModel(updated));
+    }
+
+    @GetMapping("/below-minimum-stock")
+    public ResponseEntity<List<PartResponse>> findAllBelowMinimumStock() {
+        List<PartResponse> response = partService.findAllBelowMinimumStock()
+                .stream()
+                .map(PartResponse::fromModel)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -53,5 +53,16 @@ public class SupplyController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/availability")
+    public ResponseEntity<SupplyResponse> updateAvailability(
+            @PathVariable UUID id,
+            @RequestBody UpdateSupplyAvailableRequest request) {
+
+        Supply updatedSupply =  supplyService.updateAvailability(id, request.available());
+        return ResponseEntity.ok(SupplyResponse.fromModelSupply(updatedSupply));
+    }
+
+
+
 
 }

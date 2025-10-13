@@ -26,14 +26,32 @@ public class Supply extends Item{
         return supplier;
     }
 
-    public void update(String name, BigDecimal unitPrice,String supplier) {
+    public void update(String name, BigDecimal unitPrice,String supplier,Boolean available) {
         this.name = name;
         this.unitPrice = unitPrice;
         this.supplier = supplier;
+        this.available = available;
+
     }
 
     @Override
     public ItemType getType() {
         return ItemType.SUPPLY;
     }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void enable() {
+        this.available = true;
+    }
+
+    public void disable() {
+        this.available = false;
+    }
+
+
 }
+
+
