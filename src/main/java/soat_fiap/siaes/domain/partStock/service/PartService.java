@@ -66,7 +66,7 @@ public class PartService {
             throw new EntityNotFoundException("Quantidade inválida para adicionar ao estoque.");
         }
 
-        Part part = partRepository.findById(id)
+        Part part = findById(id);
                 .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
 
         part.add(quantity);
