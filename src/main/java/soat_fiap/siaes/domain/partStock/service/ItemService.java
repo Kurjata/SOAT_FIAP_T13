@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.partStock.enums.ItemType;
 import soat_fiap.siaes.domain.partStock.enums.MovimentTypeEnum;
 import soat_fiap.siaes.domain.partStock.model.Item;
+import soat_fiap.siaes.domain.partStock.model.MovementType;
 import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.repository.ItemRepository;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdatePartRequest;
@@ -17,10 +18,13 @@ import java.util.UUID;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final StockMovementService stockMovementService;
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository, StockMovementService stockMovementService) {
         this.itemRepository = itemRepository;
+        this.stockMovementService = stockMovementService;
     }
+
 
     public Item findById(UUID id) {
         return itemRepository.findById(id)
@@ -49,12 +53,14 @@ public class ItemService {
                         }
                         part.minus(quantity);         // Tira do estoque
                         part.addReserved(quantity);   // Coloca para reserva
+                        stockMovementService.registerMovement(part, MovementType.SAIDA_OS, quantity);
                     }
                 }
                 // Devolve para estoque e remove da reserva
                 case ADD -> {
                     part.add(quantity);           // Adiciona ao estoque
                     part.minusReserved(quantity); // Remove da reserva, se houver
+                    stockMovementService.registerMovement(part, MovementType.DEVOLUCAO_OS, quantity);
                 }
             }
 

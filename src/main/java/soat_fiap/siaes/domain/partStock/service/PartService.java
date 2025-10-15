@@ -1,24 +1,28 @@
 package soat_fiap.siaes.domain.partStock.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import soat_fiap.siaes.domain.partStock.model.Item;
+import soat_fiap.siaes.domain.partStock.model.MovementType;
 import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.repository.PartRepository;
 import soat_fiap.siaes.interfaces.partStock.dto.UpdatePartRequest;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class PartService {
 
     private final PartRepository partRepository;
+    private final StockMovementService stockMovementService;
 
-    public PartService(PartRepository partRepository) {
+    public PartService(PartRepository partRepository, StockMovementService stockMovementService) {
         this.partRepository = partRepository;
+        this.stockMovementService = stockMovementService;
     }
 
     public Part save(Part part) {
@@ -53,4 +57,29 @@ public class PartService {
         }
         partRepository.deleteById(id);
     }
+
+    public List<Part> findPartsBelowMinimumStock() {
+        return partRepository.findPartsBelowMinimumStock();
+    }
+
+    @Transactional
+    public Part addStock(UUID id, Integer quantity) {
+        Part part = findById(id);
+
+        part.add(quantity);
+        Part updated = partRepository.save(part);
+
+        stockMovementService.registerMovement(updated, MovementType.ENTRADA, quantity);
+        return updated;
+    }
+
+    @Transactional
+    public Part updateStockQuantity(UUID id, Integer quantity) {
+        Part part = findById(id);
+        part.adjustStock(quantity);
+        Part updated = partRepository.save(part);
+        stockMovementService.registerMovement(part, MovementType.AJUSTE, quantity);
+        return updated;
+    }
+
 }

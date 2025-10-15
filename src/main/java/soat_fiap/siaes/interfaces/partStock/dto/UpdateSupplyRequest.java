@@ -11,10 +11,11 @@ import java.math.BigDecimal;
 public record UpdateSupplyRequest(
         @NotBlank String name,
         @NotNull @Positive BigDecimal unitPrice,
-        @NotBlank String supplier) {
+        @NotBlank String supplier,
+        @NotNull Boolean available) {
 
     public void applyToSupply(Supply supply) {
-        supply.update(name, unitPrice,supplier);
+        supply.update(name, unitPrice,supplier,available);
     }
 
 }

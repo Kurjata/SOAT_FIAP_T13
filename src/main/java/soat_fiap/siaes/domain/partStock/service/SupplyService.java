@@ -44,4 +44,11 @@ public class SupplyService {
         }
         supplyRepository.deleteById(id);
     }
+
+    public Supply updateAvailability(UUID id, Boolean available) {
+        Supply supply = findById(id);
+        supply.setAvailability(available);
+        return supplyRepository.save(supply);
+    }
+
 }

@@ -63,10 +63,6 @@ public class Part extends Item {
         return ItemType.PART;
     }
 
-    public void add(Integer quantity){
-        this.quantity += quantity;
-    }
-
     public void minus(Integer quantity) {
         this.quantity = safeSubtract(this.quantity, quantity);
     }
@@ -83,5 +79,19 @@ public class Part extends Item {
         if (current == null) current = 0;
         if (amount == null) amount = 0;
         return Math.max(0, current - amount);
+    }
+
+    public void add(Integer amount) {
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero para adicionar ao estoque.");
+        }
+        this.quantity = (this.quantity == null ? 0 : this.quantity) + amount;
+    }
+
+    public void adjustStock(Integer quantity) {
+        if (quantity == null) throw new IllegalArgumentException("Quantidade deve ser informada.");
+        int newStock = (this.quantity != null ? this.quantity : 0) + quantity;
+        if (newStock < 0) throw new IllegalArgumentException("O estoque não pode ficar negativo.");
+        this.quantity = newStock;
     }
 }
