@@ -2,6 +2,7 @@ package soat_fiap.siaes.domain.partStock.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,7 +46,9 @@ public class StockMovement {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal totalValue;
 
-    private UUID orderId;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private ServiceOrder serviceOrder;
 
     public StockMovement(
             Part part,
