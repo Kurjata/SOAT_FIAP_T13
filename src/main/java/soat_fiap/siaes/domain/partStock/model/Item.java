@@ -9,7 +9,7 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Entity
-@Table(name="tb_items")
+@Table(name="items")
 public abstract class Item {
 
     @Id
