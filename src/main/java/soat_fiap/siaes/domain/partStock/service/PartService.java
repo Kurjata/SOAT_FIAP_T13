@@ -1,6 +1,7 @@
 package soat_fiap.siaes.domain.partStock.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,46 +58,26 @@ public class PartService {
         partRepository.deleteById(id);
     }
 
-    public List<Part> findAllBelowMinimumStock() {
-        return partRepository.findAllBelowMinimumStock();
+    public List<Part> findPartsBelowMinimumStock() {
+        return partRepository.findPartsBelowMinimumStock();
     }
 
-     public Part addStock(UUID id, Integer quantity) {
-        if (quantity == null || quantity <= 0) {
-            throw new EntityNotFoundException("Quantidade inválida para adicionar ao estoque.");
-        }
-
+    @Transactional
+    public Part addStock(UUID id, Integer quantity) {
         Part part = findById(id);
-                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
-
-        part.add(quantity);
-         Part updated = partRepository.save(part);
-
-         stockMovementService.registerMovement(part, MovementType.ENTRADA, quantity);
-         return updated;
-    }
-
-
-    public Part updateStockQuantity(UUID id, Integer quantity) {
-
-        Part part = findById(id);
-
-        if (quantity == null) {
-            throw new IllegalArgumentException("A quantidade deve ser informada.");
-        }
-
-        int currentStock = part.getQuantity() != null ? part.getQuantity() : 0;
-        int newStock = currentStock + quantity;
-
-        if (newStock < 0) {
-            throw new IllegalArgumentException("O valor do ajuste não pode deixar o estoque negativo. Estoque atual: "
-                            + currentStock + ", tentativa de ajuste: " + quantity
-            );
-        }
 
         part.add(quantity);
         Part updated = partRepository.save(part);
 
+        stockMovementService.registerMovement(updated, MovementType.ENTRADA, quantity);
+        return updated;
+    }
+
+    @Transactional
+    public Part updateStockQuantity(UUID id, Integer quantity) {
+        Part part = findById(id);
+        part.adjustStock(quantity);
+        Part updated = partRepository.save(part);
         stockMovementService.registerMovement(part, MovementType.AJUSTE, quantity);
         return updated;
     }

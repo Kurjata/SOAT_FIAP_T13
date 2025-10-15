@@ -43,6 +43,14 @@ public class Supply extends Item{
         return available;
     }
 
+    public void setAvailability(Boolean available) {
+        if (available == null) {
+            throw new IllegalArgumentException("Disponibilidade deve ser informada");
+        }
+        this.available = available;
+    }
+
+
     public void enable() {
         this.available = true;
     }

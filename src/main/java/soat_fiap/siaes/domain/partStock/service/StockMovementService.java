@@ -3,6 +3,7 @@ package soat_fiap.siaes.domain.partStock.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import soat_fiap.siaes.domain.partStock.model.MovementType;
 import soat_fiap.siaes.domain.partStock.model.Part;
 import soat_fiap.siaes.domain.partStock.model.StockMovement;
@@ -22,23 +23,34 @@ public class StockMovementService {
     }
 
     public void registerMovement(Part part, MovementType type, Integer quantity) {
+        validateInputs(part, type, quantity);
+
         int before = part.getQuantity() != null ? part.getQuantity() : 0;
         int after = before + quantity;
 
         BigDecimal unitPrice = part.getUnitPrice() != null ? part.getUnitPrice() : BigDecimal.ZERO;
         BigDecimal total = unitPrice.multiply(BigDecimal.valueOf(Math.abs(quantity)));
 
-        StockMovement movement = StockMovement.builder()
-                .part(part)
-                .type(type)
-                .quantity(quantity)
-                .balanceBefore(before)
-                .balanceAfter(after)
-                .unitPrice(unitPrice)
-                .totalValue(total)
-                .build();
+        StockMovement movement = new StockMovement(
+                part,
+                type,
+                quantity,
+                before,
+                after,
+                unitPrice,
+                total
+        );
 
         stockMovementRepository.save(movement);
+    }
+
+    private void validateInputs(Part part, MovementType type, Integer quantity) {
+        Assert.notNull(part, "A peça não pode ser nula");
+        Assert.notNull(type, "O tipo de movimentação não pode ser nulo");
+        Assert.notNull(quantity, "A quantidade não pode ser nula");
+        Assert.isTrue(quantity != 0, "A quantidade deve ser diferente de zero");
+        Assert.notNull(part.getQuantity(), "A quantidade da peça não pode ser nula");
+        Assert.notNull(part.getUnitPrice(), "O preço unitário da peça não pode ser nulo");
     }
 
 

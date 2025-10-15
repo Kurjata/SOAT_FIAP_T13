@@ -47,7 +47,23 @@ public class StockMovement {
 
     private UUID orderId;
 
-    //private String observation;
+    public StockMovement(
+            Part part,
+            MovementType type,
+            Integer quantity,
+            Integer balanceBefore,
+            Integer balanceAfter,
+            BigDecimal unitPrice,
+            BigDecimal totalValue
+    ) {
+        this.part = part;
+        this.type = type;
+        this.quantity = quantity;
+        this.balanceBefore = balanceBefore;
+        this.balanceAfter = balanceAfter;
+        this.unitPrice = unitPrice;
+        this.totalValue = totalValue;
+    }
 
     @PrePersist
     public void prePersist() {

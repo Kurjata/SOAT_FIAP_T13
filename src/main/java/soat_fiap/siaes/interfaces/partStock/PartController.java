@@ -83,7 +83,7 @@ public class PartController {
 
     @GetMapping("/below-minimum-stock")
     public ResponseEntity<List<PartResponse>> findAllBelowMinimumStock() {
-        List<PartResponse> response = partService.findAllBelowMinimumStock()
+        List<PartResponse> response = partService.findPartsBelowMinimumStock()
                 .stream()
                 .map(PartResponse::fromModel)
                 .toList();

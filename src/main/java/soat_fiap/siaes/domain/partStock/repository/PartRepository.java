@@ -18,7 +18,5 @@ public interface PartRepository {
     void deleteById(UUID id);
     boolean existsByEan(String ean);
     boolean existsByEanAndIdNot(String ean, UUID id);
-
-    @Query("SELECT p FROM Part p WHERE p.quantity < p.minimumStockQuantity")
-    List<Part> findAllBelowMinimumStock();
+    List<Part> findPartsBelowMinimumStock();
 }
