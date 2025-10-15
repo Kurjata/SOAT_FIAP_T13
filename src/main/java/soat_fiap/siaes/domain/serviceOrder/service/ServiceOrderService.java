@@ -11,26 +11,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
 import soat_fiap.siaes.application.useCase.HelperUseCase;
-import soat_fiap.siaes.domain.partStock.enums.MovimentTypeEnum;
-import soat_fiap.siaes.domain.partStock.model.Item;
-import soat_fiap.siaes.domain.partStock.model.Part;
-import soat_fiap.siaes.domain.partStock.service.ItemService;
+import soat_fiap.siaes.domain.inventory.enums.MovimentType;
+import soat_fiap.siaes.domain.inventory.model.Item;
+import soat_fiap.siaes.domain.inventory.model.Part;
+import soat_fiap.siaes.domain.inventory.service.ItemService;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.serviceLabor.service.ServiceLaborService;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
-import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
-import soat_fiap.siaes.domain.serviceOrderItemSupply.model.ActivityItem;
+import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
+import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;
 import soat_fiap.siaes.domain.user.model.RoleEnum;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.service.UserService;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 import soat_fiap.siaes.domain.vehicle.service.VehicleService;
-import soat_fiap.siaes.infrastructure.persistence.serviceOrder.ServiceOrderRepository;
+import soat_fiap.siaes.domain.serviceOrder.repository.ServiceOrderRepository;
 import soat_fiap.siaes.interfaces.shared.BusinessException;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderRequest;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderResponse;
-import soat_fiap.siaes.interfaces.serviceOrderItem.dto.OrderActivityRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,19 +102,19 @@ public class ServiceOrderService {
             ServiceLabor labor = serviceLaborService.findByUUID(activityReq.serviceLaborId());
             OrderActivity orderActivity = new OrderActivity(order, labor);
 
-            List<ActivityItem> activityItems = buildActivityItems(activityReq, orderActivity);
-            orderActivity.setActivityItems(activityItems);
+            List<OrderItem> orderItems = buildActivityItems(activityReq, orderActivity);
+            orderActivity.setOrderItems(orderItems);
 
             orderActivities.add(orderActivity);
         });
 
         return orderActivities;
     }
-    private List<ActivityItem> buildActivityItems(OrderActivityRequest activityReq, OrderActivity activity) {
-        List<ActivityItem> items = new ArrayList<>();
+    private List<OrderItem> buildActivityItems(OrderActivityRequest activityReq, OrderActivity activity) {
+        List<OrderItem> items = new ArrayList<>();
         activityReq.items().forEach(itemReq -> {
             Item part = itemService.findById(itemReq.itemId());
-            items.add(new ActivityItem(activity, part, itemReq.quantity(), part.getUnitPrice()));
+            items.add(new OrderItem(activity, part, itemReq.quantity(), part.getUnitPrice()));
         });
         return items;
     }
@@ -132,7 +132,7 @@ public class ServiceOrderService {
         switch (order.getOrderStatusEnum()) {
             case APROVADO_CLIENTE -> {
                 try {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentTypeEnum.MINUS, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.MINUS, false));
                 } catch (BusinessException e) {
                     order.setUpdateStatus(ServiceOrderStatusEnum.AGUARDANDO_ESTOQUE);
                     this.save(order);
@@ -142,17 +142,17 @@ public class ServiceOrderService {
             case REPROVADO_CLIENTE -> {
                 boolean
                         hasReservedItems = order.getOrderActivities().stream()
-                        .flatMap(activity -> activity.getActivityItems().stream())
-                        .map(ActivityItem::getPartStock)
+                        .flatMap(activity -> activity.getOrderItems().stream())
+                        .map(OrderItem::getPartStock)
                         .filter(item -> item instanceof Part)
                         .map(item -> (Part) item)
                         .anyMatch(part -> part.getReservedQuantity() != null && part.getReservedQuantity() > 0);
 
                 if (status == ServiceOrderStatusEnum.REPROVADO_CLIENTE && hasReservedItems) {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentTypeEnum.ADD, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.ADD, false));
                 }
             }
-            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentTypeEnum.MINUS, true));
+            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.MINUS, true));
         }
 
         return new ServiceOrderResponse(order);
@@ -200,8 +200,8 @@ public class ServiceOrderService {
         // Excluir todos os itens e insumos da ordem
         if (order.getOrderActivities() != null) {
             order.getOrderActivities().forEach(item -> {
-                if (item.getActivityItems() != null) {
-                    item.getActivityItems().clear();
+                if (item.getOrderItems() != null) {
+                    item.getOrderItems().clear();
                 }
             });
             order.getOrderActivities().clear();

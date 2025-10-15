@@ -5,16 +5,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.domain.partStock.model.Part;
-import soat_fiap.siaes.domain.partStock.model.UnitMeasure;
-import soat_fiap.siaes.domain.partStock.repository.PartRepository;
+import soat_fiap.siaes.domain.inventory.model.Part;
+import soat_fiap.siaes.domain.inventory.model.UnitMeasure;
+import soat_fiap.siaes.domain.inventory.repository.PartRepository;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.model.RoleEnum;
 import soat_fiap.siaes.domain.user.repository.UserRepository;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 import soat_fiap.siaes.domain.vehicle.repository.VehicleRepository;
-import soat_fiap.siaes.infrastructure.persistence.ServiceLabor.ServiceLaborRepository;
+import soat_fiap.siaes.domain.serviceLabor.repository.ServiceLaborRepository;
 
 import java.math.BigDecimal;
 

@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.serviceLabor;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RequestMapping("/service-labor")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
+@Tag(name = "Service Labor")
 public class ServiceLaborController {
     private final ServiceLaborService service;
 

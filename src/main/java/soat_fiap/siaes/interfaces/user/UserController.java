@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
-@Tag(name = "user/customer")
+@Tag(name = "User")
 @SecurityRequirement(name = "bearer-key")
 public class UserController {
 

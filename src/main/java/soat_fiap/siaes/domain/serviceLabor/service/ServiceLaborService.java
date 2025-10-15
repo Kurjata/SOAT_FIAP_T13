@@ -10,7 +10,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
-import soat_fiap.siaes.infrastructure.persistence.ServiceLabor.ServiceLaborRepository;
+import soat_fiap.siaes.domain.serviceLabor.repository.ServiceLaborRepository;
 import soat_fiap.siaes.interfaces.serviceLabor.dto.ServiceLaborRequest;
 import soat_fiap.siaes.interfaces.serviceLabor.dto.ServiceLaborResponse;
 
@@ -46,7 +46,7 @@ public class ServiceLaborService {
     }
 
     @Transactional
-    private ServiceLabor persist(ServiceLabor labor) {
+    protected ServiceLabor persist(ServiceLabor labor) {
         try {
             return repository.save(labor);
         }
