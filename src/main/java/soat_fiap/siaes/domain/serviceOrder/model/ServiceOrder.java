@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatusEnum;
-import soat_fiap.siaes.domain.serviceOrderItem.model.OrderActivity;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 
@@ -17,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "tb_service_order")
+@Table(name = "service_orders")
 public class ServiceOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

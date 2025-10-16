@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.serviceOrder;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @RequestMapping("/service-orders")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
+@Tag(name = "Service Order")
 public class ServiceOrderController {
     private final ServiceOrderService service;
 
