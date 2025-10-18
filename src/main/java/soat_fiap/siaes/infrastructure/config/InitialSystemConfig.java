@@ -75,9 +75,7 @@ public class InitialSystemConfig implements CommandLineRunner {
     private void createServiceLaborIfNotExist(String description, BigDecimal laborCost) {
         serviceLaborRepository.findByDescription(description)
                 .orElseGet(() -> {
-                    ServiceLabor labor = new ServiceLabor();
-                    labor.setDescription(description);
-                    labor.setLaborCost(laborCost);
+                    ServiceLabor labor = new ServiceLabor(description, laborCost);
                     return serviceLaborRepository.save(labor);
                 });
     }
