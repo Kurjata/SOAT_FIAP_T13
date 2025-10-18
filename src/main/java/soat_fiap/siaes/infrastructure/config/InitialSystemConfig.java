@@ -3,6 +3,7 @@ package soat_fiap.siaes.infrastructure.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.inventory.model.Part;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("!test")
 public class InitialSystemConfig implements CommandLineRunner {
 
     private final UserRepository userRepository;
