@@ -27,7 +27,7 @@ import soat_fiap.siaes.domain.user.service.UserService;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 import soat_fiap.siaes.domain.vehicle.service.VehicleService;
 import soat_fiap.siaes.domain.serviceOrder.repository.ServiceOrderRepository;
-import soat_fiap.siaes.interfaces.shared.BusinessException;
+import soat_fiap.siaes.shared.BusinessException;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderRequest;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderResponse;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityRequest;

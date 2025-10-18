@@ -33,14 +33,14 @@ public class Vehicle {
 
     @Getter
     @Setter
-    @Column(nullable = false)
+    @Column(name = "factory_year", nullable = false)
     private int year;
 
     @Deprecated
     public Vehicle() {}
 
     public Vehicle(String plate, String brand, String model, int year) {
-        this.plate = plate;
+        setPlate(plate);
         this.brand = brand;
         this.model = model;
         this.year = year;
@@ -48,5 +48,14 @@ public class Vehicle {
 
     public String getIdAsString() {
         return id.toString();
+    }
+
+    public void setPlate(String plate) {
+        if (plate == null) throw new IllegalArgumentException("Placa não pode ser nula");
+        this.plate = formatPlate(plate);
+    }
+
+    public String formatPlate(String plate) {
+        return plate.replace("-", "").toUpperCase();
     }
 }

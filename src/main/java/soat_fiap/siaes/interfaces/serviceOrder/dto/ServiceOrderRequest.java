@@ -1,8 +1,8 @@
 package soat_fiap.siaes.interfaces.serviceOrder.dto;
 
 import jakarta.validation.Valid;
-import soat_fiap.siaes.interfaces.shared.validation.Document;
-import soat_fiap.siaes.interfaces.shared.validation.BrazilianLicensePlate;
+import soat_fiap.siaes.shared.validation.Document;
+import soat_fiap.siaes.shared.validation.BrazilianLicensePlate;
 
 import java.util.List;
 

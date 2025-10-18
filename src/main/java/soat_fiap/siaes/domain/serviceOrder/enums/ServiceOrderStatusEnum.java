@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 import soat_fiap.siaes.domain.user.model.RoleEnum;
-import soat_fiap.siaes.interfaces.shared.BusinessException;
+import soat_fiap.siaes.shared.BusinessException;
 
 @Getter
 @RequiredArgsConstructor

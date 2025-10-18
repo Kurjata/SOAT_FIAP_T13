@@ -14,29 +14,25 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/service-order-item-supplies")
 @RequiredArgsConstructor
-@Tag(name = "Activity Item")
-public class ActivityItemController {
+@Tag(name = "Order Item")
+public class OrderItemController {
     private final ActivityItemService service;
 
-    //Listar todos os insumos de um item de ordem de serviço
     @GetMapping("/item/{itemId}")
     public ResponseEntity<List<ActivityItemResponse>> getByItem(@PathVariable UUID itemId) {
         return ResponseEntity.ok(service.findByServiceOrderItem(itemId));
     }
 
-    // Consultar insumo específico
     @GetMapping("/{id}")
     public ResponseEntity<ActivityItemResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // Criar insumo
     @PostMapping
     public ResponseEntity<ActivityItemResponse> create(@RequestBody ActivityItemRequest request) {
         return ResponseEntity.ok(service.create(request));
     }
 
-    // Alterar insumo (quantidade ou preço)
     @PutMapping("/{id}")
     public ResponseEntity<ActivityItemResponse> update(
             @PathVariable UUID id,
@@ -45,7 +41,6 @@ public class ActivityItemController {
         return ResponseEntity.ok(service.update(id, request));
     }
 
-    //Excluir insumo
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);

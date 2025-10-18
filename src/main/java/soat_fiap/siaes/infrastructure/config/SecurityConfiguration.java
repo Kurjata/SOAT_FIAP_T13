@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import soat_fiap.siaes.interfaces.shared.AuthenticationService;
+import soat_fiap.siaes.shared.AuthenticationService;
 import soat_fiap.siaes.domain.user.repository.UserRepository;
 
 @Configuration
