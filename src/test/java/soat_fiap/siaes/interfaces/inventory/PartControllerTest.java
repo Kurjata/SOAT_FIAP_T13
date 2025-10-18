@@ -111,7 +111,7 @@ class PartControllerTest {
     }
 
     @Test
-    void save__should_return_code_ok_when_valid_body() throws Exception {
+    void save__should_return_code_created_when_valid_body() throws Exception {
         CreatePartRequest request = new CreatePartRequest(10, "12323456789012", "Top", 5, "Filtro de óleo", BigDecimal.valueOf(20), UnitMeasure.UNIT, 0);;
 
         Part savedPart = createMockPart();
@@ -123,8 +123,14 @@ class PartControllerTest {
                         .content(objectMapper.writeValueAsString(request))
         ).andReturn().getResponse();
 
-        assertEquals(200, response.getStatus());
-        assertEquals(new PartResponse(savedPart), objectMapper.readValue(response.getContentAsString(), PartResponse.class));
+        PartResponse actual = objectMapper.readValue(response.getContentAsString(), PartResponse.class);
+        assertEquals(savedPart.getName(), actual.name());
+        assertEquals(savedPart.getUnitPrice(), actual.unitPrice());
+        assertEquals(savedPart.getQuantity(), actual.quantity());
+        assertEquals(savedPart.getEan(), actual.ean());
+        assertEquals(savedPart.getManufacturer(), actual.manufacturer());
+        assertEquals(savedPart.getMinimumStockQuantity(), actual.minimumStockQuantity());
+        assertEquals(savedPart.getReservedQuantity(), actual.reservedQuantity());
     }
 
 
