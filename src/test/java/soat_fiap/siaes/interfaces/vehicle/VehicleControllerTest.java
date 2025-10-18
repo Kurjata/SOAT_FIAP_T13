@@ -147,9 +147,7 @@ class VehicleControllerTest {
     void deleteById__should_return_code_no_content_when_vehicle_deleted() throws Exception {
         UUID id = UUID.randomUUID();
 
-        var response = mockMvc.perform(
-                        delete("/vehicles/" + id)
-                )
+        var response = mockMvc.perform(delete("/vehicles/" + id))
                 .andReturn()
                 .getResponse();
 

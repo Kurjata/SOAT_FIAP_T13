@@ -56,4 +56,16 @@ public abstract class Item {
     }
 
     public abstract ItemType getType();
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    protected void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    protected void setUnitMeasure(UnitMeasure unitMeasure) {
+        this.unitMeasure = unitMeasure;
+    }
 }

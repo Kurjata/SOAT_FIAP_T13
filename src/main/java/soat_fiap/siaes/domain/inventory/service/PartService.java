@@ -43,10 +43,18 @@ public class PartService {
     }
 
     public Part update(UUID id, UpdatePartRequest request) {
-        Part existing = partRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
+        if (partRepository.existsByEanAndIdNot(request.ean(), id))
+            throw new IllegalArgumentException("EAN já existe: " + request.ean());
 
-        request.applyTo(existing);
+        Part existing = findById(id);
+        existing.setName(request.name());
+        existing.setUnitPrice(request.unitPrice());
+        existing.setUnitMeasure(request.unitMeasure());
+        existing.setQuantity(request.quantity());
+        existing.setReservedQuantity(request.reservedQuantity());
+        existing.setMinimumStockQuantity(request.minimumStockQuantity());
+        existing.setEan(request.ean());
+        existing.setManufacturer(request.manufacturer());
 
         return partRepository.save(existing);
     }
@@ -65,8 +73,8 @@ public class PartService {
     @Transactional
     public Part addStock(UUID id, Integer quantity) {
         Part part = findById(id);
-
         part.add(quantity);
+
         Part updated = partRepository.save(part);
 
         stockMovementService.registerMovement(updated, MovementType.ENTRADA, quantity);
@@ -77,7 +85,9 @@ public class PartService {
     public Part updateStockQuantity(UUID id, Integer quantity) {
         Part part = findById(id);
         part.adjustStock(quantity);
+
         Part updated = partRepository.save(part);
+
         stockMovementService.registerMovement(part, MovementType.AJUSTE, quantity);
         return updated;
     }

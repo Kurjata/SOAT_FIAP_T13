@@ -50,7 +50,6 @@ public class Supply extends Item{
         this.available = available;
     }
 
-
     public void enable() {
         this.available = true;
     }

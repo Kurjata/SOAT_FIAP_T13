@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.inventory.model.Part;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/parts-controller")
+@RequestMapping("/parts")
 @SecurityRequirement(name = "bearer-key")
 @Tag(name = "Parts")
 public class PartController {
@@ -31,27 +32,27 @@ public class PartController {
 
     @PostMapping
     public ResponseEntity<Part> save(@RequestBody @Valid CreatePartRequest request) {
-        return ResponseEntity.ok().body(partService.save(request.toModel())) ;
+        return ResponseEntity.status(HttpStatus.CREATED).body(partService.save(request.toModel())) ;
     }
 
     @GetMapping
     public ResponseEntity<Page<PartResponse>> findAll(@ParameterObject Pageable pageable) {
         Page<PartResponse> response = partService.findAll(pageable)
-                .map(PartResponse::fromModel);
+                .map(PartResponse::new);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PartResponse> findById(@PathVariable UUID id) {
         Part part = partService.findById(id);
-        return ResponseEntity.ok(PartResponse.fromModel(part));
+        return ResponseEntity.ok(new PartResponse(part));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PartResponse> update(@PathVariable UUID id,
                                                @RequestBody @Valid UpdatePartRequest request) {
         Part updated = partService.update(id, request);
-        return ResponseEntity.ok(PartResponse.fromModel(updated));
+        return ResponseEntity.ok(new PartResponse(updated));
     }
 
     @DeleteMapping("/{id}")
@@ -60,34 +61,29 @@ public class PartController {
         return ResponseEntity.noContent().build();
     }
 
-    //simular a entrada de peça do fornecedor
-    @PatchMapping("/{id}/addstock")
+    @PatchMapping("/{id}/stock/add")
     public ResponseEntity<PartResponse> addStock(
             @PathVariable UUID id,
             @RequestBody AddStockRequest  request) {
 
         Part updatedPart = partService.addStock(id, request.quantity());
-        return ResponseEntity.ok(PartResponse.fromModel(updatedPart));
-
+        return ResponseEntity.ok(new PartResponse(updatedPart));
     }
 
-    //Ajuste de estoque fisico para virtual
-    // número positivo = adiciona, número negativo = reduz
-    @PostMapping("/adjust-stock/{id}")
+    @PatchMapping("/{id}/stock/adjust")
     public ResponseEntity<PartResponse> adjustStock(
             @PathVariable UUID id,
             @RequestParam Integer quantity
     ) {
-        Part part = partService.findById(id);
         Part updated = partService.updateStockQuantity(id, quantity);
-        return ResponseEntity.ok(PartResponse.fromModel(updated));
+        return ResponseEntity.ok(new PartResponse(updated));
     }
 
-    @GetMapping("/below-minimum-stock")
+    @GetMapping("/stock/below-minimum")
     public ResponseEntity<List<PartResponse>> findAllBelowMinimumStock() {
         List<PartResponse> response = partService.findPartsBelowMinimumStock()
                 .stream()
-                .map(PartResponse::fromModel)
+                .map(PartResponse::new)
                 .toList();
 
         return ResponseEntity.ok(response);

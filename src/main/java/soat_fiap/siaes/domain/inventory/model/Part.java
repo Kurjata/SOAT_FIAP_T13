@@ -28,16 +28,6 @@ public class Part extends Item {
         this.minimumStockQuantity = minimumStockQuantity;
     }
 
-    public void update(String name, BigDecimal unitPrice, Integer quantity,
-                       String ean, String manufacturer, Integer minimumStockQuantity) {
-        this.name = name;
-        this.unitPrice = unitPrice;
-        this.quantity = quantity;
-        this.ean = ean;
-        this.manufacturer = manufacturer;
-        this.minimumStockQuantity = minimumStockQuantity;
-    }
-
     public Integer getQuantity() {
         return quantity;
     }
@@ -63,6 +53,13 @@ public class Part extends Item {
         return ItemType.PART;
     }
 
+    public void add(Integer amount) {
+        if (amount == null || amount <= 0)
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero para adicionar ao estoque.");
+
+        this.quantity = (this.quantity == null ? 0 : this.quantity) + amount;
+    }
+
     public void minus(Integer quantity) {
         this.quantity = safeSubtract(this.quantity, quantity);
     }
@@ -81,17 +78,45 @@ public class Part extends Item {
         return Math.max(0, current - amount);
     }
 
-    public void add(Integer amount) {
-        if (amount == null || amount <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser maior que zero para adicionar ao estoque.");
-        }
-        this.quantity = (this.quantity == null ? 0 : this.quantity) + amount;
-    }
-
     public void adjustStock(Integer quantity) {
         if (quantity == null) throw new IllegalArgumentException("Quantidade deve ser informada.");
         int newStock = (this.quantity != null ? this.quantity : 0) + quantity;
         if (newStock < 0) throw new IllegalArgumentException("O estoque não pode ficar negativo.");
         this.quantity = newStock;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setReservedQuantity(Integer reservedQuantity) {
+        this.reservedQuantity = reservedQuantity;
+    }
+
+    public void setMinimumStockQuantity(Integer minimumStockQuantity) {
+        this.minimumStockQuantity = minimumStockQuantity;
+    }
+
+    public void setEan(String ean) {
+        this.ean = ean;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
+    @Override
+    public void setUnitPrice(BigDecimal unitPrice) {
+        super.setUnitPrice(unitPrice);
+    }
+
+    @Override
+    public void setUnitMeasure(UnitMeasure unitMeasure) {
+        super.setUnitMeasure(unitMeasure);
     }
 }
