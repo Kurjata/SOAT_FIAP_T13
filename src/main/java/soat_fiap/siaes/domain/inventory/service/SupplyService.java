@@ -15,9 +15,13 @@ public class SupplyService {
 
     private final SupplyRepository supplyRepository;
 
-    public SupplyService(SupplyRepository supplyRepository) {this.supplyRepository = supplyRepository;}
+    public SupplyService(SupplyRepository supplyRepository) {
+        this.supplyRepository = supplyRepository;
+    }
 
-    public Supply save(Supply supply){ return supplyRepository.save(supply);}
+    public Supply save(Supply supply) {
+        return supplyRepository.save(supply);
+    }
 
     public Page<Supply> findAll(Pageable pageable) {
         return supplyRepository.findAll(pageable);
@@ -25,21 +29,24 @@ public class SupplyService {
 
     public Supply findById(UUID id) {
         return supplyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrada com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado com ID: " + id));
     }
 
     public Supply update(UUID id, UpdateSupplyRequest request) {
-        Supply existing = supplyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado com ID: " + id));
+        Supply existing = findById(id);
 
-        request.applyToSupply(existing);
+        existing.setName(request.name());
+        existing.setUnitPrice(request.unitPrice());
+        existing.setUnitMeasure(request.unitMeasure());
+        existing.setSupplier(request.supplier());
+        existing.setAvailability(request.available());
 
         return supplyRepository.save(existing);
     }
 
     public void deleteById(UUID id) {
         if (!supplyRepository.existsById(id)) {
-            throw new EntityNotFoundException("Serviço não encontrado com ID: " + id);
+            throw new EntityNotFoundException("Insumo não encontrado com ID: " + id);
         }
         supplyRepository.deleteById(id);
     }
@@ -49,5 +56,4 @@ public class SupplyService {
         supply.setAvailability(available);
         return supplyRepository.save(supply);
     }
-
 }

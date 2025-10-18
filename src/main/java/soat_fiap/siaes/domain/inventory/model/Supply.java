@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Entity
 @DiscriminatorValue("supply")
 public class Supply extends Item{
-
     private String supplier;
     private Boolean available;
 
@@ -26,19 +25,6 @@ public class Supply extends Item{
         return supplier;
     }
 
-    public void update(String name, BigDecimal unitPrice,String supplier,Boolean available) {
-        this.name = name;
-        this.unitPrice = unitPrice;
-        this.supplier = supplier;
-        this.available = available;
-
-    }
-
-    @Override
-    public ItemType getType() {
-        return ItemType.SUPPLY;
-    }
-
     public Boolean getAvailable() {
         return available;
     }
@@ -50,15 +36,29 @@ public class Supply extends Item{
         this.available = available;
     }
 
-    public void enable() {
-        this.available = true;
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
     }
 
-    public void disable() {
-        this.available = false;
+    @Override
+    public void setName(String name) {
+        super.name = name;
     }
 
+    @Override
+    public void setUnitPrice(BigDecimal unitPrice) {
+        super.unitPrice = unitPrice;
+    }
 
+    @Override
+    public void setUnitMeasure(UnitMeasure unitMeasure) {
+        super.unitMeasure = unitMeasure;
+    }
+
+    @Override
+    public ItemType getType() {
+        return ItemType.SUPPLY;
+    }
 }
 
 

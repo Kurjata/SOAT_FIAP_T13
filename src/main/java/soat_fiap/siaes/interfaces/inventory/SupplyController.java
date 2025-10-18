@@ -1,5 +1,6 @@
 package soat_fiap.siaes.interfaces.inventory;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
@@ -14,7 +15,8 @@ import soat_fiap.siaes.interfaces.inventory.dto.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/supply-controller")
+@SecurityRequirement(name = "bearer-key")
+@RequestMapping("/supply")
 @Tag(name = "Supplies")
 public class SupplyController {
 
@@ -32,21 +34,21 @@ public class SupplyController {
     @GetMapping
     public ResponseEntity<Page<SupplyResponse>> findAll(@ParameterObject Pageable pageable) {
         Page<SupplyResponse> response = supplyService.findAll(pageable)
-                .map(SupplyResponse::fromModelSupply);
+                .map(SupplyResponse::new);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SupplyResponse> findById(@PathVariable UUID id) {
         Supply supply = supplyService.findById(id);
-        return ResponseEntity.ok(SupplyResponse.fromModelSupply(supply));
+        return ResponseEntity.ok(new SupplyResponse(supply));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SupplyResponse> update(@PathVariable UUID id,
                                                  @RequestBody @Valid UpdateSupplyRequest request) {
         Supply updated = supplyService.update(id, request);
-        return ResponseEntity.ok(SupplyResponse.fromModelSupply(updated));
+        return ResponseEntity.ok(new SupplyResponse(updated));
     }
 
     @DeleteMapping("/{id}")
@@ -60,11 +62,7 @@ public class SupplyController {
             @PathVariable UUID id,
             @RequestBody UpdateSupplyAvailableRequest request) {
 
-        Supply updatedSupply =  supplyService.updateAvailability(id, request.available());
-        return ResponseEntity.ok(SupplyResponse.fromModelSupply(updatedSupply));
+        Supply updatedSupply = supplyService.updateAvailability(id, request.available());
+        return ResponseEntity.ok(new SupplyResponse(updatedSupply));
     }
-
-
-
-
 }
