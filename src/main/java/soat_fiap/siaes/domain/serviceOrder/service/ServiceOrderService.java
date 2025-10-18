@@ -99,7 +99,7 @@ public class ServiceOrderService {
     private List<OrderActivity> buildOrderActivities(ServiceOrderRequest serviceOrderRequest, ServiceOrder order) {
         List<OrderActivity> orderActivities = new ArrayList<>();
         serviceOrderRequest.orderActivities().forEach(activityReq -> {
-            ServiceLabor labor = serviceLaborService.findByUUID(activityReq.serviceLaborId());
+            ServiceLabor labor = serviceLaborService.findEntityById(activityReq.serviceLaborId());
             OrderActivity orderActivity = new OrderActivity(order, labor);
 
             List<OrderItem> orderItems = buildActivityItems(activityReq, orderActivity);
