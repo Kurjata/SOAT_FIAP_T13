@@ -20,7 +20,7 @@ Este é um projeto desenvolvido por:
 <br>
 ![](https://img.shields.io/badge/RM367946-Vinícius%20Louzada%20Valente-blue)
 <br>
-![](https://img.shields.io/badge/RMxxxxxx-Felipe%20Martines%20Kurjata-blue)
+![](https://img.shields.io/badge/RM362288-Felipe%20Martines%20Kurjata-blue)
 </div>
 <div align="left">
 
@@ -170,5 +170,5 @@ O JWT expira em 8 horas e o refresh token em 30 dias.
 
 ![Event Storming](./assets/Event_Storming.jpg)
 
-Para mais detalhes ao MIRO com o Domain Storytelling / Event Storming:
+Para mais detalhes acesse MIRO com o Domain Storytelling / Event Storming:
 [Event Storming](https://miro.com/welcomeonboard/RmZjaThmY2QrTmVGa2lFSW5kaDFwVmdCUm5RQWVndHplYUFUWTAwUFNxbW4vaDRLQ1ZOQzgyNkRTaVprZVFlK0FjMVU5V2o0bmxQcmE1eUNXemxqVlVkYTIxbVFDN3hPMXhLTUNEaXkyMUVVcGZOcFhqNFhOb282L2FQbmJLbkR0R2lncW1vRmFBVnlLcVJzTmdFdlNRPT0hdjE=?share_link_id=156423143991)
