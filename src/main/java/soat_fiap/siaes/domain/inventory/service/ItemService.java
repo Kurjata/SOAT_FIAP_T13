@@ -31,7 +31,7 @@ public class ItemService {
     }
 
     @Transactional
-    public void updateInStock(UUID id, StockOperation stockOperation, Integer quantity, Boolean isRemoveReserved) {
+    public void updateInStock(UUID id, StockOperation stockOperation, Integer quantity) {
         Assert.notNull(quantity, "A quantidade não pode ser nula");
         Assert.isTrue(quantity > 0, "A quantidade deve ser maior que zero");
 
@@ -45,21 +45,26 @@ public class ItemService {
 
         if (item instanceof Part part) {
             switch (stockOperation) {
-                case ADD -> handleAdd(part, quantity);
-                case REMOVE -> handleRemove(part, quantity, isRemoveReserved);
+                case RESERVE_STOCK -> handleReserve(part, quantity);
+                case CONFIRM_RESERVATION -> handleConfirmReservation(part, quantity);
+                case CANCEL_RESERVATION -> handleCancelReservation(part, quantity);
             }
         }
 
         itemRepository.save(item);
     }
 
-    private void handleRemove(Part part, int quantity, Boolean isRemoveReserved) {
+    private void handleReserve(Part part, int quantity) {
         stockMovementService.registerMovement(part, SAIDA_OS, quantity);
-        part.removeStock(quantity, isRemoveReserved);
+        part.moveToReserved(quantity);
     }
 
-    private void handleAdd(Part part, int quantity) {
+    private void handleConfirmReservation(Part part, int quantity) {
+        part.consumeReserved(quantity);
+    }
+
+    private void handleCancelReservation(Part part, int quantity) {
         stockMovementService.registerMovement(part, DEVOLUCAO_OS, quantity);
-        part.addStock(quantity);
+        part.moveToAvailable(quantity);
     }
 }

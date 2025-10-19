@@ -5,7 +5,6 @@ import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 
 public record UpdateStockEvent(
         ServiceOrder order,
-        StockOperation stockOperation,
-        Boolean isRemoveReserved
+        StockOperation stockOperation
 ) {
 }

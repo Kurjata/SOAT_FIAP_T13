@@ -135,7 +135,7 @@ class PartControllerIntegrationTest {
     }
 
     @Test
-    void delete__should_remove_part_when_exists() throws Exception {
+    void delete__should_remove_Stock_part_when_exists() throws Exception {
         Part part = partRepository.save(new Part("Filtro de Óleo", new BigDecimal("35"), UnitMeasure.UNIT, 10, 2, "1234567890123", "top", 5));
 
         var response = mockMvc.perform(delete("/parts/" + part.getId()))
@@ -147,7 +147,7 @@ class PartControllerIntegrationTest {
     }
 
     @Test
-    void addStock__should_increase_quantity_when_valid() throws Exception {
+    void moveToAvailable__should_increase_quantity_when_valid() throws Exception {
         Part part = partRepository.save(new Part("Filtro de Óleo", new BigDecimal("35"), UnitMeasure.UNIT, 10, 2, "1234567890123", "top", 5));
         AddStockRequest request = new AddStockRequest(5);
 

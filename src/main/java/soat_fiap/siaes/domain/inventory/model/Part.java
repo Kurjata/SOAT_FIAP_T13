@@ -2,6 +2,7 @@ package soat_fiap.siaes.domain.inventory.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import org.springframework.util.Assert;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
 import soat_fiap.siaes.shared.BusinessException;
 
@@ -29,6 +30,58 @@ public class Part extends Item {
         this.minimumStockQuantity = minimumStockQuantity;
     }
 
+    public void addStock(int quantityToAdd) {
+        validatePositiveQuantity(quantityToAdd);
+        this.quantity += quantityToAdd;
+    }
+
+    public void removeStock(int quantityToRemove) {
+        validatePositiveQuantity(quantityToRemove);
+        if (!hasAvailableStock(quantityToRemove)) {
+            throw new BusinessException(String.format("Estoque insuficiente para remover. Disponível: %d, Solicitado: %d", this.quantity, quantityToRemove));
+        }
+
+        this.quantity -= quantityToRemove;
+        checkMinimumStockAlert();
+    }
+
+    public void adjustStock(int adjustment) {
+        int newStock = this.quantity + adjustment;
+        if (newStock < 0) throw new BusinessException("Ajuste resultaria em estoque negativo");
+
+        this.quantity = newStock;
+        checkMinimumStockAlert();
+    }
+
+    private void addReserved(int quantityToReserved){
+        validatePositiveQuantity(quantityToReserved);
+        this.reservedQuantity += quantityToReserved;
+    }
+
+    private void removeReserved(int quantityToReserved) {
+        validatePositiveQuantity(quantityToReserved);
+
+        if (!hasAvailableReservedStock(quantityToReserved)) {
+            throw new BusinessException(String.format("Estoque insuficiente para remover. Disponível: %d, Solicitado: %d", this.reservedQuantity, quantityToReserved));
+        }
+
+        this.reservedQuantity -= quantityToReserved;
+    }
+
+    public void consumeReserved(int quantityToConsume){
+        removeReserved(quantityToConsume);
+    }
+
+    public void moveToReserved(int quantity) {
+        removeStock(quantity);
+        addReserved(quantity);
+    }
+
+    public void moveToAvailable(int quantity) {
+        removeReserved(quantity);
+        addStock(quantity);
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -54,55 +107,19 @@ public class Part extends Item {
         return ItemType.PART;
     }
 
-    public void add(Integer amount) {
-        if (amount == null || amount <= 0)
-            throw new IllegalArgumentException("Quantidade deve ser maior que zero para adicionar ao estoque.");
-
-        this.quantity = (this.quantity == null ? 0 : this.quantity) + amount;
+    @Override
+    public void setName(String name) {
+        super.setName(name);
     }
 
-    public void remove(Integer quantity) {
-        this.quantity = safeSubtract(this.quantity, quantity);
+    @Override
+    public void setUnitPrice(BigDecimal unitPrice) {
+        super.setUnitPrice(unitPrice);
     }
 
-    public void addReserved(Integer quantity){
-        this.reservedQuantity += quantity;
-    }
-
-    public void removeReserved(Integer quantity) {
-        this.reservedQuantity = safeSubtract(this.reservedQuantity, quantity);
-    }
-
-    private int safeSubtract(Integer current, Integer amount) {
-        if (current == null) current = 0;
-        if (amount == null) amount = 0;
-        return Math.max(0, current - amount);
-    }
-
-    public void adjustStock(Integer quantity) {
-        if (quantity == null) throw new IllegalArgumentException("Quantidade deve ser informada.");
-        int newStock = (this.quantity != null ? this.quantity : 0) + quantity;
-        if (newStock < 0) throw new IllegalArgumentException("O estoque não pode ficar negativo.");
-        this.quantity = newStock;
-    }
-
-    public void removeStock(int quantity, boolean shouldRemoveReserved) {
-        if (shouldRemoveReserved) {
-            removeReserved(quantity);
-            return;
-        }
-
-        if (getQuantity() < quantity) {
-            throw new BusinessException("Estoque insuficiente para " + getName());
-        }
-
-        remove(quantity);
-        addReserved(quantity);
-    }
-
-    public void addStock(int quantity) {
-        add(quantity);
-        removeReserved(quantity);
+    @Override
+    public void setUnitMeasure(UnitMeasure unitMeasure) {
+        super.setUnitMeasure(unitMeasure);
     }
 
     public void setQuantity(Integer quantity) {
@@ -125,18 +142,25 @@ public class Part extends Item {
         this.manufacturer = manufacturer;
     }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
+    public boolean hasAvailableStock(int requiredQuantity) {
+        return this.quantity >= requiredQuantity;
     }
 
-    @Override
-    public void setUnitPrice(BigDecimal unitPrice) {
-        super.setUnitPrice(unitPrice);
+    public boolean hasAvailableReservedStock(int requiredQuantity) {
+        return this.reservedQuantity >= requiredQuantity;
     }
 
-    @Override
-    public void setUnitMeasure(UnitMeasure unitMeasure) {
-        super.setUnitMeasure(unitMeasure);
+    public boolean isBelowMinimumStock() {
+        return minimumStockQuantity != null && this.quantity < minimumStockQuantity;
+    }
+
+    private void checkMinimumStockAlert() {
+        if (isBelowMinimumStock()) {
+            //domainEvents.add(new StockBelowMinimumEvent(this));
+        }
+    }
+
+    private void validatePositiveQuantity(int quantity) {
+        Assert.isTrue(quantity > 0, "Quantidade deve ser maior que zero");
     }
 }

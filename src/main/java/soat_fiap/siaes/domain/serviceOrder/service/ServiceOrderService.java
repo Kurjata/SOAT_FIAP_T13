@@ -132,7 +132,7 @@ public class ServiceOrderService {
         switch (order.getOrderStatusEnum()) {
             case APROVADO_CLIENTE -> {
                 try {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.REMOVE, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.RESERVE_STOCK));
                 } catch (BusinessException e) {
                     order.setUpdateStatus(ServiceOrderStatusEnum.AGUARDANDO_ESTOQUE);
                     this.save(order);
@@ -149,10 +149,10 @@ public class ServiceOrderService {
                         .anyMatch(part -> part.getReservedQuantity() != null && part.getReservedQuantity() > 0);
 
                 if (status == ServiceOrderStatusEnum.REPROVADO_CLIENTE && hasReservedItems) {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.ADD, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.CANCEL_RESERVATION));
                 }
             }
-            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.REMOVE, true));
+            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.CONFIRM_RESERVATION));
         }
 
         return new ServiceOrderResponse(order);

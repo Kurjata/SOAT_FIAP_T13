@@ -72,7 +72,7 @@ public class PartService {
     @Transactional
     public Part addStock(UUID id, Integer quantity) {
         Part part = findById(id);
-        part.add(quantity);
+        part.addStock(quantity);
 
         Part updated = partRepository.save(part);
 

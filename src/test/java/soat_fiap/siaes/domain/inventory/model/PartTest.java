@@ -15,27 +15,23 @@ class PartTest {
     }
 
     @Test
-    void add__should_increase_quantity() {
+    void add__Stock__should_increase_quantity() {
         Part part = createPart(10, 2, 5);
 
-        part.add(5);
+        part.addStock(5);
 
         assertThat(part.getQuantity()).isEqualTo(15);
     }
 
     @Test
-    void add__should_throw_exception_when_amount_is_null_or_zero_or_negative() {
+    void add__Stock__should_throw_exception_when_amount_is_zero_or_negative() {
         Part part = createPart(10, 2, 5);
 
-        assertThatThrownBy(() -> part.add(null))
+        assertThatThrownBy(() -> part.addStock(0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Quantidade deve ser maior que zero");
 
-        assertThatThrownBy(() -> part.add(0))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Quantidade deve ser maior que zero");
-
-        assertThatThrownBy(() -> part.add(-5))
+        assertThatThrownBy(() -> part.addStock(-5))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Quantidade deve ser maior que zero");
     }
@@ -52,12 +48,8 @@ class PartTest {
     }
 
     @Test
-    void adjustStock__should_throw_exception_when_quantity_is_null_or_negative_result() {
+    void adjustStock__should_throw_exception_when_quantity_is_negative_result() {
         Part part = createPart(5, 0, 5);
-
-        assertThatThrownBy(() -> part.adjustStock(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Quantidade deve ser informada.");
 
         assertThatThrownBy(() -> part.adjustStock(-10))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -65,44 +57,14 @@ class PartTest {
     }
 
     @Test
-    void remove__should_decrease_quantity_safely() {
+    void remove__Stock__should_decrease_quantity_safely() {
         Part part = createPart(10, 0, 5);
 
-        part.remove(3);
+        part.removeStock(3);
         assertThat(part.getQuantity()).isEqualTo(7);
 
-        part.remove(10);
+        part.removeStock(10);
         assertThat(part.getQuantity()).isEqualTo(0);
-    }
-
-    @Test
-    void removeReserved__should_decrease_reserved_quantity_safely() {
-        Part part = createPart(10, 5, 5);
-
-        part.removeReserved(2);
-        assertThat(part.getReservedQuantity()).isEqualTo(3);
-
-        part.removeReserved(10);
-        assertThat(part.getReservedQuantity()).isEqualTo(0);
-    }
-
-    @Test
-    void addReserved__should_increase_reserved_quantity() {
-        Part part = createPart(10, 5, 5);
-
-        part.addReserved(3);
-        assertThat(part.getReservedQuantity()).isEqualTo(8);
-    }
-
-    @Test
-    void safeSubtract__should_handle_nulls() {
-        Part part = createPart(null, null, null);
-
-        part.remove(5);
-        assertThat(part.getQuantity()).isEqualTo(0);
-
-        part.removeReserved(3);
-        assertThat(part.getReservedQuantity()).isEqualTo(0);
     }
 
     @Test

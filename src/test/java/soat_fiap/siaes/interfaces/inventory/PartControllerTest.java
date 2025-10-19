@@ -195,7 +195,7 @@ class PartControllerTest {
     }
 
     @Test
-    void addStock__should_return_updated_part_when_successful() throws Exception {
+    void moveToAvailable__should_return_updated_part_when_successful() throws Exception {
         UUID id = UUID.randomUUID();
         AddStockRequest request = new AddStockRequest(5);
 

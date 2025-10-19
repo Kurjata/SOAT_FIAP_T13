@@ -22,8 +22,7 @@ public class PartStockListener {
                 service.updateInStock(
                         orderItem.getPartStock().getId(),
                         event.stockOperation(),
-                        orderItem.getQuantity(),
-                        event.isRemoveReserved()
+                        orderItem.getQuantity()
                 );
             }
         }

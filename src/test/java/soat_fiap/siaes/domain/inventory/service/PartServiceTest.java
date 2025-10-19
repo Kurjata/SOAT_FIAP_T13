@@ -189,7 +189,7 @@ class PartServiceTest {
     }
 
     @Test
-    void addStock__should_increase_stock_and_register_movement() {
+    void moveToAvailable_and_register_movement() {
         Part part = createPart(BigDecimal.valueOf(0.50), UnitMeasure.UNIT, 4, 5);
         UUID id = part.getId();
         Integer quantityToAdd = 5;
