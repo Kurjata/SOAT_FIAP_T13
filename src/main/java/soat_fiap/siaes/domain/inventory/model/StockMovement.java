@@ -25,7 +25,7 @@ public class StockMovement {
     private Part part;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -58,10 +58,5 @@ public class StockMovement {
         this.balanceAfter = balanceAfter;
         this.unitPrice = unitPrice;
         this.totalValue = totalValue;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
     }
 }

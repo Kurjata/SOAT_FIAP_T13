@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
+import soat_fiap.siaes.application.event.part.UpdateStockEvent;
 import soat_fiap.siaes.application.useCase.HelperUseCase;
 import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 import soat_fiap.siaes.domain.inventory.model.Item;

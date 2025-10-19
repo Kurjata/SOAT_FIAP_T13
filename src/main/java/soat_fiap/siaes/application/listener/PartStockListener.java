@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
+import soat_fiap.siaes.application.event.part.UpdateStockEvent;
 import soat_fiap.siaes.domain.inventory.service.ItemService;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;

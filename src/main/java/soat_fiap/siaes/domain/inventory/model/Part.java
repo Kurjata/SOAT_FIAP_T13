@@ -3,6 +3,7 @@ package soat_fiap.siaes.domain.inventory.model;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import org.springframework.util.Assert;
+import soat_fiap.siaes.application.event.part.StockBelowMinimumEvent;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
 import soat_fiap.siaes.shared.BusinessException;
 
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 
 @Entity
 @DiscriminatorValue("part")
-public class Part extends Item {
+public class Part extends Item{
 
     private Integer quantity;
     private Integer reservedQuantity;
@@ -33,6 +34,7 @@ public class Part extends Item {
     public void addStock(int quantityToAdd) {
         validatePositiveQuantity(quantityToAdd);
         this.quantity += quantityToAdd;
+        checkMinimumStockAlert();
     }
 
     public void removeStock(int quantityToRemove) {
@@ -154,13 +156,13 @@ public class Part extends Item {
         return minimumStockQuantity != null && this.quantity < minimumStockQuantity;
     }
 
-    private void checkMinimumStockAlert() {
-        if (isBelowMinimumStock()) {
-            //domainEvents.add(new StockBelowMinimumEvent(this));
-        }
-    }
-
     private void validatePositiveQuantity(int quantity) {
         Assert.isTrue(quantity > 0, "Quantidade deve ser maior que zero");
+    }
+
+    private void checkMinimumStockAlert() {
+        if (!isBelowMinimumStock()) return;
+        System.out.println("================Publishing Event!================");
+        registerEvent(new StockBelowMinimumEvent(this.getId(), this.getName(), this.quantity, this.minimumStockQuantity));
     }
 }

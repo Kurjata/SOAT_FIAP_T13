@@ -1,6 +1,7 @@
 package soat_fiap.siaes.domain.inventory.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
 
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ import java.util.UUID;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Entity
 @Table(name="items")
-public abstract class Item {
+public abstract class Item extends AbstractAggregateRoot<Item> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
