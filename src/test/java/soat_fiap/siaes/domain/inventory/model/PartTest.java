@@ -65,24 +65,24 @@ class PartTest {
     }
 
     @Test
-    void minus__should_decrease_quantity_safely() {
+    void remove__should_decrease_quantity_safely() {
         Part part = createPart(10, 0, 5);
 
-        part.minus(3);
+        part.remove(3);
         assertThat(part.getQuantity()).isEqualTo(7);
 
-        part.minus(10);
+        part.remove(10);
         assertThat(part.getQuantity()).isEqualTo(0);
     }
 
     @Test
-    void minusReserved__should_decrease_reserved_quantity_safely() {
+    void removeReserved__should_decrease_reserved_quantity_safely() {
         Part part = createPart(10, 5, 5);
 
-        part.minusReserved(2);
+        part.removeReserved(2);
         assertThat(part.getReservedQuantity()).isEqualTo(3);
 
-        part.minusReserved(10);
+        part.removeReserved(10);
         assertThat(part.getReservedQuantity()).isEqualTo(0);
     }
 
@@ -98,10 +98,10 @@ class PartTest {
     void safeSubtract__should_handle_nulls() {
         Part part = createPart(null, null, null);
 
-        part.minus(5);
+        part.remove(5);
         assertThat(part.getQuantity()).isEqualTo(0);
 
-        part.minusReserved(3);
+        part.removeReserved(3);
         assertThat(part.getReservedQuantity()).isEqualTo(0);
     }
 

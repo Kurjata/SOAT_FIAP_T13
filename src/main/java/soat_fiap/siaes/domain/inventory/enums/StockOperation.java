@@ -1,6 +1,6 @@
 package soat_fiap.siaes.domain.inventory.enums;
 
-public enum MovimentType {
+public enum StockOperation {
     ADD,
-    MINUS
+    REMOVE
 }

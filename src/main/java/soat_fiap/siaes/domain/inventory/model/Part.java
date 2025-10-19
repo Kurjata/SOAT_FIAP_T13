@@ -3,6 +3,7 @@ package soat_fiap.siaes.domain.inventory.model;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.shared.BusinessException;
 
 import java.math.BigDecimal;
 
@@ -60,7 +61,7 @@ public class Part extends Item {
         this.quantity = (this.quantity == null ? 0 : this.quantity) + amount;
     }
 
-    public void minus(Integer quantity) {
+    public void remove(Integer quantity) {
         this.quantity = safeSubtract(this.quantity, quantity);
     }
 
@@ -68,7 +69,7 @@ public class Part extends Item {
         this.reservedQuantity += quantity;
     }
 
-    public void minusReserved(Integer quantity) {
+    public void removeReserved(Integer quantity) {
         this.reservedQuantity = safeSubtract(this.reservedQuantity, quantity);
     }
 
@@ -83,6 +84,25 @@ public class Part extends Item {
         int newStock = (this.quantity != null ? this.quantity : 0) + quantity;
         if (newStock < 0) throw new IllegalArgumentException("O estoque não pode ficar negativo.");
         this.quantity = newStock;
+    }
+
+    public void removeStock(int quantity, boolean shouldRemoveReserved) {
+        if (shouldRemoveReserved) {
+            removeReserved(quantity);
+            return;
+        }
+
+        if (getQuantity() < quantity) {
+            throw new BusinessException("Estoque insuficiente para " + getName());
+        }
+
+        remove(quantity);
+        addReserved(quantity);
+    }
+
+    public void addStock(int quantity) {
+        add(quantity);
+        removeReserved(quantity);
     }
 
     public void setQuantity(Integer quantity) {

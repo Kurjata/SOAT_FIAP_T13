@@ -50,15 +50,7 @@ public class StockMovement {
     @JoinColumn(name = "order_id")
     private ServiceOrder serviceOrder;
 
-    public StockMovement(
-            Part part,
-            MovementType type,
-            Integer quantity,
-            Integer balanceBefore,
-            Integer balanceAfter,
-            BigDecimal unitPrice,
-            BigDecimal totalValue
-    ) {
+    public StockMovement(Part part, MovementType type, Integer quantity, Integer balanceBefore, Integer balanceAfter, BigDecimal unitPrice, BigDecimal totalValue) {
         this.part = part;
         this.type = type;
         this.quantity = quantity;

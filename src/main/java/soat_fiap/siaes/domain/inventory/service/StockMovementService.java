@@ -26,20 +26,12 @@ public class StockMovementService {
         validateInputs(part, type, quantity);
 
         int before = part.getQuantity() != null ? part.getQuantity() : 0;
-        int after = before + quantity;
+        int after = calculateAfter(before, type, quantity);
 
         BigDecimal unitPrice = part.getUnitPrice() != null ? part.getUnitPrice() : BigDecimal.ZERO;
         BigDecimal total = unitPrice.multiply(BigDecimal.valueOf(Math.abs(quantity)));
 
-        StockMovement movement = new StockMovement(
-                part,
-                type,
-                quantity,
-                before,
-                after,
-                unitPrice,
-                total
-        );
+        StockMovement movement = new StockMovement(part, type, quantity, before, after, unitPrice, total);
 
         stockMovementRepository.save(movement);
     }
@@ -51,6 +43,13 @@ public class StockMovementService {
         Assert.isTrue(quantity != 0, "A quantidade deve ser diferente de zero");
         Assert.notNull(part.getQuantity(), "A quantidade da peça não pode ser nula");
         Assert.notNull(part.getUnitPrice(), "O preço unitário da peça não pode ser nulo");
+    }
+
+    private int calculateAfter(int before, MovementType type, int quantity) {
+        if (type.equals(MovementType.SAIDA_OS))
+            return before - quantity;
+
+        return before + quantity;
     }
 
 

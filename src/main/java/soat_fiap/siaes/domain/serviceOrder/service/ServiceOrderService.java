@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
 import soat_fiap.siaes.application.useCase.HelperUseCase;
-import soat_fiap.siaes.domain.inventory.enums.MovimentType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 import soat_fiap.siaes.domain.inventory.model.Item;
 import soat_fiap.siaes.domain.inventory.model.Part;
 import soat_fiap.siaes.domain.inventory.service.ItemService;
@@ -132,7 +132,7 @@ public class ServiceOrderService {
         switch (order.getOrderStatusEnum()) {
             case APROVADO_CLIENTE -> {
                 try {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.MINUS, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.REMOVE, false));
                 } catch (BusinessException e) {
                     order.setUpdateStatus(ServiceOrderStatusEnum.AGUARDANDO_ESTOQUE);
                     this.save(order);
@@ -149,10 +149,10 @@ public class ServiceOrderService {
                         .anyMatch(part -> part.getReservedQuantity() != null && part.getReservedQuantity() > 0);
 
                 if (status == ServiceOrderStatusEnum.REPROVADO_CLIENTE && hasReservedItems) {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.ADD, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.ADD, false));
                 }
             }
-            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.MINUS, true));
+            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.REMOVE, true));
         }
 
         return new ServiceOrderResponse(order);

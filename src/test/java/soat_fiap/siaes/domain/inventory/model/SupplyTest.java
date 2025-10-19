@@ -28,5 +28,4 @@ class SupplyTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Disponibilidade deve ser informada");
     }
-
 }

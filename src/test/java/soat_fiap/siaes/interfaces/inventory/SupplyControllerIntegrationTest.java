@@ -45,7 +45,6 @@ class SupplyControllerIntegrationTest {
     @Autowired
     private SupplyRepository supplyRepository;
 
-
     @Test
     void findAll__should_return_empty_page_when_no_supply() throws Exception {
         var response = mockMvc.perform(get("/supply"))

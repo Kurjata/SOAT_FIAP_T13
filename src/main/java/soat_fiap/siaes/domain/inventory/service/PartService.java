@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @Service
 public class PartService {
-
     private final PartRepository partRepository;
     private final StockMovementService stockMovementService;
 
