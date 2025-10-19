@@ -1,8 +1,8 @@
-package soat_fiap.siaes.interfaces.shared.validation;
+package soat_fiap.siaes.shared.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import soat_fiap.siaes.interfaces.shared.constraint.BrazilianLicensePlateValidator;
+import soat_fiap.siaes.shared.constraint.BrazilianLicensePlateValidator;
 
 import java.lang.annotation.*;
 

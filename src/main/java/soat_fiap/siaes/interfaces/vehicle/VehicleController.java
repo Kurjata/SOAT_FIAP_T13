@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.interfaces.vehicle.dto.CreateVehicleRequest;
@@ -42,7 +43,7 @@ public class VehicleController {
     @PostMapping
     public ResponseEntity<VehicleResponse> save(@RequestBody @Valid CreateVehicleRequest vehicleRequest) {
         Vehicle vehicle = this.vehicleService.save(vehicleRequest.toModel());
-        return ResponseEntity.ok(new VehicleResponse(vehicle));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new VehicleResponse(vehicle));
     }
 
     @DeleteMapping("/{id}")

@@ -9,7 +9,7 @@ import soat_fiap.siaes.domain.inventory.model.Item;
 import soat_fiap.siaes.domain.inventory.model.MovementType;
 import soat_fiap.siaes.domain.inventory.model.Part;
 import soat_fiap.siaes.domain.inventory.repository.ItemRepository;
-import soat_fiap.siaes.interfaces.shared.BusinessException;
+import soat_fiap.siaes.shared.BusinessException;
 
 import java.util.UUID;
 

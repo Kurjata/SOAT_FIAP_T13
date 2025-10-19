@@ -1,4 +1,4 @@
-package soat_fiap.siaes.interfaces.shared;
+package soat_fiap.siaes.shared;
 
 import org.springframework.http.HttpStatus;
 
