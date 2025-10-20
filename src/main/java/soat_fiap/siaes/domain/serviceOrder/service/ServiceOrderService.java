@@ -136,7 +136,6 @@ public class ServiceOrderService {
                 } catch (BusinessException e) {
                     order.setUpdateStatus(ServiceOrderStatusEnum.AGUARDANDO_ESTOQUE);
                     this.save(order);
-                    throw e; // garante rollback da transação
                 }
             }
             case REPROVADO_CLIENTE -> {

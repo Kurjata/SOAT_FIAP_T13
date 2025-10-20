@@ -2,6 +2,7 @@ package soat_fiap.siaes.domain.inventory.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
 import soat_fiap.siaes.domain.inventory.enums.MovimentType;
@@ -29,7 +30,7 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Item não encontrado"));
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateInStock(UUID id, MovimentType movimentType, Integer quantity, Boolean isRemoveReserved) {
         if (quantity == null || quantity <= 0) return; // ignora quantidades inválidas
 
