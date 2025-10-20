@@ -21,13 +21,11 @@ import java.util.UUID;
 @SecurityRequirement(name = "bearer-key")
 @Tag(name = "Stock Movements")
 public class StockMovementController {
-
     private final StockMovementService stockMovementService;
 
     public StockMovementController(StockMovementService stockMovementService) {
         this.stockMovementService = stockMovementService;
     }
-
 
     @GetMapping
     public ResponseEntity<Page<StockMovementResponse>> findAll(@ParameterObject Pageable pageable) {
@@ -36,9 +34,8 @@ public class StockMovementController {
     }
 
 
-    @GetMapping("/movementpart/{partId}")
-    public ResponseEntity<Page<StockMovementResponse>> findByPart(@PathVariable UUID partId,@ParameterObject Pageable pageable
-    ) {
+    @GetMapping("/part/{partId}")
+    public ResponseEntity<Page<StockMovementResponse>> findByPart(@PathVariable UUID partId,@ParameterObject Pageable pageable) {
         Page<StockMovementResponse> movements = stockMovementService.findByPart(partId, pageable);
         return ResponseEntity.ok(movements);
     }

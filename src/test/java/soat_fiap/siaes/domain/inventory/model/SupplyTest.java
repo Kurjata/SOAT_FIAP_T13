@@ -1,6 +1,8 @@
 package soat_fiap.siaes.domain.inventory.model;
 
 import org.junit.jupiter.api.Test;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
+import soat_fiap.siaes.shared.BusinessException;
 
 import java.math.BigDecimal;
 
@@ -27,5 +29,21 @@ class SupplyTest {
         assertThatThrownBy(() -> supply.setAvailability(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Disponibilidade deve ser informada");
+    }
+
+    @Test
+    void handleStockOperation_should_throw_exception_when_not_available() {
+        Supply supply = new Supply("Teste", BigDecimal.valueOf(10), UnitMeasure.UNIT, "Fornecedor", false);
+
+        assertThatThrownBy(() -> supply.handleStockOperation(StockOperation.RESERVE_STOCK, 5))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Não há insumo disponível");
+    }
+
+    @Test
+    void handleStockOperation_should_do_nothing_when_available() {
+        Supply supply = new Supply("Teste", BigDecimal.valueOf(10), UnitMeasure.UNIT, "Fornecedor", true);
+
+        supply.handleStockOperation(StockOperation.RESERVE_STOCK, 5);
     }
 }

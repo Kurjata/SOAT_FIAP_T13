@@ -6,6 +6,8 @@ import soat_fiap.siaes.domain.inventory.enums.ItemType;
 import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -69,6 +71,10 @@ public abstract class Item extends AbstractAggregateRoot<Item> {
 
     protected void setUnitMeasure(UnitMeasure unitMeasure) {
         this.unitMeasure = unitMeasure;
+    }
+
+    protected List<Object> getDomainEvents() {
+        return new ArrayList<>(super.domainEvents());
     }
 
     public abstract void handleStockOperation(StockOperation operation, int quantity);

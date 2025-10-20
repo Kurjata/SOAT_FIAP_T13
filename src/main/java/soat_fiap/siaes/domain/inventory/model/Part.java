@@ -76,10 +76,6 @@ public class Part extends Item {
         this.reservedQuantity -= quantityToReserved;
     }
 
-    public void consumeReserved(int quantityToConsume){
-        removeReserved(quantityToConsume);
-    }
-
     public void moveToReserved(int quantity) {
         removeStock(quantity);
         addReserved(quantity);
@@ -191,6 +187,6 @@ public class Part extends Item {
     }
 
     public void confirmReservation(int quantity) {
-        consumeReserved(quantity);
+        removeReserved(quantity);
     }
 }

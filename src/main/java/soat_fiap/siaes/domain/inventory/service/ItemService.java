@@ -25,7 +25,7 @@ public class ItemService {
     }
 
     @Transactional
-    public void updateInStock(UUID id, StockOperation stockOperation, Integer quantity) {
+    public void processStockMovement(UUID id, StockOperation stockOperation, Integer quantity) {
         Assert.notNull(quantity, "A quantidade não pode ser nula");
         Assert.isTrue(quantity > 0, "A quantidade deve ser maior que zero");
 

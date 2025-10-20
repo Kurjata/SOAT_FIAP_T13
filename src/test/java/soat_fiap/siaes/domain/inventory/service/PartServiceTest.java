@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import soat_fiap.siaes.domain.inventory.model.MovementType;
 import soat_fiap.siaes.domain.inventory.model.Part;
 import soat_fiap.siaes.domain.inventory.model.UnitMeasure;
 import soat_fiap.siaes.domain.inventory.repository.PartRepository;
@@ -187,7 +186,7 @@ class PartServiceTest {
     }
 
     @Test
-    void moveToAvailable_and_register_movement() {
+    void addStock_and_register_movement() {
         Part part = createPart(BigDecimal.valueOf(0.50), UnitMeasure.UNIT, 4, 5);
         UUID id = part.getId();
         Integer quantityToAdd = 5;

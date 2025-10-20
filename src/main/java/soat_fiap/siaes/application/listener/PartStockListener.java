@@ -19,7 +19,7 @@ public class PartStockListener {
     public void handle(UpdateStockEvent event) {
         for (OrderActivity item : event.order().getOrderActivities()) {
             for(OrderItem orderItem : item.getOrderItems()){
-                service.updateInStock(
+                service.processStockMovement(
                         orderItem.getPartStock().getId(),
                         event.stockOperation(),
                         orderItem.getQuantity()
