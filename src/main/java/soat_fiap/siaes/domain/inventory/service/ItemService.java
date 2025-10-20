@@ -30,7 +30,7 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Item não encontrado"));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void updateInStock(UUID id, MovimentType movimentType, Integer quantity, Boolean isRemoveReserved) {
         if (quantity == null || quantity <= 0) return; // ignora quantidades inválidas
 
