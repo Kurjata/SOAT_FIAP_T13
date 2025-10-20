@@ -3,6 +3,8 @@ package soat_fiap.siaes.domain.inventory.model;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
+import soat_fiap.siaes.shared.BusinessException;
 
 import java.math.BigDecimal;
 
@@ -53,6 +55,12 @@ public class Supply extends Item{
     @Override
     public void setUnitMeasure(UnitMeasure unitMeasure) {
         super.unitMeasure = unitMeasure;
+    }
+
+    @Override
+    public void handleStockOperation(StockOperation operation, int quantity) {
+        if (!available)
+            throw new BusinessException("Não há insumo disponível em estoque para o item: " + name);
     }
 
     @Override

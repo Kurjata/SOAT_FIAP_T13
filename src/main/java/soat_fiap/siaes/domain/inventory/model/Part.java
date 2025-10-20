@@ -6,13 +6,14 @@ import org.springframework.util.Assert;
 import soat_fiap.siaes.application.event.part.StockBelowMinimumEvent;
 import soat_fiap.siaes.application.event.part.StockMovementEvent;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 import soat_fiap.siaes.shared.BusinessException;
 
 import java.math.BigDecimal;
 
 @Entity
 @DiscriminatorValue("part")
-public class Part extends Item{
+public class Part extends Item {
 
     private Integer quantity;
     private Integer reservedQuantity;
@@ -129,6 +130,15 @@ public class Part extends Item{
         super.setUnitMeasure(unitMeasure);
     }
 
+    @Override
+    public void handleStockOperation(StockOperation operation, int quantity) {
+        switch (operation) {
+            case RESERVE_STOCK -> reserveStock(quantity);
+            case CONFIRM_RESERVATION -> confirmReservation(quantity);
+            case CANCEL_RESERVATION -> cancelReservation(quantity);
+        }
+    }
+
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
@@ -167,7 +177,6 @@ public class Part extends Item{
 
     private void checkMinimumStockAlert() {
         if (!isBelowMinimumStock()) return;
-        System.out.println("================Publishing Event!================");
         registerEvent(new StockBelowMinimumEvent(this.getId(), this.getName(), this.quantity, this.minimumStockQuantity));
     }
 

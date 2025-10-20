@@ -3,6 +3,7 @@ package soat_fiap.siaes.domain.inventory.model;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -69,4 +70,6 @@ public abstract class Item extends AbstractAggregateRoot<Item> {
     protected void setUnitMeasure(UnitMeasure unitMeasure) {
         this.unitMeasure = unitMeasure;
     }
+
+    public abstract void handleStockOperation(StockOperation operation, int quantity);
 }
