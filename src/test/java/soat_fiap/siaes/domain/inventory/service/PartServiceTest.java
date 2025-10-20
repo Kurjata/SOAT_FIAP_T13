@@ -24,13 +24,11 @@ class PartServiceTest {
 
     private PartService service;
     private PartRepository repository;
-    private StockMovementService stockMovementService;
 
     @BeforeEach
     void setUp() {
         repository = mock(PartRepository.class);
-        stockMovementService = mock(StockMovementService.class);
-        service = new PartService(repository, stockMovementService);
+        service = new PartService(repository);
     }
 
     private Part createPart(BigDecimal unitPrice, UnitMeasure unitMeasure, int quantity, int minimumStockQuantity) {
@@ -201,7 +199,6 @@ class PartServiceTest {
 
         assertThat(updated.getQuantity()).isEqualTo(9);
         verify(repository).save(part);
-        verify(stockMovementService).registerMovement(part, MovementType.ENTRADA, quantityToAdd);
     }
 
     @Test
@@ -217,6 +214,5 @@ class PartServiceTest {
 
         assertThat(updated.getQuantity()).isEqualTo(1);
         verify(repository).save(part);
-        verify(stockMovementService).registerMovement(part, MovementType.AJUSTE, quantityToAdjust);
     }
 }

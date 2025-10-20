@@ -4,6 +4,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import org.springframework.util.Assert;
 import soat_fiap.siaes.application.event.part.StockBelowMinimumEvent;
+import soat_fiap.siaes.application.event.part.StockMovementEvent;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
 import soat_fiap.siaes.shared.BusinessException;
 
@@ -33,6 +34,8 @@ public class Part extends Item{
 
     public void addStock(int quantityToAdd) {
         validatePositiveQuantity(quantityToAdd);
+        registerEvent(new StockMovementEvent(this, MovementType.ENTRADA, quantityToAdd));
+
         this.quantity += quantityToAdd;
         checkMinimumStockAlert();
     }
@@ -50,6 +53,8 @@ public class Part extends Item{
     public void adjustStock(int adjustment) {
         int newStock = this.quantity + adjustment;
         if (newStock < 0) throw new BusinessException("Ajuste resultaria em estoque negativo");
+
+        registerEvent(new StockMovementEvent(this, MovementType.AJUSTE, adjustment));
 
         this.quantity = newStock;
         checkMinimumStockAlert();
@@ -164,5 +169,19 @@ public class Part extends Item{
         if (!isBelowMinimumStock()) return;
         System.out.println("================Publishing Event!================");
         registerEvent(new StockBelowMinimumEvent(this.getId(), this.getName(), this.quantity, this.minimumStockQuantity));
+    }
+
+    public void reserveStock(int quantity) {
+        registerEvent(new StockMovementEvent(this, MovementType.SAIDA_OS, quantity));
+        moveToReserved(quantity);
+    }
+
+    public void cancelReservation(int quantity) {
+        registerEvent(new StockMovementEvent(this, MovementType.DEVOLUCAO_OS, quantity));
+        moveToAvailable(quantity);
+    }
+
+    public void confirmReservation(int quantity) {
+        consumeReserved(quantity);
     }
 }

@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import soat_fiap.siaes.domain.inventory.model.MovementType;
 import soat_fiap.siaes.domain.inventory.model.Part;
 import soat_fiap.siaes.domain.inventory.repository.PartRepository;
 import soat_fiap.siaes.interfaces.inventory.dto.UpdatePartRequest;
@@ -17,11 +16,9 @@ import java.util.UUID;
 @Service
 public class PartService {
     private final PartRepository partRepository;
-    private final StockMovementService stockMovementService;
 
-    public PartService(PartRepository partRepository, StockMovementService stockMovementService) {
+    public PartService(PartRepository partRepository) {
         this.partRepository = partRepository;
-        this.stockMovementService = stockMovementService;
     }
 
     public Part save(Part part) {
@@ -73,22 +70,13 @@ public class PartService {
     public Part addStock(UUID id, Integer quantity) {
         Part part = findById(id);
         part.addStock(quantity);
-
-        Part updated = partRepository.save(part);
-
-        stockMovementService.registerMovement(updated, MovementType.ENTRADA, quantity);
-        return updated;
+        return partRepository.save(part);
     }
 
     @Transactional
     public Part updateStockQuantity(UUID id, Integer quantity) {
         Part part = findById(id);
         part.adjustStock(quantity);
-
-        Part updated = partRepository.save(part);
-
-        stockMovementService.registerMovement(part, MovementType.AJUSTE, quantity);
-        return updated;
+        return partRepository.save(part);
     }
-
 }

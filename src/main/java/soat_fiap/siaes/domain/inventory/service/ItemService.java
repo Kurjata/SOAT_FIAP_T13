@@ -13,16 +13,13 @@ import soat_fiap.siaes.shared.BusinessException;
 
 import java.util.UUID;
 
-import static soat_fiap.siaes.domain.inventory.model.MovementType.*;
 
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
-    private final StockMovementService stockMovementService;
 
-    public ItemService(ItemRepository itemRepository, StockMovementService stockMovementService) {
+    public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
-        this.stockMovementService = stockMovementService;
     }
 
     public Item findById(UUID id) {
@@ -45,26 +42,12 @@ public class ItemService {
 
         if (item instanceof Part part) {
             switch (stockOperation) {
-                case RESERVE_STOCK -> handleReserve(part, quantity);
-                case CONFIRM_RESERVATION -> handleConfirmReservation(part, quantity);
-                case CANCEL_RESERVATION -> handleCancelReservation(part, quantity);
+                case RESERVE_STOCK -> part.reserveStock(quantity);
+                case CONFIRM_RESERVATION -> part.confirmReservation(quantity);
+                case CANCEL_RESERVATION -> part.cancelReservation(quantity);
             }
         }
 
         itemRepository.save(item);
-    }
-
-    private void handleReserve(Part part, int quantity) {
-        stockMovementService.registerMovement(part, SAIDA_OS, quantity);
-        part.moveToReserved(quantity);
-    }
-
-    private void handleConfirmReservation(Part part, int quantity) {
-        part.consumeReserved(quantity);
-    }
-
-    private void handleCancelReservation(Part part, int quantity) {
-        stockMovementService.registerMovement(part, DEVOLUCAO_OS, quantity);
-        part.moveToAvailable(quantity);
     }
 }
