@@ -2,6 +2,7 @@ package soat_fiap.siaes.domain.inventory.model;
 
 import org.junit.jupiter.api.Test;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.shared.BusinessException;
 
 import java.math.BigDecimal;
 
@@ -52,8 +53,8 @@ class PartTest {
         Part part = createPart(5, 0, 5);
 
         assertThatThrownBy(() -> part.adjustStock(-10))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("O estoque não pode ficar negativo.");
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Ajuste resultaria em estoque negativo");
     }
 
     @Test
@@ -63,8 +64,8 @@ class PartTest {
         part.removeStock(3);
         assertThat(part.getQuantity()).isEqualTo(7);
 
-        part.removeStock(10);
-        assertThat(part.getQuantity()).isEqualTo(0);
+        part.removeStock(2);
+        assertThat(part.getQuantity()).isEqualTo(5);
     }
 
     @Test

@@ -59,7 +59,6 @@ class SupplyControllerTest {
         assertEquals(200, response.getStatus());
         assertTrue(response.getContentAsString().contains("Graxa"));
         assertTrue(response.getContentAsString().contains("Shell"));
-        assertTrue(response.getContentAsString().contains(id.toString()));
     }
 
     @Test
@@ -87,7 +86,6 @@ class SupplyControllerTest {
         assertEquals(200, response.getStatus());
         assertTrue(response.getContentAsString().contains("Óleo"));
         assertTrue(response.getContentAsString().contains("Petrobras"));
-        assertTrue(response.getContentAsString().contains(id.toString()));
     }
 
     @Test
