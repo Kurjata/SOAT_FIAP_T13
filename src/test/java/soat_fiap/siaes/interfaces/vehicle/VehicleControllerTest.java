@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(roles = "ADMIN")
+@ActiveProfiles("test")
 class VehicleControllerTest {
 
     @MockitoBean
@@ -145,9 +147,7 @@ class VehicleControllerTest {
     void deleteById__should_return_code_no_content_when_vehicle_deleted() throws Exception {
         UUID id = UUID.randomUUID();
 
-        var response = mockMvc.perform(
-                        delete("/vehicles/" + id)
-                )
+        var response = mockMvc.perform(delete("/vehicles/" + id))
                 .andReturn()
                 .getResponse();
 

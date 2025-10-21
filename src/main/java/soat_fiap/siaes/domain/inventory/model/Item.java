@@ -1,16 +1,20 @@
 package soat_fiap.siaes.domain.inventory.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Entity
 @Table(name="items")
-public abstract class Item {
+public abstract class Item extends AbstractAggregateRoot<Item> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,4 +60,22 @@ public abstract class Item {
     }
 
     public abstract ItemType getType();
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    protected void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    protected void setUnitMeasure(UnitMeasure unitMeasure) {
+        this.unitMeasure = unitMeasure;
+    }
+
+    protected List<Object> getDomainEvents() {
+        return new ArrayList<>(super.domainEvents());
+    }
+
+    public abstract void handleStockOperation(StockOperation operation, int quantity);
 }

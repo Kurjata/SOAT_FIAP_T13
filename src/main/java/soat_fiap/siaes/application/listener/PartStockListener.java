@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
+import soat_fiap.siaes.application.event.part.UpdateStockEvent;
 import soat_fiap.siaes.domain.inventory.service.ItemService;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;
@@ -19,11 +19,10 @@ public class PartStockListener {
     public void handle(UpdateStockEvent event) {
         for (OrderActivity item : event.order().getOrderActivities()) {
             for(OrderItem orderItem : item.getOrderItems()){
-                service.updateInStock(
+                service.processStockMovement(
                         orderItem.getPartStock().getId(),
-                        event.movimentType(),
-                        orderItem.getQuantity(),
-                        event.isRemoveReserved()
+                        event.stockOperation(),
+                        orderItem.getQuantity()
                 );
             }
         }

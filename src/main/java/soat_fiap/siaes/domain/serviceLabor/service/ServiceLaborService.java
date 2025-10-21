@@ -16,7 +16,6 @@ import soat_fiap.siaes.interfaces.serviceLabor.dto.ServiceLaborResponse;
 
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
 public class ServiceLaborService {
@@ -27,20 +26,13 @@ public class ServiceLaborService {
                 .map(ServiceLaborResponse::new);
     }
 
-    public ServiceLaborResponse findById(UUID id) {
-        return new ServiceLaborResponse(this.findByUUID(id));
-    }
-
     @Transactional
     public ServiceLaborResponse save(ServiceLaborRequest request) {
-        // Validação de duplicidade
         if (repository.existsByDescription(request.description())) {
             throw new IllegalArgumentException("Já existe um serviço com essa descrição.");
         }
 
-        ServiceLabor labor = new ServiceLabor();
-        labor.setDescription(request.description());
-        labor.setLaborCost(request.laborCost());
+        ServiceLabor labor = new ServiceLabor(request.description(), request.laborCost());
 
         return new ServiceLaborResponse(persist(labor));
     }
@@ -49,27 +41,30 @@ public class ServiceLaborService {
     protected ServiceLabor persist(ServiceLabor labor) {
         try {
             return repository.save(labor);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException("Erro ao salvar a mão de obra: dados inválidos ou violação de restrição no banco de dados.");
-        }
-        catch (JpaSystemException | PersistenceException e) {
+        } catch (JpaSystemException | PersistenceException e) {
             throw new RuntimeException("Erro interno ao tentar persistir a mão de obra. Verifique a conexão com o banco ou a transação.");
         }
     }
 
     @Transactional
     public void deleteById(UUID id) {
-        repository.delete(this.findByUUID(id));
+        repository.delete(this.findEntityById(id));
     }
 
-    public ServiceLabor findByUUID(UUID id) {
+    public ServiceLaborResponse findById(UUID id) {
+        return new ServiceLaborResponse(this.findEntityById(id));
+    }
+
+    public ServiceLabor findEntityById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Serviço de mão de obra com ID " + id + " não encontrado"));
     }
 
+    @Transactional
     public ServiceLaborResponse update(UUID id, ServiceLaborRequest request) {
-        ServiceLabor labor = this.findByUUID(id);
+        ServiceLabor labor = this.findEntityById(id);
 
         if (repository.existsByDescriptionAndIdNot(request.description(), id)) {
             throw new IllegalArgumentException("Já existe um serviço com essa descrição.");

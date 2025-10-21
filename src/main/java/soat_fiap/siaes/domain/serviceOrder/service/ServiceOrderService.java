@@ -9,9 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import soat_fiap.siaes.application.event.Part.UpdateStockEvent;
+import soat_fiap.siaes.application.event.part.UpdateStockEvent;
 import soat_fiap.siaes.application.useCase.HelperUseCase;
-import soat_fiap.siaes.domain.inventory.enums.MovimentType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
 import soat_fiap.siaes.domain.inventory.model.Item;
 import soat_fiap.siaes.domain.inventory.model.Part;
 import soat_fiap.siaes.domain.inventory.service.ItemService;
@@ -99,7 +99,7 @@ public class ServiceOrderService {
     private List<OrderActivity> buildOrderActivities(ServiceOrderRequest serviceOrderRequest, ServiceOrder order) {
         List<OrderActivity> orderActivities = new ArrayList<>();
         serviceOrderRequest.orderActivities().forEach(activityReq -> {
-            ServiceLabor labor = serviceLaborService.findByUUID(activityReq.serviceLaborId());
+            ServiceLabor labor = serviceLaborService.findEntityById(activityReq.serviceLaborId());
             OrderActivity orderActivity = new OrderActivity(order, labor);
 
             List<OrderItem> orderItems = buildActivityItems(activityReq, orderActivity);
@@ -132,7 +132,7 @@ public class ServiceOrderService {
         switch (order.getOrderStatusEnum()) {
             case APROVADO_CLIENTE -> {
                 try {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.MINUS, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.RESERVE_STOCK));
                 } catch (BusinessException e) {
                     order.setUpdateStatus(ServiceOrderStatusEnum.AGUARDANDO_ESTOQUE);
                     this.save(order);
@@ -149,10 +149,10 @@ public class ServiceOrderService {
                         .anyMatch(part -> part.getReservedQuantity() != null && part.getReservedQuantity() > 0);
 
                 if (status == ServiceOrderStatusEnum.REPROVADO_CLIENTE && hasReservedItems) {
-                    eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.ADD, false));
+                    eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.CANCEL_RESERVATION));
                 }
             }
-            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, MovimentType.MINUS, true));
+            case EM_EXECUCAO -> eventPublisher.publishEvent(new UpdateStockEvent(order, StockOperation.CONFIRM_RESERVATION));
         }
 
         return new ServiceOrderResponse(order);

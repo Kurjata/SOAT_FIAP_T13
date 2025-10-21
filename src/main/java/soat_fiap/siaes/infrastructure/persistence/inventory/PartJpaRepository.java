@@ -14,4 +14,5 @@ public interface PartJpaRepository extends JpaRepository<Part, UUID>, PartReposi
 
     @Query("SELECT p FROM Part p WHERE p.quantity < p.minimumStockQuantity")
     List<Part> findPartsBelowMinimumStock();
+    boolean existsByEanAndIdNot(String ean, UUID id);
 }

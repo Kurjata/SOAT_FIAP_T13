@@ -2,7 +2,12 @@ package soat_fiap.siaes.domain.inventory.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import org.springframework.util.Assert;
+import soat_fiap.siaes.application.event.part.StockBelowMinimumEvent;
+import soat_fiap.siaes.application.event.part.StockMovementEvent;
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
+import soat_fiap.siaes.domain.inventory.enums.StockOperation;
+import soat_fiap.siaes.shared.BusinessException;
 
 import java.math.BigDecimal;
 
@@ -28,14 +33,57 @@ public class Part extends Item {
         this.minimumStockQuantity = minimumStockQuantity;
     }
 
-    public void update(String name, BigDecimal unitPrice, Integer quantity,
-                       String ean, String manufacturer, Integer minimumStockQuantity) {
-        this.name = name;
-        this.unitPrice = unitPrice;
-        this.quantity = quantity;
-        this.ean = ean;
-        this.manufacturer = manufacturer;
-        this.minimumStockQuantity = minimumStockQuantity;
+    public void addStock(int quantityToAdd) {
+        validatePositiveQuantity(quantityToAdd);
+        registerEvent(new StockMovementEvent(this, MovementType.ENTRADA, quantityToAdd));
+
+        this.quantity += quantityToAdd;
+        checkMinimumStockAlert();
+    }
+
+    public void removeStock(int quantityToRemove) {
+        validatePositiveQuantity(quantityToRemove);
+        if (!hasAvailableStock(quantityToRemove)) {
+            throw new BusinessException(String.format("Estoque insuficiente para remover. Disponível: %d, Solicitado: %d", this.quantity, quantityToRemove));
+        }
+
+        this.quantity -= quantityToRemove;
+        checkMinimumStockAlert();
+    }
+
+    public void adjustStock(int adjustment) {
+        int newStock = this.quantity + adjustment;
+        if (newStock < 0) throw new BusinessException("Ajuste resultaria em estoque negativo");
+
+        registerEvent(new StockMovementEvent(this, MovementType.AJUSTE, adjustment));
+
+        this.quantity = newStock;
+        checkMinimumStockAlert();
+    }
+
+    private void addReserved(int quantityToReserved){
+        validatePositiveQuantity(quantityToReserved);
+        this.reservedQuantity += quantityToReserved;
+    }
+
+    private void removeReserved(int quantityToReserved) {
+        validatePositiveQuantity(quantityToReserved);
+
+        if (!hasAvailableReservedStock(quantityToReserved)) {
+            throw new BusinessException(String.format("Estoque insuficiente para remover. Disponível: %d, Solicitado: %d", this.reservedQuantity, quantityToReserved));
+        }
+
+        this.reservedQuantity -= quantityToReserved;
+    }
+
+    public void moveToReserved(int quantity) {
+        removeStock(quantity);
+        addReserved(quantity);
+    }
+
+    public void moveToAvailable(int quantity) {
+        removeReserved(quantity);
+        addStock(quantity);
     }
 
     public Integer getQuantity() {
@@ -63,35 +111,82 @@ public class Part extends Item {
         return ItemType.PART;
     }
 
-    public void minus(Integer quantity) {
-        this.quantity = safeSubtract(this.quantity, quantity);
+    @Override
+    public void setName(String name) {
+        super.setName(name);
     }
 
-    public void addReserved(Integer quantity){
-        this.reservedQuantity += quantity;
+    @Override
+    public void setUnitPrice(BigDecimal unitPrice) {
+        super.setUnitPrice(unitPrice);
     }
 
-    public void minusReserved(Integer quantity) {
-        this.reservedQuantity = safeSubtract(this.reservedQuantity, quantity);
+    @Override
+    public void setUnitMeasure(UnitMeasure unitMeasure) {
+        super.setUnitMeasure(unitMeasure);
     }
 
-    private int safeSubtract(Integer current, Integer amount) {
-        if (current == null) current = 0;
-        if (amount == null) amount = 0;
-        return Math.max(0, current - amount);
-    }
-
-    public void add(Integer amount) {
-        if (amount == null || amount <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser maior que zero para adicionar ao estoque.");
+    @Override
+    public void handleStockOperation(StockOperation operation, int quantity) {
+        switch (operation) {
+            case RESERVE_STOCK -> reserveStock(quantity);
+            case CONFIRM_RESERVATION -> confirmReservation(quantity);
+            case CANCEL_RESERVATION -> cancelReservation(quantity);
         }
-        this.quantity = (this.quantity == null ? 0 : this.quantity) + amount;
     }
 
-    public void adjustStock(Integer quantity) {
-        if (quantity == null) throw new IllegalArgumentException("Quantidade deve ser informada.");
-        int newStock = (this.quantity != null ? this.quantity : 0) + quantity;
-        if (newStock < 0) throw new IllegalArgumentException("O estoque não pode ficar negativo.");
-        this.quantity = newStock;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setReservedQuantity(Integer reservedQuantity) {
+        this.reservedQuantity = reservedQuantity;
+    }
+
+    public void setMinimumStockQuantity(Integer minimumStockQuantity) {
+        this.minimumStockQuantity = minimumStockQuantity;
+    }
+
+    public void setEan(String ean) {
+        this.ean = ean;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public boolean hasAvailableStock(int requiredQuantity) {
+        return this.quantity >= requiredQuantity;
+    }
+
+    public boolean hasAvailableReservedStock(int requiredQuantity) {
+        return this.reservedQuantity >= requiredQuantity;
+    }
+
+    public boolean isBelowMinimumStock() {
+        return minimumStockQuantity != null && this.quantity < minimumStockQuantity;
+    }
+
+    private void validatePositiveQuantity(int quantity) {
+        Assert.isTrue(quantity > 0, "Quantidade deve ser maior que zero");
+    }
+
+    private void checkMinimumStockAlert() {
+        if (!isBelowMinimumStock()) return;
+        registerEvent(new StockBelowMinimumEvent(this.getId(), this.getName(), this.quantity, this.minimumStockQuantity));
+    }
+
+    public void reserveStock(int quantity) {
+        registerEvent(new StockMovementEvent(this, MovementType.SAIDA_OS, quantity));
+        moveToReserved(quantity);
+    }
+
+    public void cancelReservation(int quantity) {
+        registerEvent(new StockMovementEvent(this, MovementType.DEVOLUCAO_OS, quantity));
+        moveToAvailable(quantity);
+    }
+
+    public void confirmReservation(int quantity) {
+        removeReserved(quantity);
     }
 }

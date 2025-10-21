@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import soat_fiap.siaes.domain.inventory.model.MovementType;
 import soat_fiap.siaes.domain.inventory.model.Part;
 import soat_fiap.siaes.domain.inventory.repository.PartRepository;
 import soat_fiap.siaes.interfaces.inventory.dto.UpdatePartRequest;
@@ -16,13 +15,10 @@ import java.util.UUID;
 
 @Service
 public class PartService {
-
     private final PartRepository partRepository;
-    private final StockMovementService stockMovementService;
 
-    public PartService(PartRepository partRepository, StockMovementService stockMovementService) {
+    public PartService(PartRepository partRepository) {
         this.partRepository = partRepository;
-        this.stockMovementService = stockMovementService;
     }
 
     public Part save(Part part) {
@@ -43,10 +39,18 @@ public class PartService {
     }
 
     public Part update(UUID id, UpdatePartRequest request) {
-        Part existing = partRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Peça não encontrada com ID: " + id));
+        if (partRepository.existsByEanAndIdNot(request.ean(), id))
+            throw new IllegalArgumentException("EAN já existe: " + request.ean());
 
-        request.applyTo(existing);
+        Part existing = findById(id);
+        existing.setName(request.name());
+        existing.setUnitPrice(request.unitPrice());
+        existing.setUnitMeasure(request.unitMeasure());
+        existing.setQuantity(request.quantity());
+        existing.setReservedQuantity(request.reservedQuantity());
+        existing.setMinimumStockQuantity(request.minimumStockQuantity());
+        existing.setEan(request.ean());
+        existing.setManufacturer(request.manufacturer());
 
         return partRepository.save(existing);
     }
@@ -65,21 +69,14 @@ public class PartService {
     @Transactional
     public Part addStock(UUID id, Integer quantity) {
         Part part = findById(id);
-
-        part.add(quantity);
-        Part updated = partRepository.save(part);
-
-        stockMovementService.registerMovement(updated, MovementType.ENTRADA, quantity);
-        return updated;
+        part.addStock(quantity);
+        return partRepository.save(part);
     }
 
     @Transactional
     public Part updateStockQuantity(UUID id, Integer quantity) {
         Part part = findById(id);
         part.adjustStock(quantity);
-        Part updated = partRepository.save(part);
-        stockMovementService.registerMovement(part, MovementType.AJUSTE, quantity);
-        return updated;
+        return partRepository.save(part);
     }
-
 }

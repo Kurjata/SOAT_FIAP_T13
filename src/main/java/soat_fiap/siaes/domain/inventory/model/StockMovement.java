@@ -25,20 +25,20 @@ public class StockMovement {
     private Part part;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MovementType type;
 
     @Column(nullable = false)
-    private Integer quantity; // quantidade movimentada
+    private Integer quantity;
 
     @Column(nullable = false)
-    private Integer balanceBefore; // saldo antes da movimentação
+    private Integer balanceBefore;
 
     @Column(nullable = false)
-    private Integer balanceAfter; // saldo após movimentação
+    private Integer balanceAfter;
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal unitPrice;
@@ -50,26 +50,17 @@ public class StockMovement {
     @JoinColumn(name = "order_id")
     private ServiceOrder serviceOrder;
 
-    public StockMovement(
-            Part part,
-            MovementType type,
-            Integer quantity,
-            Integer balanceBefore,
-            Integer balanceAfter,
-            BigDecimal unitPrice,
-            BigDecimal totalValue
-    ) {
+    public StockMovement(Part part, MovementType type, Integer quantity, Integer balanceBefore, Integer balanceAfter) {
         this.part = part;
         this.type = type;
         this.quantity = quantity;
         this.balanceBefore = balanceBefore;
         this.balanceAfter = balanceAfter;
-        this.unitPrice = unitPrice;
-        this.totalValue = totalValue;
+        this.unitPrice = part.getUnitPrice();
+        this.totalValue = calculateTotalPrice();
     }
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    public BigDecimal calculateTotalPrice() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

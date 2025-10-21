@@ -9,12 +9,8 @@ import java.util.UUID;
 
 public interface SupplyRepository  {
     Supply save(Supply supply);
-
     Page<Supply> findAll(Pageable pageable);
-
     Optional<Supply> findById(UUID id);
-
     boolean existsById(UUID id);
-
     void deleteById(UUID id);
 }
