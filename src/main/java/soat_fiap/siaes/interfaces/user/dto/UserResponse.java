@@ -7,9 +7,10 @@ public record UserResponse(
     String name,
     String login,
     String role,
-    String document
+    String document,
+    String email
 ){
     public UserResponse(User user) {
-        this(user.getId().toString(), user.getName(), user.getLogin(), user.getRole().toString(), user.getDocumentAsString());
+        this(user.getId().toString(), user.getName(), user.getLogin(), user.getRole().toString(), user.getDocumentAsString(), user.getEmail());
     }
 }

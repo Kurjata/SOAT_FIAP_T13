@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.repository.UserRepository;
-import soat_fiap.siaes.interfaces.user.document.DocumentFactory;
+import soat_fiap.siaes.domain.user.model.document.DocumentFactory;
 import soat_fiap.siaes.interfaces.user.dto.CreateUserRequest;
 import soat_fiap.siaes.interfaces.user.dto.UpdateUserRequest;
 
@@ -28,8 +28,9 @@ public class UserService {
     }
 
     public User save(CreateUserRequest userRequest) {
-        if (userRepository.existsUserByLoginOrDocument(userRequest.login(), userRequest.document()))
-            throw new IllegalArgumentException();
+        if (userRepository.existsByLoginOrDocument(userRequest.login(), DocumentFactory.fromString(userRequest.document()))) {
+            throw new IllegalArgumentException("Documento " + userRequest.document() + " ou login " + userRequest.login() + " já cadastrado");
+        }
 
         User user = userRequest.toModel(passwordEncoder);
 
@@ -51,7 +52,11 @@ public class UserService {
 
     public User update(UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (userRepository.existsByDocument(DocumentFactory.fromString(request.document()))) {
+            throw new IllegalArgumentException("Documento já cadastrado");
+        }
 
         user.setName(request.name());
         user.setDocument(DocumentFactory.fromString(request.document()));

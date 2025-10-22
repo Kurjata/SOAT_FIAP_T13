@@ -5,9 +5,9 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import soat_fiap.siaes.interfaces.user.document.Document;
-import soat_fiap.siaes.interfaces.user.document.DocumentConverter;
-import soat_fiap.siaes.interfaces.user.document.DocumentFactory;
+import soat_fiap.siaes.domain.user.model.document.Document;
+import soat_fiap.siaes.domain.user.model.document.DocumentConverter;
+import soat_fiap.siaes.domain.user.model.document.DocumentFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -92,5 +92,9 @@ public class User implements UserDetails {
 
     public String getDocumentAsString() {
         return document.getDocumentFormatted();
+    }
+
+    public String getIdAsString() {
+        return id.toString();
     }
 }

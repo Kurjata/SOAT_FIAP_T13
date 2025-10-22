@@ -17,8 +17,8 @@ import static java.lang.annotation.ElementType.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})
 @ConstraintComposition(CompositionType.OR)
-@CPF
-@CNPJ
+@CPF(message = "Documento deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos) válido")
+@CNPJ(message = "Documento deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos) válido")
 public @interface Document {
     String message() default "Documento deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos) válido";
     Class<?>[] groups() default {};
