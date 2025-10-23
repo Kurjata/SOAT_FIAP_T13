@@ -1,4 +1,4 @@
-package soat_fiap.siaes.interfaces.user.document;
+package soat_fiap.siaes.domain.user.model.document;
 
 import lombok.Getter;
 import org.springframework.util.Assert;

@@ -1,4 +1,4 @@
-package soat_fiap.siaes.interfaces.user.document;
+package soat_fiap.siaes.domain.user.model.document;
 
 import br.com.caelum.stella.format.CNPJFormatter;
 import br.com.caelum.stella.validation.CNPJValidator;
