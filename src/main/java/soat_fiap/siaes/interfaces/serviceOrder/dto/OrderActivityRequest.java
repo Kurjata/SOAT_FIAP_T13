@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.UUID;
 
 public record OrderActivityRequest(
-        UUID serviceOrderId, // Id da ordem de serviço, opcional
+        UUID serviceOrderId,
         @NotNull(message = "O ID do serviço de mão de obra é obrigatório")
-        UUID serviceLaborId, // id do serviço
+        UUID serviceLaborId,
         @Valid
-        List<ActivityItemRequest> items // Lista de peças ou insumos
+        List<OrdemItemRequest> items
 ) {
 }

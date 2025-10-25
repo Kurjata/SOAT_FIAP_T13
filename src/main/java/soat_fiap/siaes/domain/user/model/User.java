@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -55,10 +54,14 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    // --- UserDetails ---
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -96,5 +99,41 @@ public class User implements UserDetails {
 
     public String getIdAsString() {
         return id.toString();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    public void setRole(RoleEnum role) {
+        this.role = role;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record ActivityItemRequest(
+public record OrdemItemRequest(
         UUID serviceOrderItemId,
         @NotNull(message = "O ID do item é obrigatório")
         UUID itemId,

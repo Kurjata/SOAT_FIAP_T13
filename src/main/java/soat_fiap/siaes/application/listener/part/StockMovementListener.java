@@ -1,4 +1,4 @@
-package soat_fiap.siaes.application.listener;
+package soat_fiap.siaes.application.listener.part;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

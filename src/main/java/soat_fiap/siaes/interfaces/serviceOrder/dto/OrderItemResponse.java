@@ -6,7 +6,7 @@ import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;
 
 import java.math.BigDecimal;
 
-public record ActivityItemResponse(
+public record OrderItemResponse(
         String id,
         String ean,
         String name,
@@ -14,7 +14,7 @@ public record ActivityItemResponse(
         BigDecimal unitPrice,
         BigDecimal totalPrice
 ) {
-    public ActivityItemResponse(OrderItem supply) {
+    public OrderItemResponse(OrderItem supply) {
         this(
                 supply.getPartStock().getIdAsString(),
                 ItemType.PART.equals(supply.getPartStock().getType())

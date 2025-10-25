@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 public record OrderActivityResponse(
         ServiceLaborResponse serviceLabor,
-        List<ActivityItemResponse> supplies
+        List<OrderItemResponse> supplies
 ) {
     public OrderActivityResponse(OrderActivity item) {
         this(
                 new ServiceLaborResponse(item.getServiceLabor()),
                 item.getOrderItems() != null ? item.getOrderItems().stream()
-                        .map(ActivityItemResponse::new)
+                        .map(OrderItemResponse::new)
                         .collect(Collectors.toList())
                         : List.of()
         );

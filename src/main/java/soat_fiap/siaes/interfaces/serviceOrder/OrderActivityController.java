@@ -1,4 +1,5 @@
 package soat_fiap.siaes.interfaces.serviceOrder;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,31 +13,28 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/service-order-items")
+@RequestMapping("/order-activities")
+@SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 @Tag(name = "Order Activity")
 public class OrderActivityController {
     private final OrderActivityService service;
 
-    //Listar itens de uma ordem
     @GetMapping("/order/{orderId}")
     public ResponseEntity<List<OrderActivityResponse>> getByOrder(@PathVariable UUID orderId) {
         return ResponseEntity.ok(service.findByServiceOrder(orderId));
     }
 
-    //Consultar item específico
     @GetMapping("/{id}")
     public ResponseEntity<OrderActivityResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    //Criar item (com insumos opcionais)
     @PostMapping
     public ResponseEntity<OrderActivityResponse> create(@RequestBody @Valid OrderActivityRequest request) {
         return ResponseEntity.ok(service.create(request));
     }
 
-    //Alterar item
     @PutMapping("/{id}")
     public ResponseEntity<OrderActivityResponse> update(
             @PathVariable UUID id,
@@ -45,7 +43,6 @@ public class OrderActivityController {
         return ResponseEntity.ok(service.update(id, request));
     }
 
-    //Excluir item
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);

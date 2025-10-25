@@ -24,7 +24,7 @@ public record ServiceOrderResponse(
                 order.getStartTime(),
                 order.getEndTime(),
                 order.getDurationMinutes(),
-                order.getOrderStatusEnum() != null ? order.getOrderStatusEnum().getDescricao() : null,
+                order.getOrderStatus() != null ? order.getOrderStatus().getDescricao() : null,
                 order.getOrderActivities() != null ? order.getOrderActivities().stream()
                         .map(OrderActivityResponse::new)
                         .collect(Collectors.toList())

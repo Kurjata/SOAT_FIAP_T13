@@ -11,8 +11,8 @@ import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;
 import soat_fiap.siaes.domain.serviceOrder.repository.OrderActivityRepository;
 import soat_fiap.siaes.domain.serviceOrder.repository.OrderItemRepository;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.ActivityItemRequest;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.ActivityItemResponse;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.OrdemItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderItemResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,30 +20,27 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class ActivityItemService {
+public class OrderItemService {
     private final OrderItemRepository repository;
     private final OrderActivityRepository orderActivityRepository;
     private final ItemRepository itemRepository;
 
-    // Listar insumos de um item
-    public List<ActivityItemResponse> findByServiceOrderItem(UUID itemId) {
-        OrderActivity item = orderActivityRepository.findById(itemId)
+    public List<OrderItemResponse> findAllByOrderActivity(UUID orderActivityId) {
+        OrderActivity item = orderActivityRepository.findById(orderActivityId)
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
         return item.getOrderItems().stream()
-                .map(ActivityItemResponse::new)
+                .map(OrderItemResponse::new)
                 .collect(Collectors.toList());
     }
 
-    // Consultar insumo específico
-    public ActivityItemResponse findById(UUID id) {
+    public OrderItemResponse findById(UUID id) {
         OrderItem supply = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
-        return new ActivityItemResponse(supply);
+        return new OrderItemResponse(supply);
     }
 
-    // Criar insumo
     @Transactional
-    public ActivityItemResponse create(ActivityItemRequest request) {
+    public OrderItemResponse create(OrdemItemRequest request) {
         validateRequest(request);
 
         Item partStock = itemRepository.findById(request.itemId())
@@ -52,20 +49,16 @@ public class ActivityItemService {
         OrderActivity item = orderActivityRepository.findById(request.serviceOrderItemId())
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
 
-        OrderItem supply = new OrderItem();
-        supply.setOrderActivity(item);
-        supply.setPartStock(partStock);
-        supply.setQuantity(request.quantity());
+        OrderItem supply = new OrderItem(item, partStock, request.quantity(), partStock.getUnitPrice());
         if (ItemType.PART.equals(partStock.getType())) {
             supply.setUnitPrice(partStock.getUnitPrice());
         }
         OrderItem saved = repository.save(supply);
-        return new ActivityItemResponse(saved);
+        return new OrderItemResponse(saved);
     }
 
-    // Atualizar insumo
     @Transactional
-    public ActivityItemResponse update(UUID id, ActivityItemRequest request) {
+    public OrderItemResponse update(UUID id, OrdemItemRequest request) {
         validateRequest(request);
 
         OrderItem supply = repository.findById(id)
@@ -82,10 +75,9 @@ public class ActivityItemService {
         }
 
         OrderItem updated = repository.save(supply);
-        return new ActivityItemResponse(updated);
+        return new OrderItemResponse(updated);
     }
 
-    // Excluir insumo
     @Transactional
     public void delete(UUID id) {
         OrderItem supply = repository.findById(id)
@@ -93,8 +85,7 @@ public class ActivityItemService {
         repository.delete(supply);
     }
 
-    // Validação de request
-    private void validateRequest(ActivityItemRequest request) {
+    private void validateRequest(OrdemItemRequest request) {
         if (request.itemId() == null) {
             throw new IllegalArgumentException("O ID do insumo é obrigatório");
         }

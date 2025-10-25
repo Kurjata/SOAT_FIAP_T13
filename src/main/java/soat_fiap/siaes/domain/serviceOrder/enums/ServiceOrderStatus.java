@@ -8,7 +8,7 @@ import soat_fiap.siaes.shared.BusinessException;
 
 @Getter
 @RequiredArgsConstructor
-public enum ServiceOrderStatusEnum {
+public enum ServiceOrderStatus {
     RECEBIDA("OS criada e recebida pelo sistema"),
     EM_DIAGNOSTICO("Veículo em fase de diagnóstico"),
     AGUARDANDO_ESTOQUE("Aguardando estoque"),
@@ -25,7 +25,7 @@ public enum ServiceOrderStatusEnum {
         return descricao;
     }
 
-    public boolean canTransitionTo(ServiceOrderStatusEnum novoStatus, RoleEnum role) {
+    public boolean canTransitionTo(ServiceOrderStatus novoStatus, RoleEnum role) {
         // ADMIN sempre pode alterar
         if (role == RoleEnum.ADMIN) {
             return true;
@@ -84,17 +84,17 @@ public enum ServiceOrderStatusEnum {
 
     public static void validatePermissionForStatus(
             ServiceOrder order,
-            ServiceOrderStatusEnum novoStatus,
+            ServiceOrderStatus novoStatus,
             RoleEnum role
     ) {
-        if (!order.getOrderStatusEnum().canTransitionTo(novoStatus, role)) {
+        if (!order.getOrderStatus().canTransitionTo(novoStatus, role)) {
             throw new BusinessException(
                     String.format(
                             "Transição inválida: o usuário com perfil '%s' não pode alterar o status de '%s' para '%s'. %n%s",
                             role,
-                            order.getOrderStatusEnum().name(),
+                            order.getOrderStatus().name(),
                             novoStatus.name(),
-                            order.getOrderStatusEnum().getAllowedTransitions(role)
+                            order.getOrderStatus().getAllowedTransitions(role)
                     )
             );
         }
