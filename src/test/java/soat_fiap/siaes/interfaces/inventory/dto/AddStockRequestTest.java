@@ -36,7 +36,7 @@ class AddStockRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be null");
+                .containsExactly("não deve ser nulo");
     }
 
     @Test
@@ -49,11 +49,11 @@ class AddStockRequestTest {
 
         assertThat(zeroViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must be greater than 0");
+                .containsExactly("deve ser maior que 0");
 
         assertThat(negativeViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must be greater than 0");
+                .containsExactly("deve ser maior que 0");
     }
 
 

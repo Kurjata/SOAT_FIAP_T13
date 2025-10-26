@@ -42,7 +42,7 @@ class UpdatePartRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be blank");
+                .containsExactly("não deve estar em branco");
     }
 
     @Test
@@ -58,11 +58,11 @@ class UpdatePartRequestTest {
 
         assertThat(nullViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be null");
+                .contains("não deve ser nulo");
 
         assertThat(zeroViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must be greater than 0");
+                .contains("deve ser maior que 0");
     }
 
     @Test
@@ -78,11 +78,11 @@ class UpdatePartRequestTest {
 
         assertThat(nullViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be null");
+                .contains("não deve ser nulo");
 
         assertThat(negativeViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must be greater than 0");
+                .contains("deve ser maior que 0");
     }
 
     @Test
@@ -94,7 +94,7 @@ class UpdatePartRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be null");
+                .containsExactly("não deve ser nulo");
     }
 
     @Test
@@ -106,7 +106,7 @@ class UpdatePartRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be null");
+                .containsExactly("não deve ser nulo");
     };
 
     @Test
@@ -118,7 +118,7 @@ class UpdatePartRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be blank");
+                .containsExactly("não deve estar em branco");
     }
 
     @Test
@@ -130,6 +130,6 @@ class UpdatePartRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be blank");
+                .containsExactly("não deve estar em branco");
     }
 }

@@ -1,7 +1,6 @@
 package soat_fiap.siaes.infrastructure.persistence.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.user.repository.UserRepository;
