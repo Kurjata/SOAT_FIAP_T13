@@ -44,7 +44,7 @@ class CreateUserRequestTest {
         CreateUserRequest request = new CreateUserRequest("", "vinelouzada", "123456", "384.088.920-02", "vinelouzada@gmail.com");
         Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
-        assertEquals("must not be blank", violations.iterator().next().getMessage());
+        assertEquals("não deve estar em branco", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -52,7 +52,7 @@ class CreateUserRequestTest {
         CreateUserRequest request = new CreateUserRequest("Vinicius", "", "123456", "384.088.920-02", "vinelouzada@gmail.com");
         Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
-        assertEquals("must not be blank", violations.iterator().next().getMessage());
+        assertEquals("não deve estar em branco", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -60,7 +60,7 @@ class CreateUserRequestTest {
         CreateUserRequest request = new CreateUserRequest("Vinicius", "vinelouzada", "", "384.088.920-02", "vinelouzada@gmail.com");
         Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
-        assertEquals("must not be blank", violations.iterator().next().getMessage());
+        assertEquals("não deve estar em branco", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -94,7 +94,7 @@ class CreateUserRequestTest {
         CreateUserRequest request = new CreateUserRequest("Vinicius", "vinelouzada", "123456", "384.088.920-02", "");
         Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
-        assertEquals("must not be blank", violations.iterator().next().getMessage());
+        assertEquals("não deve estar em branco", violations.iterator().next().getMessage());
     }
 
     @Test

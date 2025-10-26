@@ -38,7 +38,7 @@ public class ServiceLaborService {
     }
 
     @Transactional
-    protected ServiceLabor persist(ServiceLabor labor) {
+    public ServiceLabor persist(ServiceLabor labor) {
         try {
             return repository.save(labor);
         } catch (DataIntegrityViolationException e) {
