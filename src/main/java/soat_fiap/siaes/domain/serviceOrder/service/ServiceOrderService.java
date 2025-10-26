@@ -3,7 +3,6 @@ package soat_fiap.siaes.domain.serviceOrder.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +19,14 @@ import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;
 import soat_fiap.siaes.domain.user.model.RoleEnum;
 import soat_fiap.siaes.domain.user.model.User;
+import soat_fiap.siaes.domain.user.model.document.DocumentFactory;
 import soat_fiap.siaes.domain.user.service.UserService;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 import soat_fiap.siaes.domain.vehicle.service.VehicleService;
 import soat_fiap.siaes.domain.serviceOrder.repository.ServiceOrderRepository;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderRequest;
 import soat_fiap.siaes.interfaces.serviceOrder.dto.ServiceOrderResponse;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.CreateOrderActivityRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,6 @@ public class ServiceOrderService {
     private final VehicleService vehicleService;
     private final ServiceLaborService serviceLaborService;
     private final ItemService itemService;
-    private final ApplicationEventPublisher eventPublisher;
     private final HelperUseCase helperUseCase;
 
     public ServiceOrderResponse findById(UUID id) {
@@ -58,7 +57,7 @@ public class ServiceOrderService {
     }
 
     public Page<ServiceOrderResponse> findByUserDocument(String cpfCnpj, Pageable pageable) {
-        return repository.findByUserDocumentValue(cpfCnpj, pageable)
+        return repository.findByUserDocumentValue(DocumentFactory.fromString(cpfCnpj), pageable)
                 .map(ServiceOrderResponse::new);
     }
 
@@ -97,7 +96,7 @@ public class ServiceOrderService {
             ServiceLabor labor = serviceLaborService.findEntityById(activityReq.serviceLaborId());
             OrderActivity orderActivity = new OrderActivity(order, labor);
 
-            List<OrderItem> orderItems = buildActivityItems(activityReq, orderActivity);
+            List<OrderItem> orderItems = buildOrderItems(activityReq, orderActivity);
             orderActivity.setOrderItems(orderItems);
 
             orderActivities.add(orderActivity);
@@ -105,7 +104,8 @@ public class ServiceOrderService {
 
         return orderActivities;
     }
-    private List<OrderItem> buildActivityItems(OrderActivityRequest activityReq, OrderActivity activity) {
+
+    private List<OrderItem> buildOrderItems(CreateOrderActivityRequest activityReq, OrderActivity activity) {
         List<OrderItem> items = new ArrayList<>();
         activityReq.items().forEach(itemReq -> {
             Item part = itemService.findById(itemReq.itemId());

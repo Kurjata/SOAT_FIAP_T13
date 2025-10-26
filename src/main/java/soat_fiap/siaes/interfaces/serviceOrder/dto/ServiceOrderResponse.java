@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.serviceOrder.dto;
 
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.OrderActivityResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;

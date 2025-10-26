@@ -11,8 +11,9 @@ import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderItem;
 import soat_fiap.siaes.domain.serviceOrder.repository.OrderActivityRepository;
 import soat_fiap.siaes.domain.serviceOrder.repository.OrderItemRepository;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrdemItemRequest;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderItemResponse;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.AddOrderItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.CreateOrderItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.OrderItemResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,16 +41,14 @@ public class OrderItemService {
     }
 
     @Transactional
-    public OrderItemResponse create(OrdemItemRequest request) {
-        validateRequest(request);
-
+    public OrderItemResponse create(AddOrderItemRequest request) {
         Item partStock = itemRepository.findById(request.itemId())
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
 
-        OrderActivity item = orderActivityRepository.findById(request.serviceOrderItemId())
+        OrderActivity orderActivity = orderActivityRepository.findById(request.orderActivityId())
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
 
-        OrderItem supply = new OrderItem(item, partStock, request.quantity(), partStock.getUnitPrice());
+        OrderItem supply = new OrderItem(orderActivity, partStock, request.quantity(), partStock.getUnitPrice());
         if (ItemType.PART.equals(partStock.getType())) {
             supply.setUnitPrice(partStock.getUnitPrice());
         }
@@ -58,11 +57,9 @@ public class OrderItemService {
     }
 
     @Transactional
-    public OrderItemResponse update(UUID id, OrdemItemRequest request) {
-        validateRequest(request);
-
+    public OrderItemResponse update(UUID id, CreateOrderItemRequest request) {
         OrderItem supply = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
 
         Item partStock = itemRepository.findById(request.itemId())
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
@@ -83,17 +80,5 @@ public class OrderItemService {
         OrderItem supply = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Insumo não encontrado"));
         repository.delete(supply);
-    }
-
-    private void validateRequest(OrdemItemRequest request) {
-        if (request.itemId() == null) {
-            throw new IllegalArgumentException("O ID do insumo é obrigatório");
-        }
-        if (request.quantity() == null || request.quantity() < 1) {
-            throw new IllegalArgumentException("A quantidade do insumo deve ser no mínimo 1");
-        }
-        if (request.serviceOrderItemId() == null) {
-            throw new IllegalArgumentException("O ID do item da ordem é obrigatório");
-        }
     }
 }

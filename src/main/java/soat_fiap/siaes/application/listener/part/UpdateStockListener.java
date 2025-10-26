@@ -23,7 +23,7 @@ public class UpdateStockListener {
         this.publisher = publisher;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @EventListener
     public void handle(UpdateStockEvent event) {
         try {

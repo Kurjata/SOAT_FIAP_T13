@@ -33,8 +33,8 @@ public class OrderItem {
     @Deprecated
     public OrderItem() {}
 
-    public OrderItem(OrderActivity item, Item part, Integer quantity, BigDecimal unitPrice) {
-        this.orderActivity =  item;
+    public OrderItem(OrderActivity orderActivity, Item part, Integer quantity, BigDecimal unitPrice) {
+        this.orderActivity =  orderActivity;
         this.partStock = part;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
@@ -46,6 +46,10 @@ public class OrderItem {
 
     public UUID getId() {
         return id;
+    }
+
+    public String getIdAsString() {
+        return id.toString();
     }
 
     public OrderActivity getOrderActivity() {

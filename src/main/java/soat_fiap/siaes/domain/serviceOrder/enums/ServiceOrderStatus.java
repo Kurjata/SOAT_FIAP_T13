@@ -26,12 +26,10 @@ public enum ServiceOrderStatus {
     }
 
     public boolean canTransitionTo(ServiceOrderStatus novoStatus, RoleEnum role) {
-        // ADMIN sempre pode alterar
         if (role == RoleEnum.ADMIN) {
             return true;
         }
 
-        // Lógica padrão de transição
         return switch (this) {
             case RECEBIDA -> (novoStatus == EM_DIAGNOSTICO || novoStatus == AGUARDANDO_ESTOQUE)
                     && role == RoleEnum.COLLABORATOR;
@@ -60,10 +58,6 @@ public enum ServiceOrderStatus {
         };
     }
 
-    /**
-     * Retorna uma descrição das possíveis transições a partir do status atual.
-     * Usado para mensagens de erro mais claras.
-     */
     public String getAllowedTransitions(RoleEnum role) {
         if (role == RoleEnum.ADMIN) {
             return "Qualquer status (ADMIN possui permissão total).";

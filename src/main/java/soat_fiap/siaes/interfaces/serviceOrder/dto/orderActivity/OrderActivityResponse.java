@@ -1,7 +1,8 @@
-package soat_fiap.siaes.interfaces.serviceOrder.dto;
+package soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity;
 
 import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.interfaces.serviceLabor.dto.ServiceLaborResponse;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.OrderItemResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

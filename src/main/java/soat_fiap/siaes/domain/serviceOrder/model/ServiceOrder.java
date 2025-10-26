@@ -13,8 +13,11 @@ import soat_fiap.siaes.domain.user.model.User;
 import soat_fiap.siaes.domain.vehicle.model.Vehicle;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static java.time.Duration.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -57,7 +60,7 @@ public class ServiceOrder extends AbstractAggregateRoot<ServiceOrder> {
     public Long getDurationMinutes() {
         if (startTime != null) {
             LocalDateTime effectiveEndTime = (endTime != null) ? endTime : LocalDateTime.now();
-            return java.time.Duration.between(startTime, effectiveEndTime).toMinutes();
+            return between(startTime, effectiveEndTime).toMinutes();
         }
         return null;
     }
@@ -77,5 +80,13 @@ public class ServiceOrder extends AbstractAggregateRoot<ServiceOrder> {
             case REPROVADO_CLIENTE -> registerEvent(new UpdateStockEvent(this, StockOperation.CANCEL_RESERVATION));
             case EM_EXECUCAO -> registerEvent(new UpdateStockEvent(this, StockOperation.CONFIRM_RESERVATION));
         }
+    }
+
+    protected List<Object> getDomainEvents() {
+        return new ArrayList<>(super.domainEvents());
+    }
+
+    public String getIdAsString() {
+        return id.toString();
     }
 }

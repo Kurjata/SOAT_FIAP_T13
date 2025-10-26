@@ -9,9 +9,9 @@ import soat_fiap.siaes.domain.serviceLabor.service.ServiceLaborService;
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
 import soat_fiap.siaes.domain.serviceOrder.model.OrderActivity;
 import soat_fiap.siaes.domain.serviceOrder.repository.OrderActivityRepository;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityRequest;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityResponse;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrdemItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.AddOrderActivityRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.OrderActivityResponse;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.AddOrderItemRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,25 +39,18 @@ public class OrderActivityService {
         return new OrderActivityResponse(orderActivity);
     }
 
-    // Criar item
     @Transactional
-    public OrderActivityResponse create(OrderActivityRequest request) {
-        validateRequest(request);
-
+    public OrderActivityResponse create(AddOrderActivityRequest request) {
         ServiceOrder order = serviceOrderService.findByUUID(request.serviceOrderId());
         ServiceLabor labor = serviceLaborService.findEntityById(request.serviceLaborId());
 
-        OrderActivity item = new OrderActivity(order, labor);
+        OrderActivity orderActivity = new OrderActivity(order, labor);
+        OrderActivity orderActivitySaved = repository.save(orderActivity);
 
-        // Persistir item primeiro para poder associar insumos
-        OrderActivity savedItem = repository.save(item);
-
-        // Criar insumos, se houver
         if (request.items() != null) {
-            for (OrdemItemRequest supplyRequest : request.items()) {
-                // Associar o ID do item criado ao request
-                OrdemItemRequest supplyWithItemId = new OrdemItemRequest(
-                        savedItem.getId(),
+            for (AddOrderItemRequest supplyRequest : request.items()) {
+                AddOrderItemRequest supplyWithItemId = new AddOrderItemRequest(
+                        orderActivitySaved.getId(),
                         supplyRequest.itemId(),
                         supplyRequest.quantity()
                 );
@@ -65,30 +58,24 @@ public class OrderActivityService {
             }
         }
 
-        return new OrderActivityResponse(savedItem);
+        return new OrderActivityResponse(orderActivitySaved);
     }
 
-    // Alterar item (apenas serviço ou insumos)
     @Transactional
-    public OrderActivityResponse update(UUID id, OrderActivityRequest request) {
-        validateRequest(request);
-
+    public OrderActivityResponse update(UUID id, AddOrderActivityRequest request) {
         OrderActivity item = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item da ordem não encontrado"));
 
         ServiceLabor labor = serviceLaborService.findEntityById(request.serviceLaborId());
-
         item.setServiceLabor(labor);
-
         OrderActivity updatedItem = repository.save(item);
 
-        // Atualizar insumos (simplificado: deletar todos e recriar)
         if (request.items() != null) {
             if (updatedItem.getOrderItems() != null) {
                 updatedItem.getOrderItems().forEach(s -> supplyService.delete(s.getId()));
             }
-            for (OrdemItemRequest supplyRequest : request.items()) {
-                OrdemItemRequest supplyWithItemId = new OrdemItemRequest(
+            for (AddOrderItemRequest supplyRequest : request.items()) {
+                AddOrderItemRequest supplyWithItemId = new AddOrderItemRequest(
                         updatedItem.getId(),
                         supplyRequest.itemId(),
                         supplyRequest.quantity()
@@ -108,17 +95,8 @@ public class OrderActivityService {
         if (item.getOrderItems() != null) {
             item.getOrderItems().forEach(s -> supplyService.delete(s.getId()));
         }
-        //se excluir todos os itens, faz sentido cancelar a ordem de serviço? Ou exclui-la?
 
         repository.delete(item);
     }
 
-    private void validateRequest(OrderActivityRequest request) {
-        if (request.serviceOrderId() == null) {
-            throw new IllegalArgumentException("O ID da ordem de serviço é obrigatório");
-        }
-        if (request.serviceLaborId() == null) {
-            throw new IllegalArgumentException("O ID do serviço de mão de obra é obrigatório");
-        }
-    }
 }

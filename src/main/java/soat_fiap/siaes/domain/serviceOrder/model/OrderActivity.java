@@ -45,6 +45,7 @@ public class OrderActivity {
     }
 
     public  void setOrderItems(List<OrderItem> orderItems) {
+        if (orderItems.isEmpty()) return;
         this.orderItems = orderItems;
     }
 
@@ -54,5 +55,9 @@ public class OrderActivity {
 
     public void setServiceLabor(ServiceLabor serviceLabor) {
         this.serviceLabor = serviceLabor;
+    }
+
+    public String getIdAsString() {
+        return id.toString();
     }
 }

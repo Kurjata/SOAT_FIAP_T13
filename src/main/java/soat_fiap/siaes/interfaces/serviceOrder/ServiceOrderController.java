@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.serviceOrder.enums.ServiceOrderStatus;
@@ -60,7 +61,7 @@ public class ServiceOrderController {
 
     @PostMapping
     public ResponseEntity<ServiceOrderResponse> create(@RequestBody ServiceOrderRequest request) {
-        return ResponseEntity.ok(service.createServiceOrder(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createServiceOrder(request));
     }
 
     @PatchMapping("/client/status/{id}")

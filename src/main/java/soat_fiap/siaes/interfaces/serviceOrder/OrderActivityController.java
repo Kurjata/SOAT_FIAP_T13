@@ -2,13 +2,15 @@ package soat_fiap.siaes.interfaces.serviceOrder;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.serviceOrder.service.OrderActivityService;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityRequest;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderActivityResponse;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.AddOrderActivityRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.OrderActivityResponse;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -31,15 +33,12 @@ public class OrderActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderActivityResponse> create(@RequestBody @Valid OrderActivityRequest request) {
-        return ResponseEntity.ok(service.create(request));
+    public ResponseEntity<OrderActivityResponse> create(@RequestBody @Valid AddOrderActivityRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderActivityResponse> update(
-            @PathVariable UUID id,
-            @RequestBody @Valid OrderActivityRequest request
-    ) {
+    public ResponseEntity<OrderActivityResponse> update(@PathVariable UUID id, @RequestBody @Valid AddOrderActivityRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 

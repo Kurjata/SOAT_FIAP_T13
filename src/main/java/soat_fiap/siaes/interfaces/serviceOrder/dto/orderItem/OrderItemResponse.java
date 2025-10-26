@@ -1,4 +1,4 @@
-package soat_fiap.siaes.interfaces.serviceOrder.dto;
+package soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem;
 
 import soat_fiap.siaes.domain.inventory.enums.ItemType;
 import soat_fiap.siaes.domain.inventory.model.Part;

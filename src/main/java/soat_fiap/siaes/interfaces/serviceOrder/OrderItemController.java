@@ -3,11 +3,13 @@ package soat_fiap.siaes.interfaces.serviceOrder;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import soat_fiap.siaes.domain.serviceOrder.service.OrderItemService;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrdemItemRequest;
-import soat_fiap.siaes.interfaces.serviceOrder.dto.OrderItemResponse;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.AddOrderItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.CreateOrderItemRequest;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderItem.OrderItemResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,15 +33,12 @@ public class OrderItemController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderItemResponse> create(@RequestBody OrdemItemRequest request) {
-        return ResponseEntity.ok(service.create(request));
+    public ResponseEntity<OrderItemResponse> create(@RequestBody AddOrderItemRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderItemResponse> update(
-            @PathVariable UUID id,
-            @RequestBody OrdemItemRequest request
-    ) {
+    public ResponseEntity<OrderItemResponse> update(@PathVariable UUID id, @RequestBody CreateOrderItemRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 
