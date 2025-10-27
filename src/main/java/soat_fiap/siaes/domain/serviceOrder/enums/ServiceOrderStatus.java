@@ -8,7 +8,7 @@ import soat_fiap.siaes.shared.BusinessException;
 
 @Getter
 @RequiredArgsConstructor
-public enum ServiceOrderStatusEnum {
+public enum ServiceOrderStatus {
     RECEBIDA("OS criada e recebida pelo sistema"),
     EM_DIAGNOSTICO("Veículo em fase de diagnóstico"),
     AGUARDANDO_ESTOQUE("Aguardando estoque"),
@@ -25,13 +25,11 @@ public enum ServiceOrderStatusEnum {
         return descricao;
     }
 
-    public boolean canTransitionTo(ServiceOrderStatusEnum novoStatus, RoleEnum role) {
-        // ADMIN sempre pode alterar
+    public boolean canTransitionTo(ServiceOrderStatus novoStatus, RoleEnum role) {
         if (role == RoleEnum.ADMIN) {
             return true;
         }
 
-        // Lógica padrão de transição
         return switch (this) {
             case RECEBIDA -> (novoStatus == EM_DIAGNOSTICO || novoStatus == AGUARDANDO_ESTOQUE)
                     && role == RoleEnum.COLLABORATOR;
@@ -60,10 +58,6 @@ public enum ServiceOrderStatusEnum {
         };
     }
 
-    /**
-     * Retorna uma descrição das possíveis transições a partir do status atual.
-     * Usado para mensagens de erro mais claras.
-     */
     public String getAllowedTransitions(RoleEnum role) {
         if (role == RoleEnum.ADMIN) {
             return "Qualquer status (ADMIN possui permissão total).";
@@ -84,17 +78,17 @@ public enum ServiceOrderStatusEnum {
 
     public static void validatePermissionForStatus(
             ServiceOrder order,
-            ServiceOrderStatusEnum novoStatus,
+            ServiceOrderStatus novoStatus,
             RoleEnum role
     ) {
-        if (!order.getOrderStatusEnum().canTransitionTo(novoStatus, role)) {
+        if (!order.getOrderStatus().canTransitionTo(novoStatus, role)) {
             throw new BusinessException(
                     String.format(
                             "Transição inválida: o usuário com perfil '%s' não pode alterar o status de '%s' para '%s'. %n%s",
                             role,
-                            order.getOrderStatusEnum().name(),
+                            order.getOrderStatus().name(),
                             novoStatus.name(),
-                            order.getOrderStatusEnum().getAllowedTransitions(role)
+                            order.getOrderStatus().getAllowedTransitions(role)
                     )
             );
         }

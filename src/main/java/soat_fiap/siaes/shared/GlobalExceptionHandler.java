@@ -69,15 +69,15 @@ public class GlobalExceptionHandler {
                 .body(new MessageDTO("Operação inválida: conflito com dados existentes."));
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Object> handleBusinessException(BusinessException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDTO> handleGenericException(Exception ex) {
         logger.error("Erro inesperado: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new MessageDTO("Ocorreu um erro inesperado. Tente novamente mais tarde."));
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Object> handleBusinessException(BusinessException ex) {
-        return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
     }
 }

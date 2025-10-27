@@ -9,9 +9,6 @@ import soat_fiap.siaes.domain.inventory.model.Item;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
@@ -28,13 +25,16 @@ public class OrderItem {
     private Item partStock; //Insumo
 
     @Column(nullable = false)
-    private Integer quantity; // quantidade utilizada
+    private Integer quantity;
 
     @Column(nullable = false)
-    private BigDecimal unitPrice; // preço unitário do produto
+    private BigDecimal unitPrice;
 
-    public OrderItem(OrderActivity item, Item part, Integer quantity, BigDecimal unitPrice) {
-        this.orderActivity =  item;
+    @Deprecated
+    public OrderItem() {}
+
+    public OrderItem(OrderActivity orderActivity, Item part, Integer quantity, BigDecimal unitPrice) {
+        this.orderActivity =  orderActivity;
         this.partStock = part;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
@@ -42,5 +42,41 @@ public class OrderItem {
 
     public BigDecimal getTotalPrice() {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getIdAsString() {
+        return id.toString();
+    }
+
+    public OrderActivity getOrderActivity() {
+        return orderActivity;
+    }
+
+    public Item getPartStock() {
+        return partStock;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setPartStock(Item partStock) {
+        this.partStock = partStock;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }

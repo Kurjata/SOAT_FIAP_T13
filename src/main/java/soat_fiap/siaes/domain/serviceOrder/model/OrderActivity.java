@@ -1,17 +1,11 @@
 package soat_fiap.siaes.domain.serviceOrder.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import soat_fiap.siaes.domain.serviceLabor.model.ServiceLabor;
 
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
 @Table(name = "order_activities")
 public class OrderActivity {
@@ -30,8 +24,40 @@ public class OrderActivity {
     @OneToMany(mappedBy = "orderActivity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
+    @Deprecated
+    public OrderActivity() {}
+
     public OrderActivity(ServiceOrder serviceOrder, ServiceLabor serviceLabor) {
         this.serviceOrder = serviceOrder;
         this.serviceLabor = serviceLabor;
+    }
+
+    public ServiceOrder getServiceOrder() {
+        return serviceOrder;
+    }
+
+    public ServiceLabor getServiceLabor() {
+        return serviceLabor;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public  void setOrderItems(List<OrderItem> orderItems) {
+        if (orderItems.isEmpty()) return;
+        this.orderItems = orderItems;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setServiceLabor(ServiceLabor serviceLabor) {
+        this.serviceLabor = serviceLabor;
+    }
+
+    public String getIdAsString() {
+        return id.toString();
     }
 }

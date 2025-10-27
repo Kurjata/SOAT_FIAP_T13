@@ -1,6 +1,7 @@
 package soat_fiap.siaes.interfaces.serviceOrder.dto;
 
 import soat_fiap.siaes.domain.serviceOrder.model.ServiceOrder;
+import soat_fiap.siaes.interfaces.serviceOrder.dto.orderActivity.OrderActivityResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +25,7 @@ public record ServiceOrderResponse(
                 order.getStartTime(),
                 order.getEndTime(),
                 order.getDurationMinutes(),
-                order.getOrderStatusEnum() != null ? order.getOrderStatusEnum().getDescricao() : null,
+                order.getOrderStatus() != null ? order.getOrderStatus().getDescricao() : null,
                 order.getOrderActivities() != null ? order.getOrderActivities().stream()
                         .map(OrderActivityResponse::new)
                         .collect(Collectors.toList())
