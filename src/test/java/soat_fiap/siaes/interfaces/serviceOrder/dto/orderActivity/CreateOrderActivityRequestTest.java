@@ -57,7 +57,7 @@ class CreateOrderActivityRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be null");
+                .contains("não deve ser nulo");
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory; // Importe este
 import soat_fiap.siaes.application.event.part.StockBelowMinimumEvent;
+import soat_fiap.siaes.application.listener.part.StockBelowMinimumListener;
 
 import java.util.List;
 import java.util.UUID;
