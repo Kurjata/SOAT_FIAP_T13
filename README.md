@@ -227,7 +227,7 @@ target\site\jacoco\index.html
 ```
 ## 🔍 JaCoCo - Relatório
 
-![Event Storming](./assets/index_rel_jacoco.jpeg)
+![jacoco](./assets/index_rel_jacoco.jpeg)
 
 ###  🧠 SonarQube — Análise Estática e Métricas de Qualidade
 
@@ -248,16 +248,26 @@ O **SonarQube** consome o relatório XML gerado pelo **JaCoCo** para exibir as m
 
 ### 📊 Iniciando o teste no SonarQube
 
-Neste estudo estamos usando o SonarQube no docker usando o caminho:
+Neste estudo, o SonarQube foi integrado ao ambiente definido pelo docker-compose, utilizando o seguinte caminho:
 
 ```
 http://localhost:9000
 ```
-É necessário gerar um token que será usado no projeto no caminho:
+### Primeiro acesso
+- Realize o login inicial com as credenciais padrão:
+  - **Usuário:** `admin`
+  - **Senha:** `admin`
+- Após o login, será necessário gerar um **token de autenticação**.
+  - Esse token será utilizado para configurar a análise de código no projeto.
+  - Para gerar o token, acesse:
 ```
 "http://localhost:9000/account/security"
 ```
-que será utilizando no camando abaixo:
+### Observações
+- Certifique-se de que o container do SonarQube esteja em execução antes de acessar o endereço.
+- O token gerado deve ser armazenado com segurança e referenciado nas configurações do seu pipeline ou ferramenta de CI/CD.
+
+O Token será utilizado no comando abaixo:
 ```
 -Dsonar.login=<seu_token_aqui>
 ```
@@ -272,7 +282,7 @@ mvn clean verify sonar:sonar
 
 Relatório SonarQube
 
-![Event Storming](./assets/sonar.png)
+![sonar](./assets/sonar.png)
 
 
 
