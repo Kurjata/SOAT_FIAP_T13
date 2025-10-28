@@ -265,7 +265,7 @@ http://localhost:9000
 ```
 ### Observações
 - Certifique-se de que o container do SonarQube esteja em execução antes de acessar o endereço.
-- O token gerado deve ser armazenado com segurança e referenciado nas configurações do seu pipeline ou ferramenta de CI/CD.
+- O token gerado deve ser armazenado com segurança pelo que pesquisei só é possivél a visualização nesse momento caso contrario excluir e gerar outro.
 
 O Token será utilizado no comando abaixo:
 ```
@@ -284,9 +284,39 @@ Relatório SonarQube
 
 ![sonar](./assets/sonar.png)
 
+### ⚙️ OWASP Dependency-Check
 
+O OWASP Dependency-Check é uma ferramenta que analisa as dependências do projeto e identifica vulnerabilidades conhecidas (CVE) com base no banco de dados NVD (National Vulnerability Database).
 
+O plugin verifica bibliotecas inseguras e gera relatórios em HTML, XML e JSON, permitindo identificar riscos de segurança nas dependências utilizadas.
 
+Plugin Utilizado:
 
+```
+             <plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>12.1.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+```
+Para executar:
+```
+mvn verify
 
+```
+Relatório por padrão:
+```
+target/dependency-check-report.html
+```
+
+Relatório OWASP Dependency-Check
+
+![Owsap](./assets/owsap.png)
 

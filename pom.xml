@@ -26,6 +26,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<commons-lang3.version>3.18.0</commons-lang3.version>
 	</properties>
 
 	<dependencies>
@@ -177,6 +178,20 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>12.1.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
