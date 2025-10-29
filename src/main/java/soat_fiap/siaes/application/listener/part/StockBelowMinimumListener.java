@@ -12,9 +12,9 @@ public class StockBelowMinimumListener {
     @EventListener
     public void handle(StockBelowMinimumEvent event) {
         log.warn(
-                "[EMAIL SIMULADO] Estoque abaixo do mínimo para a peça '%s' (ID: %s). Quantidade atual: %d. Quantidade mínima: %d.%n",
+                "[EMAIL SIMULADO] Estoque abaixo do mínimo para a peça '{}' (ID: {}). Quantidade atual: {}. Quantidade mínima: {}.",
                 event.name(),
-                event.id().toString(),
+                event.id(),
                 event.quantity(),
                 event.minimumStockQuantity()
         );
