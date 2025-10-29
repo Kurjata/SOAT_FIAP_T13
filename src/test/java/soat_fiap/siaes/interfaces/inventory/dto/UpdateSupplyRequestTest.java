@@ -46,7 +46,7 @@ class UpdateSupplyRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be blank");
+                .containsExactly("não deve estar em branco");
     }
 
     @Test
@@ -62,11 +62,11 @@ class UpdateSupplyRequestTest {
 
         assertThat(validator.validate(nullPrice))
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be null");
+                .containsExactly("não deve ser nulo");
 
         assertThat(validator.validate(zeroPrice))
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must be greater than 0");
+                .containsExactly("deve ser maior que 0");
     }
 
     @Test
@@ -80,7 +80,7 @@ class UpdateSupplyRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be null");
+                .containsExactly("não deve ser nulo");
     }
 
     @Test
@@ -94,7 +94,7 @@ class UpdateSupplyRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be blank");
+                .containsExactly("não deve estar em branco");
     }
 
     @Test
@@ -108,6 +108,6 @@ class UpdateSupplyRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .containsExactly("must not be null");
+                .containsExactly("não deve ser nulo");
     }
 }

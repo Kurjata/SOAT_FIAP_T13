@@ -56,32 +56,32 @@ public class InitialSystemConfig implements CommandLineRunner {
 
     }
 
-    private void createUserIfNotExist(String login, String name, String password, RoleEnum role, String document, String email) {
-        userRepository.findByLogin(login)
+    public User createUserIfNotExist(String login, String name, String password, RoleEnum role, String document, String email) {
+      return  userRepository.findByLogin(login)
                 .orElseGet(() -> {
                     User user = new User(name, login, passwordEncoder.encode(password), role, document, email);
                     return userRepository.save(user);
                 });
     }
 
-    private void createVehicleIfNotExist(String plate, String brand, String model, Integer year) {
-        vehicleRepository.findByPlateIgnoreCase(plate)
+    public Vehicle createVehicleIfNotExist(String plate, String brand, String model, Integer year) {
+       return  vehicleRepository.findByPlateIgnoreCase(plate)
                 .orElseGet(() -> {
                     Vehicle vehicle = new Vehicle(plate, brand, model, year);
                     return vehicleRepository.save(vehicle);
                 });
     }
 
-    private void createServiceLaborIfNotExist(String description, BigDecimal laborCost) {
-        serviceLaborRepository.findByDescription(description)
+    public ServiceLabor createServiceLaborIfNotExist(String description, BigDecimal laborCost) {
+       return serviceLaborRepository.findByDescription(description)
                 .orElseGet(() -> {
                     ServiceLabor labor = new ServiceLabor(description, laborCost);
                     return serviceLaborRepository.save(labor);
                 });
     }
 
-    private void createPartStockIfNotExist(String ean, String name, Integer stockQuantity, Integer minimumStock, BigDecimal unitPrice) {
-        partRepository.findByEan(ean)
+    public Part createPartStockIfNotExist(String ean, String name, Integer stockQuantity, Integer minimumStock, BigDecimal unitPrice) {
+        return   partRepository.findByEan(ean)
                 .orElseGet(() -> {
                     Part partStock = new Part(name, unitPrice, UnitMeasure.UNIT, stockQuantity, 0, ean, "teste", minimumStock);
                     return partRepository.save(partStock);

@@ -48,7 +48,7 @@ class UpdateUserRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be blank");
+                .contains("não deve estar em branco");
     }
 
     @Test
@@ -64,7 +64,7 @@ class UpdateUserRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be blank");
+                .contains("não deve estar em branco");
     }
 
     @Test
@@ -80,7 +80,7 @@ class UpdateUserRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be null");
+                .contains("não deve ser nulo");
     }
 
     @Test
@@ -96,6 +96,6 @@ class UpdateUserRequestTest {
         assertFalse(violations.isEmpty());
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("must not be blank", "must not be null");
+                .contains("não deve estar em branco", "não deve ser nulo", "não deve estar em branco");
     }
 }

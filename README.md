@@ -22,7 +22,6 @@ Este é um projeto desenvolvido por:
 <br>
 ![](https://img.shields.io/badge/RM362288-Felipe%20Martines%20Kurjata-blue)
 </div>
-<div align="left">
 
 ## 💻 Proposta
 
@@ -172,3 +171,152 @@ O JWT expira em 8 horas e o refresh token em 30 dias.
 
 Para mais detalhes acesse MIRO com o Domain Storytelling / Event Storming:
 [Event Storming](https://miro.com/welcomeonboard/RmZjaThmY2QrTmVGa2lFSW5kaDFwVmdCUm5RQWVndHplYUFUWTAwUFNxbW4vaDRLQ1ZOQzgyNkRTaVprZVFlK0FjMVU5V2o0bmxQcmE1eUNXemxqVlVkYTIxbVFDN3hPMXhLTUNEaXkyMUVVcGZOcFhqNFhOb282L2FQbmJLbkR0R2lncW1vRmFBVnlLcVJzTmdFdlNRPT0hdjE=?share_link_id=156423143991)
+
+## 🔐 Análise de Vulnerabilidades
+
+A análise de vulnerabilidades é realizada de forma estática pelo SonarQube, permitindo identificar riscos de segurança diretamente no código antes da execução.
+
+## 🧪 Qualidade de Código e Cobertura de Testes
+
+O projeto adota ferramentas de **análise de qualidade**, **cobertura de testes** e **segurança estática** para garantir a confiabilidade e a manutenibilidade do código.
+
+---
+
+### 🧩 JaCoCo — Cobertura de Testes
+
+**JaCoCo (Java Code Coverage)** é utilizado para medir o quanto do código-fonte é efetivamente coberto por testes automatizados.
+
+Durante a execução dos testes (`mvn test` ou `mvn verify`), o JaCoCo:
+- Instrumenta o código para medir cobertura;
+- Gera relatórios em formatos **HTML**, **CSV** e **XML**;
+- Indica quais classes, métodos e linhas foram ou não executados pelos testes;
+- Identifica partes do código não cobertas por testes;
+- Prepara o arquivo jacoco.xml este arquivo é lido pelo SonarQube;
+
+📁 **Relatório padrão gerado:**
+
+```
+target\site\jacoco\jacoco.xml
+```
+```
+target\site\jacoco\index.html
+```
+
+💡 *Configuração no `pom.xml`:*
+
+```
+             <plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.14</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+```
+## 🔍 JaCoCo - Relatório
+
+![jacoco](./assets/index_rel_jacoco.jpeg)
+
+###  🧠 SonarQube — Análise Estática e Métricas de Qualidade
+
+O **SonarQube** é utilizado para realizar **análise estática de código (SAST)** e consolidar métricas de qualidade, incluindo:
+- 🐞 *Bugs e vulnerabilidades*;
+- 🚨 *Code Smells* (más práticas e complexidade);
+- 🧮 *Cobertura de testes* (dados fornecidos pelo JaCoCo);
+- 🔐 *Alertas de segurança*.
+
+📘 **Por que utilizar:**
+- Detecta problemas antes da execução em produção;
+- Mantém padrões de qualidade uniformes entre os módulos;
+- Permite monitorar a evolução da qualidade do projeto ao longo do tempo.
+
+### 🔗 Integração entre JaCoCo e SonarQube
+
+O **SonarQube** consome o relatório XML gerado pelo **JaCoCo** para exibir as métricas de cobertura.
+
+### 📊 Iniciando o teste no SonarQube
+
+Neste estudo, o SonarQube foi integrado ao ambiente definido pelo docker-compose, utilizando o seguinte caminho:
+
+```
+http://localhost:9000
+```
+### Primeiro acesso
+- Realize o login inicial com as credenciais padrão:
+  - **Usuário:** `admin`
+  - **Senha:** `admin`
+- Após o login, será necessário gerar um **token de autenticação**.
+  - Esse token será utilizado para configurar a análise de código no projeto.
+  - Para gerar o token, acesse:
+```
+"http://localhost:9000/account/security"
+```
+### Observações
+- Certifique-se de que o container do SonarQube esteja em execução antes de acessar o endereço.
+- O token gerado deve ser armazenado com segurança pelo que pesquisei só é possivél a visualização nesse momento caso contrario excluir e gerar outro.
+
+O Token será utilizado no comando abaixo:
+```
+-Dsonar.login=<seu_token_aqui>
+```
+execute o camando:
+```
+mvn clean verify sonar:sonar 
+"-Dsonar.projectKey=tech_challenge_oficina" 
+"-Dsonar.host.url=http://localhost:9000" 
+"-Dsonar.login=<seu_token_aqui>" 
+"-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
+```
+
+Relatório SonarQube
+
+![sonar](./assets/sonar.png)
+
+### ⚙️ OWASP Dependency-Check
+
+O OWASP Dependency-Check é uma ferramenta que analisa as dependências do projeto e identifica vulnerabilidades conhecidas (CVE) com base no banco de dados NVD (National Vulnerability Database).
+
+O plugin verifica bibliotecas inseguras e gera relatórios em HTML, XML e JSON, permitindo identificar riscos de segurança nas dependências utilizadas.
+
+Plugin Utilizado:
+
+```
+             <plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>12.1.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+```
+Para executar:
+```
+mvn verify
+
+```
+Relatório por padrão:
+```
+target/dependency-check-report.html
+```
+
+Relatório OWASP Dependency-Check
+
+![Owsap](./assets/owsap.png)
+

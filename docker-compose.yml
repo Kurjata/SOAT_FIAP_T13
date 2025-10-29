@@ -42,8 +42,54 @@ services:
       retries: 3
       start_period: 30s
 
+  sonar-db:
+    image: postgres:15
+    container_name: sonar-db-container
+    environment:
+     POSTGRES_USER: sonar
+     POSTGRES_PASSWORD: sonar
+     POSTGRES_DB: sonarqube
+    volumes:
+    - sonar_db_data:/var/lib/postgresql/data
+    networks:
+    - app-net
+    healthcheck:
+     test: ["CMD-SHELL", "pg_isready -U sonar -d sonarqube"]
+     interval: 10s
+     timeout: 5s
+     retries: 5
+     start_period: 10s
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonarqube?createDatabaseIfNotExist=true
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    depends_on:
+      sonar-db:
+        condition: service_healthy
+    networks:
+      - app-net
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:9000/api/system/health || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+
 networks:
   app-net:
 
 volumes:
   postgres_data:
+  sonar_db_data:
+  sonarqube_data:
+  sonarqube_extensions:
