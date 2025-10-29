@@ -163,11 +163,12 @@ O JWT expira em 8 horas e o refresh token em 30 dias.
 
 ## 📚 Domain Storytelling - Fluxo de Criação e Acompanhamento da Ordem de Serviço
 
-![Event Storming](./assets/Domain_Storytelling.jpg)
+![Domain_Storytelling](https://github.com/user-attachments/assets/34610f6a-bd65-4bf3-bf1f-b80f4b5daa79)
+
 
 ## 📚 MIRO - Event Storming
 
-![Event Storming](./assets/Event_Storming.jpg)
+![Event_Storming](https://github.com/user-attachments/assets/7bdce63e-70bc-4755-875e-de87e3a920f4)
 
 Para mais detalhes acesse MIRO com o Domain Storytelling / Event Storming:
 [Event Storming](https://miro.com/welcomeonboard/RmZjaThmY2QrTmVGa2lFSW5kaDFwVmdCUm5RQWVndHplYUFUWTAwUFNxbW4vaDRLQ1ZOQzgyNkRTaVprZVFlK0FjMVU5V2o0bmxQcmE1eUNXemxqVlVkYTIxbVFDN3hPMXhLTUNEaXkyMUVVcGZOcFhqNFhOb282L2FQbmJLbkR0R2lncW1vRmFBVnlLcVJzTmdFdlNRPT0hdjE=?share_link_id=156423143991)
@@ -227,7 +228,8 @@ target\site\jacoco\index.html
 ```
 ## 🔍 JaCoCo - Relatório
 
-![jacoco](./assets/index_rel_jacoco.jpeg)
+![index_rel_jacoco](https://github.com/user-attachments/assets/9c95a309-c565-4f2b-ad31-0458f2584845)
+
 
 ###  🧠 SonarQube — Análise Estática e Métricas de Qualidade
 
@@ -282,7 +284,8 @@ mvn clean verify sonar:sonar
 
 Relatório SonarQube
 
-![sonar](./assets/sonar.png)
+<img width="1035" height="919" alt="sonar" src="https://github.com/user-attachments/assets/99bab23d-5a56-4f96-b8e6-1c37b8859544" />
+
 
 ### ⚙️ OWASP Dependency-Check
 
@@ -318,5 +321,5 @@ target/dependency-check-report.html
 
 Relatório OWASP Dependency-Check
 
-![Owsap](./assets/owsap.png)
+<img width="941" height="910" alt="owsap" src="https://github.com/user-attachments/assets/5239a7d1-e396-467e-8951-20290d1159ef" />
 
