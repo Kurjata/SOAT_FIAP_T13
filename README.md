@@ -28,7 +28,9 @@ Este é um projeto desenvolvido por:
 Desenvolver a primeira versão (MVP) do back-end do sistema da oficina,
 com foco em gestão de ordens de serviço, clientes e peças, aplicando Domain
 Driven Design (DDD) e garantindo boas práticas de Qualidade de Software e
-Segurança..
+Segurança.
+
+Link da explicação do projeto: https://www.youtube.com/watch?v=7FwvDX7eNpA
 
 ## 🛠 Stack Tecnológica
 [![Java](https://img.shields.io/badge/java_21-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)](https://docs.oracle.com/en/java/javase/21/)
