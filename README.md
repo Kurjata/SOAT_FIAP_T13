@@ -41,8 +41,8 @@ Segurança..
 
 ## 💫 Como Este Projeto se Destaca
 
-1. **Arquitetura Hexagonal**: Essa arquitetura foca em separar claramente as regras de negócio (core da aplicação) das tecnologias externas (como banco de dados, APIs, etc.), facilitando testes, manutenção e evolução do sistema.
-2. **Uso de PostgreSQL**: Utiliza banco de dados relacional com esquema rígido, garantindo integridade referencial, suporte avançado a transações e consultas SQL otimizadas..
+1. **Domain-Driven Design (DDD)**: Essa abordagem foca em modelar o software de acordo com o domínio do negócio, colocando as regras e a linguagem do domínio no centro da aplicação. O DDD busca alinhar o código à realidade do problema que o sistema resolve, promovendo uma estrutura organizada em camadas (como domínio, aplicação e infraestrutura) que facilita a manutenção, a compreensão e a evolução do sistema.
+2. **Uso de PostgreSQL**: Utiliza banco de dados relacional com esquema rígido, garantindo integridade referencial, suporte avançado a transações e consultas SQL otimizadas.
 3. **Facilidade de Deploy**: Com Docker, é possível containerizar e executar a aplicação de forma simples, garantindo portabilidade e padronização do ambiente.
 4. **Documentação com Swagger**: A aplicação inclui uma interface Swagger para facilitar a exploração das APIs, tornando o desenvolvimento e testes mais ágeis.
 
