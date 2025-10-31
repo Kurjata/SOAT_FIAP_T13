@@ -71,10 +71,12 @@ http://localhost:8080/swagger-ui/index.html
 
 Para acessar a API via Swagger ou autenticar via endpoint `/auth/login`, utilize os seguintes usuários:
 
-| Usuário        | Login        | Senha     | Role          |
-| -------------- | ----------- | -------- | ------------- |
-| Administrador  | admin       | admin | ADMIN         |
-| Colaborador    | collaborator | collaborator | COLLABORATOR  |
+| Usuário       | Login        | Senha        | Role         |
+| ------------- | ------------ | ------------ | ------------ |
+| Administrador | admin        | admin        | ADMIN        |
+| Colaborador   | collaborator | collaborator | COLLABORATOR |
+| Cliente       | client       | 123          | CLIENT       |
+
 
 > ⚠️ Senhas em ambiente de produção devem ser alteradas.
 
